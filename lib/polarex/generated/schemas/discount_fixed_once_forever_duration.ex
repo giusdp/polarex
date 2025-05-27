@@ -1,0 +1,68 @@
+defmodule Polarex.Generated.DiscountFixedOnceForeverDuration do
+  @moduledoc """
+  Provides struct and type for a DiscountFixedOnceForeverDuration
+  """
+
+  @type t :: %__MODULE__{
+          amount: integer,
+          code: String.t() | nil,
+          created_at: DateTime.t(),
+          currency: String.t(),
+          duration: String.t(),
+          ends_at: DateTime.t() | nil,
+          id: String.t(),
+          max_redemptions: integer | nil,
+          metadata: Polarex.Generated.Metadata.t(),
+          modified_at: DateTime.t() | nil,
+          name: String.t(),
+          organization_id: String.t(),
+          products: [Polarex.Generated.DiscountProduct.t()],
+          redemptions_count: integer,
+          starts_at: DateTime.t() | nil,
+          type: String.t()
+        }
+
+  defstruct [
+    :amount,
+    :code,
+    :created_at,
+    :currency,
+    :duration,
+    :ends_at,
+    :id,
+    :max_redemptions,
+    :metadata,
+    :modified_at,
+    :name,
+    :organization_id,
+    :products,
+    :redemptions_count,
+    :starts_at,
+    :type
+  ]
+
+  @doc false
+  @spec __fields__(atom) :: keyword
+  def __fields__(type \\ :t)
+
+  def __fields__(:t) do
+    [
+      amount: :integer,
+      code: {:union, [{:string, :generic}, :null]},
+      created_at: {:string, :date_time},
+      currency: {:string, :generic},
+      duration: {:enum, ["once", "forever", "repeating"]},
+      ends_at: {:union, [{:string, :date_time}, :null]},
+      id: {:string, :generic},
+      max_redemptions: {:union, [:integer, :null]},
+      metadata: {Polarex.Generated.Metadata, :t},
+      modified_at: {:union, [{:string, :date_time}, :null]},
+      name: {:string, :generic},
+      organization_id: {:string, :generic},
+      products: [{Polarex.Generated.DiscountProduct, :t}],
+      redemptions_count: :integer,
+      starts_at: {:union, [{:string, :date_time}, :null]},
+      type: {:enum, ["fixed", "percentage"]}
+    ]
+  end
+end
