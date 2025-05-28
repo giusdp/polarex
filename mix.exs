@@ -40,7 +40,7 @@ defmodule Polarex.MixProject do
   end
 
   defp files do
-    ~w(lib priv .formatter.exs mix.exs README* readme* LICENSE* license*)
+    ~w(lib .formatter.exs mix.exs README* LICENSE*)
   end
 
   defp docs do
