@@ -1,25 +1,57 @@
 defmodule Polarex.MixProject do
   use Mix.Project
 
+  @version "0.1.0"
+
   def project do
     [
       app: :polarex,
-      version: "0.1.0",
-      elixir: "~> 1.18",
+      version: @version,
+      elixir: "~> 1.15",
       start_permanent: Mix.env() == :prod,
       deps: deps(),
-      aliases: aliases()
+      aliases: aliases(),
+      package: package(),
+      docs: docs(),
+      name: "Polarex",
+      source_url: "https://github.com/giusdp/polarex",
+      homepage_url: "https://github.com/giusdp/polarex",
+      description: """
+      Elixir SDK for Polar.sh.
+      """
     ]
   end
 
-  # Run "mix help compile.app" to learn about applications.
   def application do
     [
       extra_applications: [:logger]
     ]
   end
 
-  # Run "mix help deps" to learn about dependencies.
+  defp package do
+    [
+      maintainers: ["Giuseppe De Palma"],
+      licenses: ["MIT"],
+      links: %{
+        GitHub: "https://github.com/giusdp/polarex"
+      },
+      files: files()
+    ]
+  end
+
+  defp files do
+    ~w(lib priv .formatter.exs mix.exs README* readme* LICENSE* license*)
+  end
+
+  defp docs do
+    [
+      main: "readme",
+      extras: ["README.md"],
+      source_ref: "main",
+      source_url: "https://github.com/giusdp/polarex"
+    ]
+  end
+
   defp deps do
     [
       {:req, "~> 0.5"},
