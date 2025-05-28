@@ -33,13 +33,13 @@ defmodule Polarex.Generated.OrganizationUpdate do
     [
       avatar_url: {:union, [{:string, :uri}, :null]},
       details: {:union, [{Polarex.Generated.OrganizationDetails, :t}, :null]},
-      email: {:union, [{:string, :generic}, :null]},
+      email: {:union, [{:string, :email}, :null]},
       feature_settings: {:union, [{Polarex.Generated.OrganizationFeatureSettings, :t}, :null]},
       name: {:union, [{:string, :generic}, :null]},
       socials: {:union, [[{Polarex.Generated.OrganizationSocialLink, :t}], :null]},
       subscription_settings:
         {:union, [{Polarex.Generated.OrganizationSubscriptionSettings, :t}, :null]},
-      website: {:union, [{:string, :generic}, :null]}
+      website: {:union, [{:string, :uri}, :null]}
     ]
   end
 end

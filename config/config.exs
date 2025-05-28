@@ -15,5 +15,5 @@ if Mix.env() == :dev do
 end
 
 if Mix.env() in [:dev, :test] do
-  config :polarex, server: "sandbox"
+  config :polarex, server: "https://sandbox-api.polar.sh", access_token: ""
 end
