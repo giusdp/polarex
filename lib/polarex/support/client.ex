@@ -3,6 +3,7 @@ defmodule Polarex.Support.Client do
   This module is not automatically generated.
   It is manually created to provide a Req request client for the Polar API.
   """
+  alias Polarex.Support.Translator
 
   def request(opts) do
     case execute_request(opts) do
@@ -10,7 +11,9 @@ defmodule Polarex.Support.Client do
         {:error, nil}
 
       {:ok, %{status: status, body: body}} when status < 300 ->
-        {:ok, body}
+        lookup = Map.new(opts.response)
+        result_type = Map.get(lookup, status)
+        {:ok, Translator.translate(result_type, body)}
 
       {:ok, %{body: %{"message" => message}}} ->
         {:error, message}
