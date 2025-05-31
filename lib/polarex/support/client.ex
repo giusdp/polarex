@@ -85,7 +85,13 @@ defmodule Polarex.Support.Client do
 
   # Ensure the body is encoded as JSON
   defp encode_body(nil), do: nil
-  defp encode_body(body), do: Jason.encode!(body)
+
+  defp encode_body(body) do
+    body
+    |> Map.from_struct()
+    |> Map.reject(fn {_, v} -> is_nil(v) end)
+    |> Jason.encode!()
+  end
 
   defp add_headers(%Req.Request{} = req) do
     access_token = Application.fetch_env!(:polarex, :access_token)
