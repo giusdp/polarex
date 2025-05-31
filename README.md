@@ -15,7 +15,7 @@ Add the dependency in `mix.exs`:
 ```elixir
 def deps do
   [
-    {:polarex, "~> 0.2.0"}
+    {:polarex, "~> 0.2.1"}
   ]
 end
 ```
