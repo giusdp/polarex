@@ -6,6 +6,36 @@ defmodule Polarex.Orders do
   @default_client Polarex.Support.Client
 
   @doc """
+  Generate Order Invoice
+
+  Trigger generation of an order's invoice.
+
+  **Scopes**: `customer_portal:read` `customer_portal:write`
+  """
+  @spec customer_portal_orders_generate_invoice(String.t(), keyword) ::
+          {:ok, map}
+          | {:error,
+             Polarex.InvoiceAlreadyExists.t()
+             | Polarex.MissingInvoiceBillingDetails.t()
+             | Polarex.NotPaidOrder.t()}
+  def customer_portal_orders_generate_invoice(id, opts \\ []) do
+    client = opts[:client] || @default_client
+
+    client.request(%{
+      args: [id: id],
+      call: {Polarex.Orders, :customer_portal_orders_generate_invoice},
+      url: "/v1/customer-portal/orders/#{id}/invoice",
+      method: :post,
+      response: [
+        {202, :map},
+        {409, {Polarex.InvoiceAlreadyExists, :t}},
+        {422, {:union, [{Polarex.MissingInvoiceBillingDetails, :t}, {Polarex.NotPaidOrder, :t}]}}
+      ],
+      opts: opts
+    })
+  end
+
+  @doc """
   Get Order
 
   Get an order by ID for the authenticated customer.
@@ -104,6 +134,65 @@ defmodule Polarex.Orders do
       response: [
         {200, {Polarex.ListResourceCustomerOrder, :t}},
         {422, {Polarex.HTTPValidationError, :t}}
+      ],
+      opts: opts
+    })
+  end
+
+  @doc """
+  Update Order
+
+  Update an order for the authenticated customer.
+
+  **Scopes**: `customer_portal:write`
+  """
+  @spec customer_portal_orders_update(String.t(), Polarex.CustomerOrderUpdate.t(), keyword) ::
+          {:ok, Polarex.CustomerOrder.t()}
+          | {:error, Polarex.HTTPValidationError.t() | Polarex.ResourceNotFound.t()}
+  def customer_portal_orders_update(id, body, opts \\ []) do
+    client = opts[:client] || @default_client
+
+    client.request(%{
+      args: [id: id, body: body],
+      call: {Polarex.Orders, :customer_portal_orders_update},
+      url: "/v1/customer-portal/orders/#{id}",
+      body: body,
+      method: :patch,
+      request: [{"application/json", {Polarex.CustomerOrderUpdate, :t}}],
+      response: [
+        {200, {Polarex.CustomerOrder, :t}},
+        {404, {Polarex.ResourceNotFound, :t}},
+        {422, {Polarex.HTTPValidationError, :t}}
+      ],
+      opts: opts
+    })
+  end
+
+  @doc """
+  Generate Order Invoice
+
+  Trigger generation of an order's invoice.
+
+  **Scopes**: `orders:read`
+  """
+  @spec orders_generate_invoice(String.t(), keyword) ::
+          {:ok, map}
+          | {:error,
+             Polarex.InvoiceAlreadyExists.t()
+             | Polarex.MissingInvoiceBillingDetails.t()
+             | Polarex.NotPaidOrder.t()}
+  def orders_generate_invoice(id, opts \\ []) do
+    client = opts[:client] || @default_client
+
+    client.request(%{
+      args: [id: id],
+      call: {Polarex.Orders, :orders_generate_invoice},
+      url: "/v1/orders/#{id}/invoice",
+      method: :post,
+      response: [
+        {202, :map},
+        {409, {Polarex.InvoiceAlreadyExists, :t}},
+        {422, {:union, [{Polarex.MissingInvoiceBillingDetails, :t}, {Polarex.NotPaidOrder, :t}]}}
       ],
       opts: opts
     })
@@ -210,6 +299,35 @@ defmodule Polarex.Orders do
       method: :get,
       query: query,
       response: [{200, {Polarex.ListResourceOrder, :t}}, {422, {Polarex.HTTPValidationError, :t}}],
+      opts: opts
+    })
+  end
+
+  @doc """
+  Update Order
+
+  Update an order.
+
+  **Scopes**: `orders:write`
+  """
+  @spec orders_update(String.t(), Polarex.OrderUpdate.t(), keyword) ::
+          {:ok, Polarex.Order.t()}
+          | {:error, Polarex.HTTPValidationError.t() | Polarex.ResourceNotFound.t()}
+  def orders_update(id, body, opts \\ []) do
+    client = opts[:client] || @default_client
+
+    client.request(%{
+      args: [id: id, body: body],
+      call: {Polarex.Orders, :orders_update},
+      url: "/v1/orders/#{id}",
+      body: body,
+      method: :patch,
+      request: [{"application/json", {Polarex.OrderUpdate, :t}}],
+      response: [
+        {200, {Polarex.Order, :t}},
+        {404, {Polarex.ResourceNotFound, :t}},
+        {422, {Polarex.HTTPValidationError, :t}}
+      ],
       opts: opts
     })
   end

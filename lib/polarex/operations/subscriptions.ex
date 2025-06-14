@@ -297,6 +297,7 @@ defmodule Polarex.Subscriptions do
           String.t(),
           Polarex.SubscriptionCancel.t()
           | Polarex.SubscriptionRevoke.t()
+          | Polarex.SubscriptionUpdateDiscount.t()
           | Polarex.SubscriptionUpdateProduct.t(),
           keyword
         ) ::
@@ -320,6 +321,7 @@ defmodule Polarex.Subscriptions do
           [
             {Polarex.SubscriptionCancel, :t},
             {Polarex.SubscriptionRevoke, :t},
+            {Polarex.SubscriptionUpdateDiscount, :t},
             {Polarex.SubscriptionUpdateProduct, :t}
           ]}}
       ],

@@ -6,6 +6,7 @@ defmodule Polarex.Order do
   @type t :: %__MODULE__{
           amount: integer,
           billing_address: Polarex.Address.t() | nil,
+          billing_name: String.t() | nil,
           billing_reason: String.t(),
           checkout_id: String.t() | nil,
           created_at: DateTime.t(),
@@ -17,6 +18,7 @@ defmodule Polarex.Order do
           discount_amount: integer,
           discount_id: String.t() | nil,
           id: String.t(),
+          is_invoice_generated: boolean,
           items: [Polarex.OrderItemSchema.t()],
           metadata: Polarex.Metadata.t(),
           modified_at: DateTime.t() | nil,
@@ -38,6 +40,7 @@ defmodule Polarex.Order do
   defstruct [
     :amount,
     :billing_address,
+    :billing_name,
     :billing_reason,
     :checkout_id,
     :created_at,
@@ -49,6 +52,7 @@ defmodule Polarex.Order do
     :discount_amount,
     :discount_id,
     :id,
+    :is_invoice_generated,
     :items,
     :metadata,
     :modified_at,
@@ -75,6 +79,7 @@ defmodule Polarex.Order do
     [
       amount: :integer,
       billing_address: {:union, [{Polarex.Address, :t}, :null]},
+      billing_name: {:union, [{:string, :generic}, :null]},
       billing_reason:
         {:enum, ["purchase", "subscription_create", "subscription_cycle", "subscription_update"]},
       checkout_id: {:union, [{:string, :generic}, :null]},
@@ -87,6 +92,7 @@ defmodule Polarex.Order do
       discount_amount: :integer,
       discount_id: {:union, [{:string, :generic}, :null]},
       id: {:string, :generic},
+      is_invoice_generated: :boolean,
       items: [{Polarex.OrderItemSchema, :t}],
       metadata: {Polarex.Metadata, :t},
       modified_at: {:union, [{:string, :date_time}, :null]},

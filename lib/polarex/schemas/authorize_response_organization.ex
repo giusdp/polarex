@@ -39,6 +39,10 @@ defmodule Polarex.AuthorizeResponseOrganization do
           "checkout_links:write",
           "checkouts:read",
           "checkouts:write",
+          "transactions:read",
+          "transactions:write",
+          "payouts:read",
+          "payouts:write",
           "products:read",
           "products:write",
           "benefits:read",
@@ -56,6 +60,7 @@ defmodule Polarex.AuthorizeResponseOrganization do
           "customer_meters:read",
           "customer_sessions:write",
           "orders:read",
+          "orders:write",
           "refunds:read",
           "refunds:write",
           "payments:read",
@@ -71,6 +76,8 @@ defmodule Polarex.AuthorizeResponseOrganization do
           "issues:write",
           "customer_portal:read",
           "customer_portal:write",
+          "notifications:read",
+          "notifications:write",
           "notification_recipients:read",
           "notification_recipients:write"
         ]

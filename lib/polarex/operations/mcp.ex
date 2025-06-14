@@ -457,6 +457,36 @@ defmodule Polarex.Mcp do
   end
 
   @doc """
+  Generate Order Invoice
+
+  Trigger generation of an order's invoice.
+
+  **Scopes**: `orders:read`
+  """
+  @spec orders_generate_invoice(String.t(), keyword) ::
+          {:ok, map}
+          | {:error,
+             Polarex.InvoiceAlreadyExists.t()
+             | Polarex.MissingInvoiceBillingDetails.t()
+             | Polarex.NotPaidOrder.t()}
+  def orders_generate_invoice(id, opts \\ []) do
+    client = opts[:client] || @default_client
+
+    client.request(%{
+      args: [id: id],
+      call: {Polarex.Mcp, :orders_generate_invoice},
+      url: "/v1/orders/#{id}/invoice",
+      method: :post,
+      response: [
+        {202, :map},
+        {409, {Polarex.InvoiceAlreadyExists, :t}},
+        {422, {:union, [{Polarex.MissingInvoiceBillingDetails, :t}, {Polarex.NotPaidOrder, :t}]}}
+      ],
+      opts: opts
+    })
+  end
+
+  @doc """
   Get Order
 
   Get an order by ID.
@@ -557,6 +587,35 @@ defmodule Polarex.Mcp do
       method: :get,
       query: query,
       response: [{200, {Polarex.ListResourceOrder, :t}}, {422, {Polarex.HTTPValidationError, :t}}],
+      opts: opts
+    })
+  end
+
+  @doc """
+  Update Order
+
+  Update an order.
+
+  **Scopes**: `orders:write`
+  """
+  @spec orders_update(String.t(), Polarex.OrderUpdate.t(), keyword) ::
+          {:ok, Polarex.Order.t()}
+          | {:error, Polarex.HTTPValidationError.t() | Polarex.ResourceNotFound.t()}
+  def orders_update(id, body, opts \\ []) do
+    client = opts[:client] || @default_client
+
+    client.request(%{
+      args: [id: id, body: body],
+      call: {Polarex.Mcp, :orders_update},
+      url: "/v1/orders/#{id}",
+      body: body,
+      method: :patch,
+      request: [{"application/json", {Polarex.OrderUpdate, :t}}],
+      response: [
+        {200, {Polarex.Order, :t}},
+        {404, {Polarex.ResourceNotFound, :t}},
+        {422, {Polarex.HTTPValidationError, :t}}
+      ],
       opts: opts
     })
   end
@@ -955,6 +1014,7 @@ defmodule Polarex.Mcp do
           String.t(),
           Polarex.SubscriptionCancel.t()
           | Polarex.SubscriptionRevoke.t()
+          | Polarex.SubscriptionUpdateDiscount.t()
           | Polarex.SubscriptionUpdateProduct.t(),
           keyword
         ) ::
@@ -978,6 +1038,7 @@ defmodule Polarex.Mcp do
           [
             {Polarex.SubscriptionCancel, :t},
             {Polarex.SubscriptionRevoke, :t},
+            {Polarex.SubscriptionUpdateDiscount, :t},
             {Polarex.SubscriptionUpdateProduct, :t}
           ]}}
       ],
