@@ -5,6 +5,7 @@ defmodule Polarex.CustomerStateBenefitGrant do
 
   @type t :: %__MODULE__{
           benefit_id: String.t(),
+          benefit_metadata: Polarex.BenefitMetadata.t(),
           benefit_type: String.t(),
           created_at: DateTime.t(),
           granted_at: DateTime.t(),
@@ -18,7 +19,16 @@ defmodule Polarex.CustomerStateBenefitGrant do
             | Polarex.BenefitGrantLicenseKeysProperties.t()
         }
 
-  defstruct [:benefit_id, :benefit_type, :created_at, :granted_at, :id, :modified_at, :properties]
+  defstruct [
+    :benefit_id,
+    :benefit_metadata,
+    :benefit_type,
+    :created_at,
+    :granted_at,
+    :id,
+    :modified_at,
+    :properties
+  ]
 
   @doc false
   @spec __fields__(atom) :: keyword
@@ -27,6 +37,7 @@ defmodule Polarex.CustomerStateBenefitGrant do
   def __fields__(:t) do
     [
       benefit_id: {:string, :generic},
+      benefit_metadata: {Polarex.BenefitMetadata, :t},
       benefit_type:
         {:enum,
          [

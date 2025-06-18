@@ -3,15 +3,15 @@ defmodule Polarex.CustomerSessionCustomerExternalIDCreate do
   Provides struct and type for a CustomerSessionCustomerExternalIDCreate
   """
 
-  @type t :: %__MODULE__{customer_external_id: String.t()}
+  @type t :: %__MODULE__{external_customer_id: String.t()}
 
-  defstruct [:customer_external_id]
+  defstruct [:external_customer_id]
 
   @doc false
   @spec __fields__(atom) :: keyword
   def __fields__(type \\ :t)
 
   def __fields__(:t) do
-    [customer_external_id: {:string, :generic}]
+    [external_customer_id: {:string, :generic}]
   end
 end
