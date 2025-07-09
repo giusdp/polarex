@@ -36,7 +36,7 @@ defmodule Polarex.Support.Client do
       params: Map.get(opts, :query, %{})
     ]
     |> Req.new()
-    |> add_headers()
+    |> add_headers(opts.opts)
     |> Req.get()
   end
 
@@ -47,7 +47,7 @@ defmodule Polarex.Support.Client do
       retry: :transient
     ]
     |> Req.new()
-    |> add_headers()
+    |> add_headers(opts.opts)
     |> Req.post()
   end
 
@@ -58,7 +58,7 @@ defmodule Polarex.Support.Client do
       retry: :transient
     ]
     |> Req.new()
-    |> add_headers()
+    |> add_headers(opts.opts)
     |> Req.patch()
   end
 
@@ -69,7 +69,7 @@ defmodule Polarex.Support.Client do
       retry: :transient
     ]
     |> Req.new()
-    |> add_headers()
+    |> add_headers(opts.opts)
     |> Req.put()
   end
 
@@ -93,14 +93,19 @@ defmodule Polarex.Support.Client do
     |> Jason.encode!()
   end
 
-  defp add_headers(%Req.Request{} = req) do
+  defp add_headers(%Req.Request{} = req, opts) do
     access_token = Application.fetch_env!(:polarex, :access_token)
 
-    Req.merge(req,
-      headers: [
+    headers =
+      [
         {"Authorization", "Bearer #{access_token}"},
         {"Content-Type", "application/json"}
       ]
-    )
+
+    headers_overrides = opts[:headers] || []
+
+    req
+    |> Req.merge(headers: headers)
+    |> Req.merge(headers: headers_overrides)
   end
 end
