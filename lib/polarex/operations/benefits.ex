@@ -198,13 +198,16 @@ defmodule Polarex.Benefits do
     * `page`: Page number, defaults to 1.
     * `limit`: Size of a page, defaults to 10. Maximum is 100.
     * `sorting`: Sorting criterion. Several criteria can be used simultaneously and will be applied in order. Add a minus sign `-` before the criteria name to sort by descending order.
+    * `metadata`: Filter by metadata key-value pairs. It uses the `deepObject` style, e.g. `?metadata[key]=value`.
 
   """
   @spec benefits_list(keyword) ::
           {:ok, Polarex.ListResourceBenefit.t()} | {:error, Polarex.HTTPValidationError.t()}
   def benefits_list(opts \\ []) do
     client = opts[:client] || @default_client
-    query = Keyword.take(opts, [:limit, :organization_id, :page, :query, :sorting, :type])
+
+    query =
+      Keyword.take(opts, [:limit, :metadata, :organization_id, :page, :query, :sorting, :type])
 
     client.request(%{
       args: [],

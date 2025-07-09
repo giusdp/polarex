@@ -18,6 +18,7 @@ defmodule Polarex.Metrics do
 
     * `start_date`: Start date.
     * `end_date`: End date.
+    * `timezone`: Timezone to use for the timestamps. Default is UTC.
     * `interval`: Interval between two timestamps.
     * `organization_id`: Filter by organization ID.
     * `product_id`: Filter by product ID.
@@ -38,7 +39,8 @@ defmodule Polarex.Metrics do
         :interval,
         :organization_id,
         :product_id,
-        :start_date
+        :start_date,
+        :timezone
       ])
 
     client.request(%{

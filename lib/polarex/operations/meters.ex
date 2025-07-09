@@ -104,6 +104,7 @@ defmodule Polarex.Meters do
     * `interval`: Interval between two timestamps.
     * `customer_id`: Filter by customer ID.
     * `external_customer_id`: Filter by external customer ID.
+    * `metadata`: Filter by metadata key-value pairs. It uses the `deepObject` style, e.g. `?metadata[key]=value`.
 
   """
   @spec meters_quantities(String.t(), keyword) ::
@@ -118,6 +119,7 @@ defmodule Polarex.Meters do
         :end_timestamp,
         :external_customer_id,
         :interval,
+        :metadata,
         :start_timestamp
       ])
 

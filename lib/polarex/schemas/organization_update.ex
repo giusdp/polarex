@@ -9,6 +9,7 @@ defmodule Polarex.OrganizationUpdate do
           email: String.t() | nil,
           feature_settings: Polarex.OrganizationFeatureSettings.t() | nil,
           name: String.t() | nil,
+          notification_settings: Polarex.OrganizationNotificationSettings.t() | nil,
           socials: [Polarex.OrganizationSocialLink.t()] | nil,
           subscription_settings: Polarex.OrganizationSubscriptionSettings.t() | nil,
           website: String.t() | nil
@@ -20,6 +21,7 @@ defmodule Polarex.OrganizationUpdate do
     :email,
     :feature_settings,
     :name,
+    :notification_settings,
     :socials,
     :subscription_settings,
     :website
@@ -36,6 +38,7 @@ defmodule Polarex.OrganizationUpdate do
       email: {:union, [{:string, :email}, :null]},
       feature_settings: {:union, [{Polarex.OrganizationFeatureSettings, :t}, :null]},
       name: {:union, [{:string, :generic}, :null]},
+      notification_settings: {:union, [{Polarex.OrganizationNotificationSettings, :t}, :null]},
       socials: {:union, [[{Polarex.OrganizationSocialLink, :t}], :null]},
       subscription_settings: {:union, [{Polarex.OrganizationSubscriptionSettings, :t}, :null]},
       website: {:union, [{:string, :uri}, :null]}

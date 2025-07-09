@@ -4,14 +4,16 @@ defmodule Polarex.PaymentMethodCard do
   """
 
   @type t :: %__MODULE__{
-          card: Polarex.PaymentMethodCardData.t(),
           created_at: DateTime.t(),
-          default: boolean,
+          customer_id: String.t(),
           id: String.t(),
+          method_metadata: Polarex.PaymentMethodCardMetadata.t(),
+          modified_at: DateTime.t() | nil,
+          processor: String.t(),
           type: String.t()
         }
 
-  defstruct [:card, :created_at, :default, :id, :type]
+  defstruct [:created_at, :customer_id, :id, :method_metadata, :modified_at, :processor, :type]
 
   @doc false
   @spec __fields__(atom) :: keyword
@@ -19,10 +21,12 @@ defmodule Polarex.PaymentMethodCard do
 
   def __fields__(:t) do
     [
-      card: {Polarex.PaymentMethodCardData, :t},
       created_at: {:string, :date_time},
-      default: :boolean,
+      customer_id: {:string, :generic},
       id: {:string, :generic},
+      method_metadata: {Polarex.PaymentMethodCardMetadata, :t},
+      modified_at: {:union, [{:string, :date_time}, :null]},
+      processor: {:const, "stripe"},
       type: {:const, "card"}
     ]
   end

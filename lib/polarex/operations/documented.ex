@@ -198,13 +198,16 @@ defmodule Polarex.Documented do
     * `page`: Page number, defaults to 1.
     * `limit`: Size of a page, defaults to 10. Maximum is 100.
     * `sorting`: Sorting criterion. Several criteria can be used simultaneously and will be applied in order. Add a minus sign `-` before the criteria name to sort by descending order.
+    * `metadata`: Filter by metadata key-value pairs. It uses the `deepObject` style, e.g. `?metadata[key]=value`.
 
   """
   @spec benefits_list(keyword) ::
           {:ok, Polarex.ListResourceBenefit.t()} | {:error, Polarex.HTTPValidationError.t()}
   def benefits_list(opts \\ []) do
     client = opts[:client] || @default_client
-    query = Keyword.take(opts, [:limit, :organization_id, :page, :query, :sorting, :type])
+
+    query =
+      Keyword.take(opts, [:limit, :metadata, :organization_id, :page, :query, :sorting, :type])
 
     client.request(%{
       args: [],
@@ -1280,7 +1283,7 @@ defmodule Polarex.Documented do
   end
 
   @doc """
-  Get Customer Payment Methods
+  List Customer Payment Methods
 
   Get saved payment methods of the authenticated customer.
 
@@ -1292,16 +1295,16 @@ defmodule Polarex.Documented do
     * `limit`: Size of a page, defaults to 10. Maximum is 100.
 
   """
-  @spec customer_portal_customers_get_payment_methods(keyword) ::
+  @spec customer_portal_customers_list_payment_methods(keyword) ::
           {:ok, Polarex.ListResourceUnionPaymentMethodCardPaymentMethodGeneric.t()}
           | {:error, Polarex.HTTPValidationError.t()}
-  def customer_portal_customers_get_payment_methods(opts \\ []) do
+  def customer_portal_customers_list_payment_methods(opts \\ []) do
     client = opts[:client] || @default_client
     query = Keyword.take(opts, [:limit, :page])
 
     client.request(%{
       args: [],
-      call: {Polarex.Documented, :customer_portal_customers_get_payment_methods},
+      call: {Polarex.Documented, :customer_portal_customers_list_payment_methods},
       url: "/v1/customer-portal/customers/me/payment-methods",
       method: :get,
       query: query,
@@ -1334,32 +1337,6 @@ defmodule Polarex.Documented do
       request: [{"application/json", {Polarex.CustomerPortalCustomerUpdate, :t}}],
       response: [
         {200, {Polarex.CustomerPortalCustomer, :t}},
-        {422, {Polarex.HTTPValidationError, :t}}
-      ],
-      opts: opts
-    })
-  end
-
-  @doc """
-  Get Downloadable
-  """
-  @spec customer_portal_downloadables_customer_portal_downloadables_get(String.t(), keyword) ::
-          {:ok, map} | {:error, Polarex.HTTPValidationError.t()}
-  def customer_portal_downloadables_customer_portal_downloadables_get(token, opts \\ []) do
-    client = opts[:client] || @default_client
-
-    client.request(%{
-      args: [token: token],
-      call:
-        {Polarex.Documented, :customer_portal_downloadables_customer_portal_downloadables_get},
-      url: "/v1/customer-portal/downloadables/#{token}",
-      method: :get,
-      response: [
-        {200, :map},
-        {302, :null},
-        {400, :null},
-        {404, :null},
-        {410, :null},
         {422, {Polarex.HTTPValidationError, :t}}
       ],
       opts: opts
@@ -2999,6 +2976,7 @@ defmodule Polarex.Documented do
     * `interval`: Interval between two timestamps.
     * `customer_id`: Filter by customer ID.
     * `external_customer_id`: Filter by external customer ID.
+    * `metadata`: Filter by metadata key-value pairs. It uses the `deepObject` style, e.g. `?metadata[key]=value`.
 
   """
   @spec meters_quantities(String.t(), keyword) ::
@@ -3013,6 +2991,7 @@ defmodule Polarex.Documented do
         :end_timestamp,
         :external_customer_id,
         :interval,
+        :metadata,
         :start_timestamp
       ])
 
@@ -3073,6 +3052,7 @@ defmodule Polarex.Documented do
 
     * `start_date`: Start date.
     * `end_date`: End date.
+    * `timezone`: Timezone to use for the timestamps. Default is UTC.
     * `interval`: Interval between two timestamps.
     * `organization_id`: Filter by organization ID.
     * `product_id`: Filter by product ID.
@@ -3093,7 +3073,8 @@ defmodule Polarex.Documented do
         :interval,
         :organization_id,
         :product_id,
-        :start_date
+        :start_date,
+        :timezone
       ])
 
     client.request(%{
@@ -3790,6 +3771,7 @@ defmodule Polarex.Documented do
     * `page`: Page number, defaults to 1.
     * `limit`: Size of a page, defaults to 10. Maximum is 100.
     * `sorting`: Sorting criterion. Several criteria can be used simultaneously and will be applied in order. Add a minus sign `-` before the criteria name to sort by descending order.
+    * `metadata`: Filter by metadata key-value pairs. It uses the `deepObject` style, e.g. `?metadata[key]=value`.
 
   """
   @spec products_list(keyword) ::
@@ -3804,6 +3786,7 @@ defmodule Polarex.Documented do
         :is_archived,
         :is_recurring,
         :limit,
+        :metadata,
         :organization_id,
         :page,
         :query,

@@ -401,6 +401,7 @@ defmodule Polarex.Mcp do
 
     * `start_date`: Start date.
     * `end_date`: End date.
+    * `timezone`: Timezone to use for the timestamps. Default is UTC.
     * `interval`: Interval between two timestamps.
     * `organization_id`: Filter by organization ID.
     * `product_id`: Filter by product ID.
@@ -421,7 +422,8 @@ defmodule Polarex.Mcp do
         :interval,
         :organization_id,
         :product_id,
-        :start_date
+        :start_date,
+        :timezone
       ])
 
     client.request(%{
@@ -765,6 +767,7 @@ defmodule Polarex.Mcp do
     * `page`: Page number, defaults to 1.
     * `limit`: Size of a page, defaults to 10. Maximum is 100.
     * `sorting`: Sorting criterion. Several criteria can be used simultaneously and will be applied in order. Add a minus sign `-` before the criteria name to sort by descending order.
+    * `metadata`: Filter by metadata key-value pairs. It uses the `deepObject` style, e.g. `?metadata[key]=value`.
 
   """
   @spec products_list(keyword) ::
@@ -779,6 +782,7 @@ defmodule Polarex.Mcp do
         :is_archived,
         :is_recurring,
         :limit,
+        :metadata,
         :organization_id,
         :page,
         :query,

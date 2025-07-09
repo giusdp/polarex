@@ -312,7 +312,7 @@ defmodule Polarex.CustomerPortal do
   end
 
   @doc """
-  Get Customer Payment Methods
+  List Customer Payment Methods
 
   Get saved payment methods of the authenticated customer.
 
@@ -324,16 +324,16 @@ defmodule Polarex.CustomerPortal do
     * `limit`: Size of a page, defaults to 10. Maximum is 100.
 
   """
-  @spec customer_portal_customers_get_payment_methods(keyword) ::
+  @spec customer_portal_customers_list_payment_methods(keyword) ::
           {:ok, Polarex.ListResourceUnionPaymentMethodCardPaymentMethodGeneric.t()}
           | {:error, Polarex.HTTPValidationError.t()}
-  def customer_portal_customers_get_payment_methods(opts \\ []) do
+  def customer_portal_customers_list_payment_methods(opts \\ []) do
     client = opts[:client] || @default_client
     query = Keyword.take(opts, [:limit, :page])
 
     client.request(%{
       args: [],
-      call: {Polarex.CustomerPortal, :customer_portal_customers_get_payment_methods},
+      call: {Polarex.CustomerPortal, :customer_portal_customers_list_payment_methods},
       url: "/v1/customer-portal/customers/me/payment-methods",
       method: :get,
       query: query,
@@ -366,32 +366,6 @@ defmodule Polarex.CustomerPortal do
       request: [{"application/json", {Polarex.CustomerPortalCustomerUpdate, :t}}],
       response: [
         {200, {Polarex.CustomerPortalCustomer, :t}},
-        {422, {Polarex.HTTPValidationError, :t}}
-      ],
-      opts: opts
-    })
-  end
-
-  @doc """
-  Get Downloadable
-  """
-  @spec customer_portal_downloadables_customer_portal_downloadables_get(String.t(), keyword) ::
-          {:ok, map} | {:error, Polarex.HTTPValidationError.t()}
-  def customer_portal_downloadables_customer_portal_downloadables_get(token, opts \\ []) do
-    client = opts[:client] || @default_client
-
-    client.request(%{
-      args: [token: token],
-      call:
-        {Polarex.CustomerPortal, :customer_portal_downloadables_customer_portal_downloadables_get},
-      url: "/v1/customer-portal/downloadables/#{token}",
-      method: :get,
-      response: [
-        {200, :map},
-        {302, :null},
-        {400, :null},
-        {404, :null},
-        {410, :null},
         {422, {Polarex.HTTPValidationError, :t}}
       ],
       opts: opts

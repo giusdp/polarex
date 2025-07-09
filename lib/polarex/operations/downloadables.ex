@@ -1,35 +1,9 @@
 defmodule Polarex.Downloadables do
   @moduledoc """
-  Provides API endpoints related to downloadables
+  Provides API endpoint related to downloadables
   """
 
   @default_client Polarex.Support.Client
-
-  @doc """
-  Get Downloadable
-  """
-  @spec customer_portal_downloadables_customer_portal_downloadables_get(String.t(), keyword) ::
-          {:ok, map} | {:error, Polarex.HTTPValidationError.t()}
-  def customer_portal_downloadables_customer_portal_downloadables_get(token, opts \\ []) do
-    client = opts[:client] || @default_client
-
-    client.request(%{
-      args: [token: token],
-      call:
-        {Polarex.Downloadables, :customer_portal_downloadables_customer_portal_downloadables_get},
-      url: "/v1/customer-portal/downloadables/#{token}",
-      method: :get,
-      response: [
-        {200, :map},
-        {302, :null},
-        {400, :null},
-        {404, :null},
-        {410, :null},
-        {422, {Polarex.HTTPValidationError, :t}}
-      ],
-      opts: opts
-    })
-  end
 
   @doc """
   List Downloadables
