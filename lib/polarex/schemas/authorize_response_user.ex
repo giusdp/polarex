@@ -25,7 +25,6 @@ defmodule Polarex.AuthorizeResponseUser do
           "profile",
           "email",
           "user:read",
-          "admin",
           "web_default",
           "organizations:read",
           "organizations:write",

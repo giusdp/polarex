@@ -20,6 +20,7 @@ defmodule Polarex.Checkouts do
              | Polarex.HTTPValidationError.t()
              | Polarex.NotOpenCheckout.t()
              | Polarex.PaymentError.t()
+             | Polarex.PaymentNotReady.t()
              | Polarex.ResourceNotFound.t()}
   def checkouts_client_confirm(client_secret, body, opts \\ []) do
     client = opts[:client] || @default_client
@@ -35,7 +36,12 @@ defmodule Polarex.Checkouts do
         {200, {Polarex.CheckoutPublicConfirmed, :t}},
         {400, {Polarex.PaymentError, :t}},
         {403,
-         {:union, [{Polarex.AlreadyActiveSubscriptionError, :t}, {Polarex.NotOpenCheckout, :t}]}},
+         {:union,
+          [
+            {Polarex.AlreadyActiveSubscriptionError, :t},
+            {Polarex.NotOpenCheckout, :t},
+            {Polarex.PaymentNotReady, :t}
+          ]}},
         {404, {Polarex.ResourceNotFound, :t}},
         {410, {Polarex.ExpiredCheckoutError, :t}},
         {422, {Polarex.HTTPValidationError, :t}}
@@ -85,6 +91,7 @@ defmodule Polarex.Checkouts do
              | Polarex.ExpiredCheckoutError.t()
              | Polarex.HTTPValidationError.t()
              | Polarex.NotOpenCheckout.t()
+             | Polarex.PaymentNotReady.t()
              | Polarex.ResourceNotFound.t()}
   def checkouts_client_update(client_secret, body, opts \\ []) do
     client = opts[:client] || @default_client
@@ -99,7 +106,12 @@ defmodule Polarex.Checkouts do
       response: [
         {200, {Polarex.CheckoutPublic, :t}},
         {403,
-         {:union, [{Polarex.AlreadyActiveSubscriptionError, :t}, {Polarex.NotOpenCheckout, :t}]}},
+         {:union,
+          [
+            {Polarex.AlreadyActiveSubscriptionError, :t},
+            {Polarex.NotOpenCheckout, :t},
+            {Polarex.PaymentNotReady, :t}
+          ]}},
         {404, {Polarex.ResourceNotFound, :t}},
         {410, {Polarex.ExpiredCheckoutError, :t}},
         {422, {Polarex.HTTPValidationError, :t}}
@@ -222,6 +234,7 @@ defmodule Polarex.Checkouts do
              Polarex.AlreadyActiveSubscriptionError.t()
              | Polarex.HTTPValidationError.t()
              | Polarex.NotOpenCheckout.t()
+             | Polarex.PaymentNotReady.t()
              | Polarex.ResourceNotFound.t()}
   def checkouts_update(id, body, opts \\ []) do
     client = opts[:client] || @default_client
@@ -236,7 +249,12 @@ defmodule Polarex.Checkouts do
       response: [
         {200, {Polarex.Checkout, :t}},
         {403,
-         {:union, [{Polarex.AlreadyActiveSubscriptionError, :t}, {Polarex.NotOpenCheckout, :t}]}},
+         {:union,
+          [
+            {Polarex.AlreadyActiveSubscriptionError, :t},
+            {Polarex.NotOpenCheckout, :t},
+            {Polarex.PaymentNotReady, :t}
+          ]}},
         {404, {Polarex.ResourceNotFound, :t}},
         {422, {Polarex.HTTPValidationError, :t}}
       ],

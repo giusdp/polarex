@@ -7,7 +7,7 @@ defmodule Polarex.WebhookEndpointCreate do
           events: [String.t()],
           format: String.t(),
           organization_id: String.t() | nil,
-          secret: String.t(),
+          secret: String.t() | nil,
           url: String.t()
         }
 
@@ -52,7 +52,7 @@ defmodule Polarex.WebhookEndpointCreate do
       ],
       format: {:enum, ["raw", "discord", "slack"]},
       organization_id: {:union, [{:string, :generic}, :null]},
-      secret: {:string, :generic},
+      secret: {:union, [{:string, :generic}, :null]},
       url: {:string, :uri}
     ]
   end

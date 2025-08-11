@@ -140,6 +140,37 @@ defmodule Polarex.Orders do
   end
 
   @doc """
+  Retry Payment
+
+  Manually retry payment for a failed order.
+
+  **Scopes**: `customer_portal:write`
+  """
+  @spec customer_portal_orders_retry_payment(String.t(), keyword) ::
+          {:ok, map}
+          | {:error,
+             Polarex.OrderNotEligibleForRetry.t()
+             | Polarex.PaymentAlreadyInProgress.t()
+             | Polarex.ResourceNotFound.t()}
+  def customer_portal_orders_retry_payment(id, opts \\ []) do
+    client = opts[:client] || @default_client
+
+    client.request(%{
+      args: [id: id],
+      call: {Polarex.Orders, :customer_portal_orders_retry_payment},
+      url: "/v1/customer-portal/orders/#{id}/retry-payment",
+      method: :post,
+      response: [
+        {202, :map},
+        {404, {Polarex.ResourceNotFound, :t}},
+        {409, {Polarex.PaymentAlreadyInProgress, :t}},
+        {422, {Polarex.OrderNotEligibleForRetry, :t}}
+      ],
+      opts: opts
+    })
+  end
+
+  @doc """
   Update Order
 
   Update an order for the authenticated customer.

@@ -10,10 +10,11 @@ defmodule Polarex.WebhookEndpoint do
           id: String.t(),
           modified_at: DateTime.t() | nil,
           organization_id: String.t(),
+          secret: String.t(),
           url: String.t()
         }
 
-  defstruct [:created_at, :events, :format, :id, :modified_at, :organization_id, :url]
+  defstruct [:created_at, :events, :format, :id, :modified_at, :organization_id, :secret, :url]
 
   @doc false
   @spec __fields__(atom) :: keyword
@@ -57,6 +58,7 @@ defmodule Polarex.WebhookEndpoint do
       id: {:string, :generic},
       modified_at: {:union, [{:string, :date_time}, :null]},
       organization_id: {:string, :generic},
+      secret: {:string, :generic},
       url: {:string, :uri}
     ]
   end

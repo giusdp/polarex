@@ -98,7 +98,7 @@ defmodule Polarex.Customers do
 
   """
   @spec customer_portal_customers_list_payment_methods(keyword) ::
-          {:ok, Polarex.ListResourceUnionPaymentMethodCardPaymentMethodGeneric.t()}
+          {:ok, Polarex.ListResourceCustomerPaymentMethod.t()}
           | {:error, Polarex.HTTPValidationError.t()}
   def customer_portal_customers_list_payment_methods(opts \\ []) do
     client = opts[:client] || @default_client
@@ -111,7 +111,7 @@ defmodule Polarex.Customers do
       method: :get,
       query: query,
       response: [
-        {200, {Polarex.ListResourceUnionPaymentMethodCardPaymentMethodGeneric, :t}},
+        {200, {Polarex.ListResourceCustomerPaymentMethod, :t}},
         {422, {Polarex.HTTPValidationError, :t}}
       ],
       opts: opts

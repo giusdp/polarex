@@ -902,7 +902,7 @@ defmodule Polarex.Mcp do
 
   Get a subscription by ID.
 
-  **Scopes**: `subscriptions:write`
+  **Scopes**: `subscriptions:read` `subscriptions:write`
   """
   @spec subscriptions_get(String.t(), keyword) ::
           {:ok, Polarex.Subscription.t()}
@@ -936,6 +936,7 @@ defmodule Polarex.Mcp do
     * `organization_id`: Filter by organization ID.
     * `product_id`: Filter by product ID.
     * `customer_id`: Filter by customer ID.
+    * `external_customer_id`: Filter by customer external ID.
     * `discount_id`: Filter by discount ID.
     * `active`: Filter by active or inactive subscription.
     * `page`: Page number, defaults to 1.
@@ -954,6 +955,7 @@ defmodule Polarex.Mcp do
         :active,
         :customer_id,
         :discount_id,
+        :external_customer_id,
         :limit,
         :metadata,
         :organization_id,

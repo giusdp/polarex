@@ -181,6 +181,33 @@ defmodule Polarex.Webhooks do
   end
 
   @doc """
+  Reset Webhook Endpoint Secret
+
+  Regenerate a webhook endpoint secret.
+
+  **Scopes**: `webhooks:write`
+  """
+  @spec webhooks_reset_webhook_endpoint_secret(String.t(), keyword) ::
+          {:ok, Polarex.WebhookEndpoint.t()}
+          | {:error, Polarex.HTTPValidationError.t() | Polarex.ResourceNotFound.t()}
+  def webhooks_reset_webhook_endpoint_secret(id, opts \\ []) do
+    client = opts[:client] || @default_client
+
+    client.request(%{
+      args: [id: id],
+      call: {Polarex.Webhooks, :webhooks_reset_webhook_endpoint_secret},
+      url: "/v1/webhooks/endpoints/#{id}/secret",
+      method: :patch,
+      response: [
+        {200, {Polarex.WebhookEndpoint, :t}},
+        {404, {Polarex.ResourceNotFound, :t}},
+        {422, {Polarex.HTTPValidationError, :t}}
+      ],
+      opts: opts
+    })
+  end
+
+  @doc """
   Update Webhook Endpoint
 
   Update a webhook endpoint.

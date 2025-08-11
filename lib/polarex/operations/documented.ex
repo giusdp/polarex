@@ -456,6 +456,7 @@ defmodule Polarex.Documented do
              | Polarex.HTTPValidationError.t()
              | Polarex.NotOpenCheckout.t()
              | Polarex.PaymentError.t()
+             | Polarex.PaymentNotReady.t()
              | Polarex.ResourceNotFound.t()}
   def checkouts_client_confirm(client_secret, body, opts \\ []) do
     client = opts[:client] || @default_client
@@ -471,7 +472,12 @@ defmodule Polarex.Documented do
         {200, {Polarex.CheckoutPublicConfirmed, :t}},
         {400, {Polarex.PaymentError, :t}},
         {403,
-         {:union, [{Polarex.AlreadyActiveSubscriptionError, :t}, {Polarex.NotOpenCheckout, :t}]}},
+         {:union,
+          [
+            {Polarex.AlreadyActiveSubscriptionError, :t},
+            {Polarex.NotOpenCheckout, :t},
+            {Polarex.PaymentNotReady, :t}
+          ]}},
         {404, {Polarex.ResourceNotFound, :t}},
         {410, {Polarex.ExpiredCheckoutError, :t}},
         {422, {Polarex.HTTPValidationError, :t}}
@@ -521,6 +527,7 @@ defmodule Polarex.Documented do
              | Polarex.ExpiredCheckoutError.t()
              | Polarex.HTTPValidationError.t()
              | Polarex.NotOpenCheckout.t()
+             | Polarex.PaymentNotReady.t()
              | Polarex.ResourceNotFound.t()}
   def checkouts_client_update(client_secret, body, opts \\ []) do
     client = opts[:client] || @default_client
@@ -535,7 +542,12 @@ defmodule Polarex.Documented do
       response: [
         {200, {Polarex.CheckoutPublic, :t}},
         {403,
-         {:union, [{Polarex.AlreadyActiveSubscriptionError, :t}, {Polarex.NotOpenCheckout, :t}]}},
+         {:union,
+          [
+            {Polarex.AlreadyActiveSubscriptionError, :t},
+            {Polarex.NotOpenCheckout, :t},
+            {Polarex.PaymentNotReady, :t}
+          ]}},
         {404, {Polarex.ResourceNotFound, :t}},
         {410, {Polarex.ExpiredCheckoutError, :t}},
         {422, {Polarex.HTTPValidationError, :t}}
@@ -658,6 +670,7 @@ defmodule Polarex.Documented do
              Polarex.AlreadyActiveSubscriptionError.t()
              | Polarex.HTTPValidationError.t()
              | Polarex.NotOpenCheckout.t()
+             | Polarex.PaymentNotReady.t()
              | Polarex.ResourceNotFound.t()}
   def checkouts_update(id, body, opts \\ []) do
     client = opts[:client] || @default_client
@@ -672,7 +685,12 @@ defmodule Polarex.Documented do
       response: [
         {200, {Polarex.Checkout, :t}},
         {403,
-         {:union, [{Polarex.AlreadyActiveSubscriptionError, :t}, {Polarex.NotOpenCheckout, :t}]}},
+         {:union,
+          [
+            {Polarex.AlreadyActiveSubscriptionError, :t},
+            {Polarex.NotOpenCheckout, :t},
+            {Polarex.PaymentNotReady, :t}
+          ]}},
         {404, {Polarex.ResourceNotFound, :t}},
         {422, {Polarex.HTTPValidationError, :t}}
       ],
@@ -1296,7 +1314,7 @@ defmodule Polarex.Documented do
 
   """
   @spec customer_portal_customers_list_payment_methods(keyword) ::
-          {:ok, Polarex.ListResourceUnionPaymentMethodCardPaymentMethodGeneric.t()}
+          {:ok, Polarex.ListResourceCustomerPaymentMethod.t()}
           | {:error, Polarex.HTTPValidationError.t()}
   def customer_portal_customers_list_payment_methods(opts \\ []) do
     client = opts[:client] || @default_client
@@ -1309,7 +1327,7 @@ defmodule Polarex.Documented do
       method: :get,
       query: query,
       response: [
-        {200, {Polarex.ListResourceUnionPaymentMethodCardPaymentMethodGeneric, :t}},
+        {200, {Polarex.ListResourceCustomerPaymentMethod, :t}},
         {422, {Polarex.HTTPValidationError, :t}}
       ],
       opts: opts
@@ -1656,6 +1674,37 @@ defmodule Polarex.Documented do
       response: [
         {200, {Polarex.ListResourceCustomerOrder, :t}},
         {422, {Polarex.HTTPValidationError, :t}}
+      ],
+      opts: opts
+    })
+  end
+
+  @doc """
+  Retry Payment
+
+  Manually retry payment for a failed order.
+
+  **Scopes**: `customer_portal:write`
+  """
+  @spec customer_portal_orders_retry_payment(String.t(), keyword) ::
+          {:ok, map}
+          | {:error,
+             Polarex.OrderNotEligibleForRetry.t()
+             | Polarex.PaymentAlreadyInProgress.t()
+             | Polarex.ResourceNotFound.t()}
+  def customer_portal_orders_retry_payment(id, opts \\ []) do
+    client = opts[:client] || @default_client
+
+    client.request(%{
+      args: [id: id],
+      call: {Polarex.Documented, :customer_portal_orders_retry_payment},
+      url: "/v1/customer-portal/orders/#{id}/retry-payment",
+      method: :post,
+      response: [
+        {202, :map},
+        {404, {Polarex.ResourceNotFound, :t}},
+        {409, {Polarex.PaymentAlreadyInProgress, :t}},
+        {422, {Polarex.OrderNotEligibleForRetry, :t}}
       ],
       opts: opts
     })
@@ -3133,124 +3182,6 @@ defmodule Polarex.Documented do
   end
 
   @doc """
-  List Clients
-
-  List OAuth2 clients.
-
-  ## Options
-
-    * `page`: Page number, defaults to 1.
-    * `limit`: Size of a page, defaults to 10. Maximum is 100.
-
-  """
-  @spec oauth2_clients_list(keyword) ::
-          {:ok, Polarex.ListResourceOAuth2Client.t()} | {:error, Polarex.HTTPValidationError.t()}
-  def oauth2_clients_list(opts \\ []) do
-    client = opts[:client] || @default_client
-    query = Keyword.take(opts, [:limit, :page])
-
-    client.request(%{
-      args: [],
-      call: {Polarex.Documented, :oauth2_clients_list},
-      url: "/v1/oauth2/",
-      method: :get,
-      query: query,
-      response: [
-        {200, {Polarex.ListResourceOAuth2Client, :t}},
-        {422, {Polarex.HTTPValidationError, :t}}
-      ],
-      opts: opts
-    })
-  end
-
-  @doc """
-  Create Client
-
-  Create an OAuth2 client.
-  """
-  @spec oauth2_clients_oauth2_create_client(Polarex.OAuth2ClientConfiguration.t(), keyword) ::
-          {:ok, map} | {:error, Polarex.HTTPValidationError.t()}
-  def oauth2_clients_oauth2_create_client(body, opts \\ []) do
-    client = opts[:client] || @default_client
-
-    client.request(%{
-      args: [body: body],
-      call: {Polarex.Documented, :oauth2_clients_oauth2_create_client},
-      url: "/v1/oauth2/register",
-      body: body,
-      method: :post,
-      request: [{"application/json", {Polarex.OAuth2ClientConfiguration, :t}}],
-      response: [{200, :map}, {422, {Polarex.HTTPValidationError, :t}}],
-      opts: opts
-    })
-  end
-
-  @doc """
-  Delete Client
-
-  Delete an OAuth2 client.
-  """
-  @spec oauth2_clients_oauth2_delete_client(String.t(), keyword) ::
-          {:ok, map} | {:error, Polarex.HTTPValidationError.t()}
-  def oauth2_clients_oauth2_delete_client(client_id, opts \\ []) do
-    client = opts[:client] || @default_client
-
-    client.request(%{
-      args: [client_id: client_id],
-      call: {Polarex.Documented, :oauth2_clients_oauth2_delete_client},
-      url: "/v1/oauth2/register/#{client_id}",
-      method: :delete,
-      response: [{200, :map}, {422, {Polarex.HTTPValidationError, :t}}],
-      opts: opts
-    })
-  end
-
-  @doc """
-  Get Client
-
-  Get an OAuth2 client by Client ID.
-  """
-  @spec oauth2_clients_oauth2_get_client(String.t(), keyword) ::
-          {:ok, map} | {:error, Polarex.HTTPValidationError.t()}
-  def oauth2_clients_oauth2_get_client(client_id, opts \\ []) do
-    client = opts[:client] || @default_client
-
-    client.request(%{
-      args: [client_id: client_id],
-      call: {Polarex.Documented, :oauth2_clients_oauth2_get_client},
-      url: "/v1/oauth2/register/#{client_id}",
-      method: :get,
-      response: [{200, :map}, {422, {Polarex.HTTPValidationError, :t}}],
-      opts: opts
-    })
-  end
-
-  @doc """
-  Update Client
-
-  Update an OAuth2 client.
-  """
-  @spec oauth2_clients_oauth2_update_client(
-          String.t(),
-          Polarex.OAuth2ClientConfigurationUpdate.t(),
-          keyword
-        ) :: {:ok, map} | {:error, Polarex.HTTPValidationError.t()}
-  def oauth2_clients_oauth2_update_client(client_id, body, opts \\ []) do
-    client = opts[:client] || @default_client
-
-    client.request(%{
-      args: [client_id: client_id, body: body],
-      call: {Polarex.Documented, :oauth2_clients_oauth2_update_client},
-      url: "/v1/oauth2/register/#{client_id}",
-      body: body,
-      method: :put,
-      request: [{"application/json", {Polarex.OAuth2ClientConfigurationUpdate, :t}}],
-      response: [{200, :map}, {422, {Polarex.HTTPValidationError, :t}}],
-      opts: opts
-    })
-  end
-
-  @doc """
   Introspect Token
 
   Get information about an access token.
@@ -3992,7 +3923,7 @@ defmodule Polarex.Documented do
 
   Get a subscription by ID.
 
-  **Scopes**: `subscriptions:write`
+  **Scopes**: `subscriptions:read` `subscriptions:write`
   """
   @spec subscriptions_get(String.t(), keyword) ::
           {:ok, Polarex.Subscription.t()}
@@ -4026,6 +3957,7 @@ defmodule Polarex.Documented do
     * `organization_id`: Filter by organization ID.
     * `product_id`: Filter by product ID.
     * `customer_id`: Filter by customer ID.
+    * `external_customer_id`: Filter by customer external ID.
     * `discount_id`: Filter by discount ID.
     * `active`: Filter by active or inactive subscription.
     * `page`: Page number, defaults to 1.
@@ -4044,6 +3976,7 @@ defmodule Polarex.Documented do
         :active,
         :customer_id,
         :discount_id,
+        :external_customer_id,
         :limit,
         :metadata,
         :organization_id,
@@ -4314,6 +4247,33 @@ defmodule Polarex.Documented do
       method: :post,
       response: [
         {202, :map},
+        {404, {Polarex.ResourceNotFound, :t}},
+        {422, {Polarex.HTTPValidationError, :t}}
+      ],
+      opts: opts
+    })
+  end
+
+  @doc """
+  Reset Webhook Endpoint Secret
+
+  Regenerate a webhook endpoint secret.
+
+  **Scopes**: `webhooks:write`
+  """
+  @spec webhooks_reset_webhook_endpoint_secret(String.t(), keyword) ::
+          {:ok, Polarex.WebhookEndpoint.t()}
+          | {:error, Polarex.HTTPValidationError.t() | Polarex.ResourceNotFound.t()}
+  def webhooks_reset_webhook_endpoint_secret(id, opts \\ []) do
+    client = opts[:client] || @default_client
+
+    client.request(%{
+      args: [id: id],
+      call: {Polarex.Documented, :webhooks_reset_webhook_endpoint_secret},
+      url: "/v1/webhooks/endpoints/#{id}/secret",
+      method: :patch,
+      response: [
+        {200, {Polarex.WebhookEndpoint, :t}},
         {404, {Polarex.ResourceNotFound, :t}},
         {422, {Polarex.HTTPValidationError, :t}}
       ],

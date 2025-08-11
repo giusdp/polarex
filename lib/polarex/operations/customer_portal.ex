@@ -325,7 +325,7 @@ defmodule Polarex.CustomerPortal do
 
   """
   @spec customer_portal_customers_list_payment_methods(keyword) ::
-          {:ok, Polarex.ListResourceUnionPaymentMethodCardPaymentMethodGeneric.t()}
+          {:ok, Polarex.ListResourceCustomerPaymentMethod.t()}
           | {:error, Polarex.HTTPValidationError.t()}
   def customer_portal_customers_list_payment_methods(opts \\ []) do
     client = opts[:client] || @default_client
@@ -338,7 +338,7 @@ defmodule Polarex.CustomerPortal do
       method: :get,
       query: query,
       response: [
-        {200, {Polarex.ListResourceUnionPaymentMethodCardPaymentMethodGeneric, :t}},
+        {200, {Polarex.ListResourceCustomerPaymentMethod, :t}},
         {422, {Polarex.HTTPValidationError, :t}}
       ],
       opts: opts
@@ -685,6 +685,37 @@ defmodule Polarex.CustomerPortal do
       response: [
         {200, {Polarex.ListResourceCustomerOrder, :t}},
         {422, {Polarex.HTTPValidationError, :t}}
+      ],
+      opts: opts
+    })
+  end
+
+  @doc """
+  Retry Payment
+
+  Manually retry payment for a failed order.
+
+  **Scopes**: `customer_portal:write`
+  """
+  @spec customer_portal_orders_retry_payment(String.t(), keyword) ::
+          {:ok, map}
+          | {:error,
+             Polarex.OrderNotEligibleForRetry.t()
+             | Polarex.PaymentAlreadyInProgress.t()
+             | Polarex.ResourceNotFound.t()}
+  def customer_portal_orders_retry_payment(id, opts \\ []) do
+    client = opts[:client] || @default_client
+
+    client.request(%{
+      args: [id: id],
+      call: {Polarex.CustomerPortal, :customer_portal_orders_retry_payment},
+      url: "/v1/customer-portal/orders/#{id}/retry-payment",
+      method: :post,
+      response: [
+        {202, :map},
+        {404, {Polarex.ResourceNotFound, :t}},
+        {409, {Polarex.PaymentAlreadyInProgress, :t}},
+        {422, {Polarex.OrderNotEligibleForRetry, :t}}
       ],
       opts: opts
     })
