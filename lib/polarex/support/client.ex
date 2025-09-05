@@ -86,11 +86,16 @@ defmodule Polarex.Support.Client do
   # Ensure the body is encoded as JSON
   defp encode_body(nil), do: nil
 
-  defp encode_body(body) do
+  defp encode_body(%{__struct__: _} = body) do
     body
     |> Map.from_struct()
+    |> encode_body()
+  end
+
+  defp encode_body(body) when is_map(body) do
+    body
     |> Map.reject(fn {_, v} -> is_nil(v) end)
-    |> Jason.encode!()
+    |> JSON.encode!()
   end
 
   defp add_headers(%Req.Request{} = req, opts) do
