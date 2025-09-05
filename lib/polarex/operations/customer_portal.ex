@@ -271,7 +271,11 @@ defmodule Polarex.CustomerPortal do
   **Scopes**: `customer_portal:read` `customer_portal:write`
   """
   @spec customer_portal_customers_delete_payment_method(String.t(), keyword) ::
-          :ok | {:error, Polarex.HTTPValidationError.t() | Polarex.ResourceNotFound.t()}
+          :ok
+          | {:error,
+             Polarex.HTTPValidationError.t()
+             | Polarex.PaymentMethodInUseByActiveSubscription.t()
+             | Polarex.ResourceNotFound.t()}
   def customer_portal_customers_delete_payment_method(id, opts \\ []) do
     client = opts[:client] || @default_client
 
@@ -282,6 +286,7 @@ defmodule Polarex.CustomerPortal do
       method: :delete,
       response: [
         {204, :null},
+        {400, {Polarex.PaymentMethodInUseByActiveSubscription, :t}},
         {404, {Polarex.ResourceNotFound, :t}},
         {422, {Polarex.HTTPValidationError, :t}}
       ],
@@ -410,6 +415,11 @@ defmodule Polarex.CustomerPortal do
   Activate License Key
 
   Activate a license key instance.
+
+  > This endpoint doesn't require authentication and can be safely used on a public
+  > client, like a desktop application or a mobile app.
+  > If you plan to validate a license key on a server, use the `/v1/license-keys/activate`
+  > endpoint instead.
   """
   @spec customer_portal_license_keys_activate(Polarex.LicenseKeyActivate.t(), keyword) ::
           {:ok, Polarex.LicenseKeyActivationRead.t()}
@@ -441,6 +451,11 @@ defmodule Polarex.CustomerPortal do
   Deactivate License Key
 
   Deactivate a license key instance.
+
+  > This endpoint doesn't require authentication and can be safely used on a public
+  > client, like a desktop application or a mobile app.
+  > If you plan to validate a license key on a server, use the `/v1/license-keys/deactivate`
+  > endpoint instead.
   """
   @spec customer_portal_license_keys_deactivate(Polarex.LicenseKeyDeactivate.t(), keyword) ::
           :ok | {:error, Polarex.HTTPValidationError.t() | Polarex.ResourceNotFound.t()}
@@ -533,6 +548,11 @@ defmodule Polarex.CustomerPortal do
   Validate License Key
 
   Validate a license key.
+
+  > This endpoint doesn't require authentication and can be safely used on a public
+  > client, like a desktop application or a mobile app.
+  > If you plan to validate a license key on a server, use the `/v1/license-keys/validate`
+  > endpoint instead.
   """
   @spec customer_portal_license_keys_validate(Polarex.LicenseKeyValidate.t(), keyword) ::
           {:ok, Polarex.ValidatedLicenseKey.t()}
@@ -551,6 +571,43 @@ defmodule Polarex.CustomerPortal do
         {200, {Polarex.ValidatedLicenseKey, :t}},
         {404, {Polarex.ResourceNotFound, :t}},
         {422, {Polarex.HTTPValidationError, :t}}
+      ],
+      opts: opts
+    })
+  end
+
+  @doc """
+  Confirm Retry Payment
+
+  Confirm a retry payment using a Stripe confirmation token.
+
+  **Scopes**: `customer_portal:write`
+  """
+  @spec customer_portal_orders_confirm_retry_payment(
+          String.t(),
+          Polarex.CustomerOrderConfirmPayment.t(),
+          keyword
+        ) ::
+          {:ok, Polarex.CustomerOrderPaymentConfirmation.t()}
+          | {:error,
+             Polarex.OrderNotEligibleForRetry.t()
+             | Polarex.PaymentAlreadyInProgress.t()
+             | Polarex.ResourceNotFound.t()}
+  def customer_portal_orders_confirm_retry_payment(id, body, opts \\ []) do
+    client = opts[:client] || @default_client
+
+    client.request(%{
+      args: [id: id, body: body],
+      call: {Polarex.CustomerPortal, :customer_portal_orders_confirm_retry_payment},
+      url: "/v1/customer-portal/orders/#{id}/confirm-payment",
+      body: body,
+      method: :post,
+      request: [{"application/json", {Polarex.CustomerOrderConfirmPayment, :t}}],
+      response: [
+        {200, {Polarex.CustomerOrderPaymentConfirmation, :t}},
+        {404, {Polarex.ResourceNotFound, :t}},
+        {409, {Polarex.PaymentAlreadyInProgress, :t}},
+        {422, {Polarex.OrderNotEligibleForRetry, :t}}
       ],
       opts: opts
     })
@@ -606,6 +663,33 @@ defmodule Polarex.CustomerPortal do
       method: :get,
       response: [
         {200, {Polarex.CustomerOrder, :t}},
+        {404, {Polarex.ResourceNotFound, :t}},
+        {422, {Polarex.HTTPValidationError, :t}}
+      ],
+      opts: opts
+    })
+  end
+
+  @doc """
+  Get Order Payment Status
+
+  Get the current payment status for an order.
+
+  **Scopes**: `customer_portal:read` `customer_portal:write`
+  """
+  @spec customer_portal_orders_get_payment_status(String.t(), keyword) ::
+          {:ok, Polarex.CustomerOrderPaymentStatus.t()}
+          | {:error, Polarex.HTTPValidationError.t() | Polarex.ResourceNotFound.t()}
+  def customer_portal_orders_get_payment_status(id, opts \\ []) do
+    client = opts[:client] || @default_client
+
+    client.request(%{
+      args: [id: id],
+      call: {Polarex.CustomerPortal, :customer_portal_orders_get_payment_status},
+      url: "/v1/customer-portal/orders/#{id}/payment-status",
+      method: :get,
+      response: [
+        {200, {Polarex.CustomerOrderPaymentStatus, :t}},
         {404, {Polarex.ResourceNotFound, :t}},
         {422, {Polarex.HTTPValidationError, :t}}
       ],
@@ -685,37 +769,6 @@ defmodule Polarex.CustomerPortal do
       response: [
         {200, {Polarex.ListResourceCustomerOrder, :t}},
         {422, {Polarex.HTTPValidationError, :t}}
-      ],
-      opts: opts
-    })
-  end
-
-  @doc """
-  Retry Payment
-
-  Manually retry payment for a failed order.
-
-  **Scopes**: `customer_portal:write`
-  """
-  @spec customer_portal_orders_retry_payment(String.t(), keyword) ::
-          {:ok, map}
-          | {:error,
-             Polarex.OrderNotEligibleForRetry.t()
-             | Polarex.PaymentAlreadyInProgress.t()
-             | Polarex.ResourceNotFound.t()}
-  def customer_portal_orders_retry_payment(id, opts \\ []) do
-    client = opts[:client] || @default_client
-
-    client.request(%{
-      args: [id: id],
-      call: {Polarex.CustomerPortal, :customer_portal_orders_retry_payment},
-      url: "/v1/customer-portal/orders/#{id}/retry-payment",
-      method: :post,
-      response: [
-        {202, :map},
-        {404, {Polarex.ResourceNotFound, :t}},
-        {409, {Polarex.PaymentAlreadyInProgress, :t}},
-        {422, {Polarex.OrderNotEligibleForRetry, :t}}
       ],
       opts: opts
     })

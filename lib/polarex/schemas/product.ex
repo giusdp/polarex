@@ -72,7 +72,7 @@ defmodule Polarex.Product do
       name: {:string, :generic},
       organization_id: {:string, :generic},
       prices: [:map],
-      recurring_interval: {:union, [{:enum, ["month", "year"]}, :null]}
+      recurring_interval: {:union, [{:enum, ["day", "week", "month", "year"]}, :null]}
     ]
   end
 end

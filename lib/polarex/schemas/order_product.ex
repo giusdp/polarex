@@ -44,7 +44,7 @@ defmodule Polarex.OrderProduct do
       modified_at: {:union, [{:string, :date_time}, :null]},
       name: {:string, :generic},
       organization_id: {:string, :generic},
-      recurring_interval: {:union, [{:enum, ["month", "year"]}, :null]}
+      recurring_interval: {:union, [{:enum, ["day", "week", "month", "year"]}, :null]}
     ]
   end
 end

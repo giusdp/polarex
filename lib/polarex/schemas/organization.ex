@@ -15,6 +15,7 @@ defmodule Polarex.Organization do
           notification_settings: Polarex.OrganizationNotificationSettings.t(),
           slug: String.t(),
           socials: [Polarex.OrganizationSocialLink.t()],
+          status: String.t(),
           subscription_settings: Polarex.OrganizationSubscriptionSettings.t(),
           website: String.t() | nil
         }
@@ -31,6 +32,7 @@ defmodule Polarex.Organization do
     :notification_settings,
     :slug,
     :socials,
+    :status,
     :subscription_settings,
     :website
   ]
@@ -52,6 +54,7 @@ defmodule Polarex.Organization do
       notification_settings: {Polarex.OrganizationNotificationSettings, :t},
       slug: {:string, :generic},
       socials: [{Polarex.OrganizationSocialLink, :t}],
+      status: {:enum, ["created", "onboarding_started", "under_review", "denied", "active"]},
       subscription_settings: {Polarex.OrganizationSubscriptionSettings, :t},
       website: {:union, [{:string, :generic}, :null]}
     ]

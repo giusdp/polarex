@@ -87,7 +87,7 @@ defmodule Polarex.CustomerOrderSubscription do
       id: {:string, :generic},
       modified_at: {:union, [{:string, :date_time}, :null]},
       product_id: {:string, :generic},
-      recurring_interval: {:enum, ["month", "year"]},
+      recurring_interval: {:enum, ["day", "week", "month", "year"]},
       started_at: {:union, [{:string, :date_time}, :null]},
       status:
         {:enum,

@@ -67,6 +67,7 @@ defmodule Polarex.Meters do
 
     * `organization_id`: Filter by organization ID.
     * `query`: Filter by name.
+    * `is_archived`: Filter on archived meters.
     * `page`: Page number, defaults to 1.
     * `limit`: Size of a page, defaults to 10. Maximum is 100.
     * `sorting`: Sorting criterion. Several criteria can be used simultaneously and will be applied in order. Add a minus sign `-` before the criteria name to sort by descending order.
@@ -77,7 +78,17 @@ defmodule Polarex.Meters do
           {:ok, Polarex.ListResourceMeter.t()} | {:error, Polarex.HTTPValidationError.t()}
   def meters_list(opts \\ []) do
     client = opts[:client] || @default_client
-    query = Keyword.take(opts, [:limit, :metadata, :organization_id, :page, :query, :sorting])
+
+    query =
+      Keyword.take(opts, [
+        :is_archived,
+        :limit,
+        :metadata,
+        :organization_id,
+        :page,
+        :query,
+        :sorting
+      ])
 
     client.request(%{
       args: [],

@@ -4,7 +4,6 @@ defmodule Polarex.Order do
   """
 
   @type t :: %__MODULE__{
-          amount: integer,
           billing_address: Polarex.Address.t() | nil,
           billing_name: String.t() | nil,
           billing_reason: String.t(),
@@ -38,7 +37,6 @@ defmodule Polarex.Order do
         }
 
   defstruct [
-    :amount,
     :billing_address,
     :billing_name,
     :billing_reason,
@@ -77,7 +75,6 @@ defmodule Polarex.Order do
 
   def __fields__(:t) do
     [
-      amount: :integer,
       billing_address: {:union, [{Polarex.Address, :t}, :null]},
       billing_name: {:union, [{:string, :generic}, :null]},
       billing_reason:

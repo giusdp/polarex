@@ -3,7 +3,7 @@ defmodule Polarex.CustomerBenefitGrantGitHubRepositoryPropertiesUpdate do
   Provides struct and type for a CustomerBenefitGrantGitHubRepositoryPropertiesUpdate
   """
 
-  @type t :: %__MODULE__{account_id: String.t()}
+  @type t :: %__MODULE__{account_id: String.t() | nil}
 
   defstruct [:account_id]
 
@@ -12,6 +12,6 @@ defmodule Polarex.CustomerBenefitGrantGitHubRepositoryPropertiesUpdate do
   def __fields__(type \\ :t)
 
   def __fields__(:t) do
-    [account_id: {:string, :generic}]
+    [account_id: {:union, [{:string, :generic}, :null]}]
   end
 end

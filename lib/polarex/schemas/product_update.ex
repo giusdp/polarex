@@ -59,7 +59,7 @@ defmodule Polarex.ProductUpdate do
            ],
            :null
          ]},
-      recurring_interval: {:union, [{:enum, ["month", "year"]}, :null]}
+      recurring_interval: {:union, [{:enum, ["day", "week", "month", "year"]}, :null]}
     ]
   end
 end

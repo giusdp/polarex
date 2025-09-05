@@ -5,6 +5,7 @@ defmodule Polarex.CustomerPortalCustomer do
 
   @type t :: %__MODULE__{
           billing_address: Polarex.Address.t() | nil,
+          billing_name: String.t() | nil,
           created_at: DateTime.t(),
           default_payment_method_id: String.t() | nil,
           email: String.t(),
@@ -18,6 +19,7 @@ defmodule Polarex.CustomerPortalCustomer do
 
   defstruct [
     :billing_address,
+    :billing_name,
     :created_at,
     :default_payment_method_id,
     :email,
@@ -36,6 +38,7 @@ defmodule Polarex.CustomerPortalCustomer do
   def __fields__(:t) do
     [
       billing_address: {:union, [{Polarex.Address, :t}, :null]},
+      billing_name: {:union, [{:string, :generic}, :null]},
       created_at: {:string, :date_time},
       default_payment_method_id: {:union, [{:string, :generic}, :null]},
       email: {:string, :generic},

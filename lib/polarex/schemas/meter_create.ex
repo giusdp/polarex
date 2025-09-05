@@ -4,7 +4,10 @@ defmodule Polarex.MeterCreate do
   """
 
   @type t :: %__MODULE__{
-          aggregation: Polarex.CountAggregation.t() | Polarex.PropertyAggregation.t(),
+          aggregation:
+            Polarex.CountAggregation.t()
+            | Polarex.PropertyAggregation.t()
+            | Polarex.UniqueAggregation.t(),
           filter: Polarex.Filter.t(),
           metadata: Polarex.Metadata.t() | nil,
           name: String.t(),
@@ -19,7 +22,13 @@ defmodule Polarex.MeterCreate do
 
   def __fields__(:t) do
     [
-      aggregation: {:union, [{Polarex.CountAggregation, :t}, {Polarex.PropertyAggregation, :t}]},
+      aggregation:
+        {:union,
+         [
+           {Polarex.CountAggregation, :t},
+           {Polarex.PropertyAggregation, :t},
+           {Polarex.UniqueAggregation, :t}
+         ]},
       filter: {Polarex.Filter, :t},
       metadata: {Polarex.Metadata, :t},
       name: {:string, :generic},

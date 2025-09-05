@@ -17,6 +17,7 @@ defmodule Polarex.CardPayment do
           order_id: String.t() | nil,
           organization_id: String.t(),
           processor: String.t(),
+          processor_metadata: map | nil,
           status: String.t()
         }
 
@@ -34,6 +35,7 @@ defmodule Polarex.CardPayment do
     :order_id,
     :organization_id,
     :processor,
+    :processor_metadata,
     :status
   ]
 
@@ -56,6 +58,7 @@ defmodule Polarex.CardPayment do
       order_id: {:union, [{:string, :generic}, :null]},
       organization_id: {:string, :generic},
       processor: {:const, "stripe"},
+      processor_metadata: :map,
       status: {:enum, ["pending", "succeeded", "failed"]}
     ]
   end

@@ -44,7 +44,11 @@ defmodule Polarex.Customers do
   **Scopes**: `customer_portal:read` `customer_portal:write`
   """
   @spec customer_portal_customers_delete_payment_method(String.t(), keyword) ::
-          :ok | {:error, Polarex.HTTPValidationError.t() | Polarex.ResourceNotFound.t()}
+          :ok
+          | {:error,
+             Polarex.HTTPValidationError.t()
+             | Polarex.PaymentMethodInUseByActiveSubscription.t()
+             | Polarex.ResourceNotFound.t()}
   def customer_portal_customers_delete_payment_method(id, opts \\ []) do
     client = opts[:client] || @default_client
 
@@ -55,6 +59,7 @@ defmodule Polarex.Customers do
       method: :delete,
       response: [
         {204, :null},
+        {400, {Polarex.PaymentMethodInUseByActiveSubscription, :t}},
         {404, {Polarex.ResourceNotFound, :t}},
         {422, {Polarex.HTTPValidationError, :t}}
       ],

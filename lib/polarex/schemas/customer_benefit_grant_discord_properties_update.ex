@@ -3,7 +3,7 @@ defmodule Polarex.CustomerBenefitGrantDiscordPropertiesUpdate do
   Provides struct and type for a CustomerBenefitGrantDiscordPropertiesUpdate
   """
 
-  @type t :: %__MODULE__{account_id: String.t()}
+  @type t :: %__MODULE__{account_id: String.t() | nil}
 
   defstruct [:account_id]
 
@@ -12,6 +12,6 @@ defmodule Polarex.CustomerBenefitGrantDiscordPropertiesUpdate do
   def __fields__(type \\ :t)
 
   def __fields__(:t) do
-    [account_id: {:string, :generic}]
+    [account_id: {:union, [{:string, :generic}, :null]}]
   end
 end

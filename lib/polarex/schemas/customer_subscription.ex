@@ -96,7 +96,7 @@ defmodule Polarex.CustomerSubscription do
       prices: [:map],
       product: {Polarex.CustomerSubscriptionProduct, :t},
       product_id: {:string, :generic},
-      recurring_interval: {:enum, ["month", "year"]},
+      recurring_interval: {:enum, ["day", "week", "month", "year"]},
       started_at: {:union, [{:string, :date_time}, :null]},
       status:
         {:enum,

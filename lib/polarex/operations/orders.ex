@@ -6,6 +6,43 @@ defmodule Polarex.Orders do
   @default_client Polarex.Support.Client
 
   @doc """
+  Confirm Retry Payment
+
+  Confirm a retry payment using a Stripe confirmation token.
+
+  **Scopes**: `customer_portal:write`
+  """
+  @spec customer_portal_orders_confirm_retry_payment(
+          String.t(),
+          Polarex.CustomerOrderConfirmPayment.t(),
+          keyword
+        ) ::
+          {:ok, Polarex.CustomerOrderPaymentConfirmation.t()}
+          | {:error,
+             Polarex.OrderNotEligibleForRetry.t()
+             | Polarex.PaymentAlreadyInProgress.t()
+             | Polarex.ResourceNotFound.t()}
+  def customer_portal_orders_confirm_retry_payment(id, body, opts \\ []) do
+    client = opts[:client] || @default_client
+
+    client.request(%{
+      args: [id: id, body: body],
+      call: {Polarex.Orders, :customer_portal_orders_confirm_retry_payment},
+      url: "/v1/customer-portal/orders/#{id}/confirm-payment",
+      body: body,
+      method: :post,
+      request: [{"application/json", {Polarex.CustomerOrderConfirmPayment, :t}}],
+      response: [
+        {200, {Polarex.CustomerOrderPaymentConfirmation, :t}},
+        {404, {Polarex.ResourceNotFound, :t}},
+        {409, {Polarex.PaymentAlreadyInProgress, :t}},
+        {422, {Polarex.OrderNotEligibleForRetry, :t}}
+      ],
+      opts: opts
+    })
+  end
+
+  @doc """
   Generate Order Invoice
 
   Trigger generation of an order's invoice.
@@ -55,6 +92,33 @@ defmodule Polarex.Orders do
       method: :get,
       response: [
         {200, {Polarex.CustomerOrder, :t}},
+        {404, {Polarex.ResourceNotFound, :t}},
+        {422, {Polarex.HTTPValidationError, :t}}
+      ],
+      opts: opts
+    })
+  end
+
+  @doc """
+  Get Order Payment Status
+
+  Get the current payment status for an order.
+
+  **Scopes**: `customer_portal:read` `customer_portal:write`
+  """
+  @spec customer_portal_orders_get_payment_status(String.t(), keyword) ::
+          {:ok, Polarex.CustomerOrderPaymentStatus.t()}
+          | {:error, Polarex.HTTPValidationError.t() | Polarex.ResourceNotFound.t()}
+  def customer_portal_orders_get_payment_status(id, opts \\ []) do
+    client = opts[:client] || @default_client
+
+    client.request(%{
+      args: [id: id],
+      call: {Polarex.Orders, :customer_portal_orders_get_payment_status},
+      url: "/v1/customer-portal/orders/#{id}/payment-status",
+      method: :get,
+      response: [
+        {200, {Polarex.CustomerOrderPaymentStatus, :t}},
         {404, {Polarex.ResourceNotFound, :t}},
         {422, {Polarex.HTTPValidationError, :t}}
       ],
@@ -134,37 +198,6 @@ defmodule Polarex.Orders do
       response: [
         {200, {Polarex.ListResourceCustomerOrder, :t}},
         {422, {Polarex.HTTPValidationError, :t}}
-      ],
-      opts: opts
-    })
-  end
-
-  @doc """
-  Retry Payment
-
-  Manually retry payment for a failed order.
-
-  **Scopes**: `customer_portal:write`
-  """
-  @spec customer_portal_orders_retry_payment(String.t(), keyword) ::
-          {:ok, map}
-          | {:error,
-             Polarex.OrderNotEligibleForRetry.t()
-             | Polarex.PaymentAlreadyInProgress.t()
-             | Polarex.ResourceNotFound.t()}
-  def customer_portal_orders_retry_payment(id, opts \\ []) do
-    client = opts[:client] || @default_client
-
-    client.request(%{
-      args: [id: id],
-      call: {Polarex.Orders, :customer_portal_orders_retry_payment},
-      url: "/v1/customer-portal/orders/#{id}/retry-payment",
-      method: :post,
-      response: [
-        {202, :map},
-        {404, {Polarex.ResourceNotFound, :t}},
-        {409, {Polarex.PaymentAlreadyInProgress, :t}},
-        {422, {Polarex.OrderNotEligibleForRetry, :t}}
       ],
       opts: opts
     })

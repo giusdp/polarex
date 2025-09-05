@@ -990,7 +990,8 @@ defmodule Polarex.Mcp do
           | {:error,
              Polarex.AlreadyCanceledSubscription.t()
              | Polarex.HTTPValidationError.t()
-             | Polarex.ResourceNotFound.t()}
+             | Polarex.ResourceNotFound.t()
+             | Polarex.SubscriptionLocked.t()}
   def subscriptions_revoke(id, opts \\ []) do
     client = opts[:client] || @default_client
 
@@ -1003,6 +1004,7 @@ defmodule Polarex.Mcp do
         {200, {Polarex.Subscription, :t}},
         {403, {Polarex.AlreadyCanceledSubscription, :t}},
         {404, {Polarex.ResourceNotFound, :t}},
+        {409, {Polarex.SubscriptionLocked, :t}},
         {422, {Polarex.HTTPValidationError, :t}}
       ],
       opts: opts
@@ -1028,7 +1030,8 @@ defmodule Polarex.Mcp do
           | {:error,
              Polarex.AlreadyCanceledSubscription.t()
              | Polarex.HTTPValidationError.t()
-             | Polarex.ResourceNotFound.t()}
+             | Polarex.ResourceNotFound.t()
+             | Polarex.SubscriptionLocked.t()}
   def subscriptions_update(id, body, opts \\ []) do
     client = opts[:client] || @default_client
 
@@ -1052,6 +1055,7 @@ defmodule Polarex.Mcp do
         {200, {Polarex.Subscription, :t}},
         {403, {Polarex.AlreadyCanceledSubscription, :t}},
         {404, {Polarex.ResourceNotFound, :t}},
+        {409, {Polarex.SubscriptionLocked, :t}},
         {422, {Polarex.HTTPValidationError, :t}}
       ],
       opts: opts

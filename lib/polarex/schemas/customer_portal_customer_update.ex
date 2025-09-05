@@ -5,12 +5,11 @@ defmodule Polarex.CustomerPortalCustomerUpdate do
 
   @type t :: %__MODULE__{
           billing_address: Polarex.Address.t() | nil,
-          email: String.t() | nil,
-          name: String.t() | nil,
+          billing_name: String.t() | nil,
           tax_id: String.t() | nil
         }
 
-  defstruct [:billing_address, :email, :name, :tax_id]
+  defstruct [:billing_address, :billing_name, :tax_id]
 
   @doc false
   @spec __fields__(atom) :: keyword
@@ -19,8 +18,7 @@ defmodule Polarex.CustomerPortalCustomerUpdate do
   def __fields__(:t) do
     [
       billing_address: {:union, [{Polarex.Address, :t}, :null]},
-      email: {:union, [{:string, :email}, :null]},
-      name: {:union, [{:string, :generic}, :null]},
+      billing_name: {:union, [{:string, :generic}, :null]},
       tax_id: {:union, [{:string, :generic}, :null]}
     ]
   end

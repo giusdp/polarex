@@ -50,7 +50,7 @@ defmodule Polarex.ProductCreate do
           {Polarex.ProductPriceMeteredUnitCreate, :t}
         ]
       ],
-      recurring_interval: {:union, [{:enum, ["month", "year"]}, :null]}
+      recurring_interval: {:union, [{:enum, ["day", "week", "month", "year"]}, :null]}
     ]
   end
 end
