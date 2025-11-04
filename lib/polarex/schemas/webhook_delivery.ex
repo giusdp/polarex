@@ -8,11 +8,12 @@ defmodule Polarex.WebhookDelivery do
           http_code: integer | nil,
           id: String.t(),
           modified_at: DateTime.t() | nil,
+          response: String.t() | nil,
           succeeded: boolean,
           webhook_event: Polarex.WebhookEvent.t()
         }
 
-  defstruct [:created_at, :http_code, :id, :modified_at, :succeeded, :webhook_event]
+  defstruct [:created_at, :http_code, :id, :modified_at, :response, :succeeded, :webhook_event]
 
   @doc false
   @spec __fields__(atom) :: keyword
@@ -24,6 +25,7 @@ defmodule Polarex.WebhookDelivery do
       http_code: {:union, [:integer, :null]},
       id: {:string, :generic},
       modified_at: {:union, [{:string, :date_time}, :null]},
+      response: {:union, [{:string, :generic}, :null]},
       succeeded: :boolean,
       webhook_event: {Polarex.WebhookEvent, :t}
     ]

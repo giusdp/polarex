@@ -13,7 +13,10 @@ defmodule Polarex.DiscountProduct do
           modified_at: DateTime.t() | nil,
           name: String.t(),
           organization_id: String.t(),
-          recurring_interval: String.t() | nil
+          recurring_interval: String.t() | nil,
+          recurring_interval_count: integer | nil,
+          trial_interval: String.t() | nil,
+          trial_interval_count: integer | nil
         }
 
   defstruct [
@@ -26,7 +29,10 @@ defmodule Polarex.DiscountProduct do
     :modified_at,
     :name,
     :organization_id,
-    :recurring_interval
+    :recurring_interval,
+    :recurring_interval_count,
+    :trial_interval,
+    :trial_interval_count
   ]
 
   @doc false
@@ -44,7 +50,10 @@ defmodule Polarex.DiscountProduct do
       modified_at: {:union, [{:string, :date_time}, :null]},
       name: {:string, :generic},
       organization_id: {:string, :generic},
-      recurring_interval: {:union, [{:enum, ["day", "week", "month", "year"]}, :null]}
+      recurring_interval: {:union, [{:enum, ["day", "week", "month", "year"]}, :null]},
+      recurring_interval_count: {:union, [:integer, :null]},
+      trial_interval: {:union, [{:enum, ["day", "week", "month", "year"]}, :null]},
+      trial_interval_count: {:union, [:integer, :null]}
     ]
   end
 end

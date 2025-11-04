@@ -58,7 +58,6 @@ defmodule Polarex.CustomerPortal do
 
     * `type`: Filter by benefit type.
     * `benefit_id`: Filter by benefit ID.
-    * `organization_id`: Filter by organization ID.
     * `checkout_id`: Filter by checkout ID.
     * `order_id`: Filter by order ID.
     * `subscription_id`: Filter by subscription ID.
@@ -79,7 +78,6 @@ defmodule Polarex.CustomerPortal do
         :checkout_id,
         :limit,
         :order_id,
-        :organization_id,
         :page,
         :sorting,
         :subscription_id,
@@ -233,6 +231,28 @@ defmodule Polarex.CustomerPortal do
   end
 
   @doc """
+  Introspect Customer Session
+
+  Introspect the current session and return its information.
+
+  **Scopes**: `customer_portal:read` `customer_portal:write`
+  """
+  @spec customer_portal_customer_session_introspect(keyword) ::
+          {:ok, Polarex.CustomerCustomerSession.t()} | :error
+  def customer_portal_customer_session_introspect(opts \\ []) do
+    client = opts[:client] || @default_client
+
+    client.request(%{
+      args: [],
+      call: {Polarex.CustomerPortal, :customer_portal_customer_session_introspect},
+      url: "/v1/customer-portal/customer-session/introspect",
+      method: :get,
+      response: [{200, {Polarex.CustomerCustomerSession, :t}}],
+      opts: opts
+    })
+  end
+
+  @doc """
   Add Customer Payment Method
 
   Add a payment method to the authenticated customer.
@@ -243,7 +263,9 @@ defmodule Polarex.CustomerPortal do
           Polarex.CustomerPaymentMethodCreate.t(),
           keyword
         ) ::
-          {:ok, Polarex.PaymentMethodCard.t() | Polarex.PaymentMethodGeneric.t()}
+          {:ok,
+           Polarex.CustomerPaymentMethodCreateRequiresActionResponse.t()
+           | Polarex.CustomerPaymentMethodCreateSucceededResponse.t()}
           | {:error, Polarex.HTTPValidationError.t()}
   def customer_portal_customers_add_payment_method(body, opts \\ []) do
     client = opts[:client] || @default_client
@@ -256,7 +278,51 @@ defmodule Polarex.CustomerPortal do
       method: :post,
       request: [{"application/json", {Polarex.CustomerPaymentMethodCreate, :t}}],
       response: [
-        {201, {:union, [{Polarex.PaymentMethodCard, :t}, {Polarex.PaymentMethodGeneric, :t}]}},
+        {201,
+         {:union,
+          [
+            {Polarex.CustomerPaymentMethodCreateRequiresActionResponse, :t},
+            {Polarex.CustomerPaymentMethodCreateSucceededResponse, :t}
+          ]}},
+        {422, {Polarex.HTTPValidationError, :t}}
+      ],
+      opts: opts
+    })
+  end
+
+  @doc """
+  Confirm Customer Payment Method
+
+  Confirm a payment method for the authenticated customer.
+
+  **Scopes**: `customer_portal:read` `customer_portal:write`
+  """
+  @spec customer_portal_customers_confirm_payment_method(
+          Polarex.CustomerPaymentMethodConfirm.t(),
+          keyword
+        ) ::
+          {:ok,
+           Polarex.CustomerPaymentMethodCreateRequiresActionResponse.t()
+           | Polarex.CustomerPaymentMethodCreateSucceededResponse.t()}
+          | {:error, Polarex.CustomerNotReady.t() | Polarex.HTTPValidationError.t()}
+  def customer_portal_customers_confirm_payment_method(body, opts \\ []) do
+    client = opts[:client] || @default_client
+
+    client.request(%{
+      args: [body: body],
+      call: {Polarex.CustomerPortal, :customer_portal_customers_confirm_payment_method},
+      url: "/v1/customer-portal/customers/me/payment-methods/confirm",
+      body: body,
+      method: :post,
+      request: [{"application/json", {Polarex.CustomerPaymentMethodConfirm, :t}}],
+      response: [
+        {201,
+         {:union,
+          [
+            {Polarex.CustomerPaymentMethodCreateRequiresActionResponse, :t},
+            {Polarex.CustomerPaymentMethodCreateSucceededResponse, :t}
+          ]}},
+        {400, {Polarex.CustomerNotReady, :t}},
         {422, {Polarex.HTTPValidationError, :t}}
       ],
       opts: opts
@@ -384,7 +450,6 @@ defmodule Polarex.CustomerPortal do
 
   ## Options
 
-    * `organization_id`: Filter by organization ID.
     * `benefit_id`: Filter by benefit ID.
     * `page`: Page number, defaults to 1.
     * `limit`: Size of a page, defaults to 10. Maximum is 100.
@@ -395,7 +460,7 @@ defmodule Polarex.CustomerPortal do
           | {:error, Polarex.HTTPValidationError.t()}
   def customer_portal_downloadables_list(opts \\ []) do
     client = opts[:client] || @default_client
-    query = Keyword.take(opts, [:benefit_id, :limit, :organization_id, :page])
+    query = Keyword.take(opts, [:benefit_id, :limit, :page])
 
     client.request(%{
       args: [],
@@ -512,7 +577,6 @@ defmodule Polarex.CustomerPortal do
 
   ## Options
 
-    * `organization_id`: Filter by organization ID.
     * `benefit_id`: Filter by a specific benefit
     * `page`: Page number, defaults to 1.
     * `limit`: Size of a page, defaults to 10. Maximum is 100.
@@ -526,7 +590,7 @@ defmodule Polarex.CustomerPortal do
              | Polarex.Unauthorized.t()}
   def customer_portal_license_keys_list(opts \\ []) do
     client = opts[:client] || @default_client
-    query = Keyword.take(opts, [:benefit_id, :limit, :organization_id, :page])
+    query = Keyword.take(opts, [:benefit_id, :limit, :page])
 
     client.request(%{
       args: [],
@@ -622,10 +686,7 @@ defmodule Polarex.CustomerPortal do
   """
   @spec customer_portal_orders_generate_invoice(String.t(), keyword) ::
           {:ok, map}
-          | {:error,
-             Polarex.InvoiceAlreadyExists.t()
-             | Polarex.MissingInvoiceBillingDetails.t()
-             | Polarex.NotPaidOrder.t()}
+          | {:error, Polarex.MissingInvoiceBillingDetails.t() | Polarex.NotPaidOrder.t()}
   def customer_portal_orders_generate_invoice(id, opts \\ []) do
     client = opts[:client] || @default_client
 
@@ -636,7 +697,6 @@ defmodule Polarex.CustomerPortal do
       method: :post,
       response: [
         {202, :map},
-        {409, {Polarex.InvoiceAlreadyExists, :t}},
         {422, {:union, [{Polarex.MissingInvoiceBillingDetails, :t}, {Polarex.NotPaidOrder, :t}]}}
       ],
       opts: opts
@@ -733,7 +793,6 @@ defmodule Polarex.CustomerPortal do
 
   ## Options
 
-    * `organization_id`: Filter by organization ID.
     * `product_id`: Filter by product ID.
     * `product_billing_type`: Filter by product billing type. `recurring` will filter data corresponding to subscriptions creations or renewals. `one_time` will filter data corresponding to one-time purchases.
     * `subscription_id`: Filter by subscription ID.
@@ -751,7 +810,6 @@ defmodule Polarex.CustomerPortal do
     query =
       Keyword.take(opts, [
         :limit,
-        :organization_id,
         :page,
         :product_billing_type,
         :product_id,
@@ -809,7 +867,7 @@ defmodule Polarex.CustomerPortal do
   Get a customer portal's organization by slug.
   """
   @spec customer_portal_organizations_get(String.t(), keyword) ::
-          {:ok, Polarex.CustomerOrganization.t()}
+          {:ok, Polarex.CustomerOrganizationData.t()}
           | {:error, Polarex.HTTPValidationError.t() | Polarex.ResourceNotFound.t()}
   def customer_portal_organizations_get(slug, opts \\ []) do
     client = opts[:client] || @default_client
@@ -820,8 +878,146 @@ defmodule Polarex.CustomerPortal do
       url: "/v1/customer-portal/organizations/#{slug}",
       method: :get,
       response: [
-        {200, {Polarex.CustomerOrganization, :t}},
+        {200, {Polarex.CustomerOrganizationData, :t}},
         {404, {Polarex.ResourceNotFound, :t}},
+        {422, {Polarex.HTTPValidationError, :t}}
+      ],
+      opts: opts
+    })
+  end
+
+  @doc """
+  Assign Seat
+
+  **Scopes**: `customer_portal:write`
+  """
+  @spec customer_portal_seats_assign_seat(Polarex.SeatAssign.t(), keyword) ::
+          {:ok, Polarex.CustomerSeat.t()} | {:error, Polarex.HTTPValidationError.t()}
+  def customer_portal_seats_assign_seat(body, opts \\ []) do
+    client = opts[:client] || @default_client
+
+    client.request(%{
+      args: [body: body],
+      call: {Polarex.CustomerPortal, :customer_portal_seats_assign_seat},
+      url: "/v1/customer-portal/seats",
+      body: body,
+      method: :post,
+      request: [{"application/json", {Polarex.SeatAssign, :t}}],
+      response: [
+        {200, {Polarex.CustomerSeat, :t}},
+        {400, :null},
+        {401, :null},
+        {403, :null},
+        {404, :null},
+        {422, {Polarex.HTTPValidationError, :t}}
+      ],
+      opts: opts
+    })
+  end
+
+  @doc """
+  List Claimed Subscriptions
+
+  List all subscriptions where the authenticated customer has claimed a seat.
+
+  **Scopes**: `customer_portal:read` `customer_portal:write`
+  """
+  @spec customer_portal_seats_list_claimed_subscriptions(keyword) ::
+          {:ok, [Polarex.CustomerSubscription.t()]} | :error
+  def customer_portal_seats_list_claimed_subscriptions(opts \\ []) do
+    client = opts[:client] || @default_client
+
+    client.request(%{
+      args: [],
+      call: {Polarex.CustomerPortal, :customer_portal_seats_list_claimed_subscriptions},
+      url: "/v1/customer-portal/seats/subscriptions",
+      method: :get,
+      response: [{200, [{Polarex.CustomerSubscription, :t}]}, {401, :null}],
+      opts: opts
+    })
+  end
+
+  @doc """
+  List Seats
+
+  **Scopes**: `customer_portal:read` `customer_portal:write`
+
+  ## Options
+
+    * `subscription_id`: Subscription ID
+    * `order_id`: Order ID
+
+  """
+  @spec customer_portal_seats_list_seats(keyword) ::
+          {:ok, Polarex.SeatsList.t()} | {:error, Polarex.HTTPValidationError.t()}
+  def customer_portal_seats_list_seats(opts \\ []) do
+    client = opts[:client] || @default_client
+    query = Keyword.take(opts, [:order_id, :subscription_id])
+
+    client.request(%{
+      args: [],
+      call: {Polarex.CustomerPortal, :customer_portal_seats_list_seats},
+      url: "/v1/customer-portal/seats",
+      method: :get,
+      query: query,
+      response: [
+        {200, {Polarex.SeatsList, :t}},
+        {401, :null},
+        {403, :null},
+        {404, :null},
+        {422, {Polarex.HTTPValidationError, :t}}
+      ],
+      opts: opts
+    })
+  end
+
+  @doc """
+  Resend Invitation
+
+  **Scopes**: `customer_portal:write`
+  """
+  @spec customer_portal_seats_resend_invitation(String.t(), keyword) ::
+          {:ok, Polarex.CustomerSeat.t()} | {:error, Polarex.HTTPValidationError.t()}
+  def customer_portal_seats_resend_invitation(seat_id, opts \\ []) do
+    client = opts[:client] || @default_client
+
+    client.request(%{
+      args: [seat_id: seat_id],
+      call: {Polarex.CustomerPortal, :customer_portal_seats_resend_invitation},
+      url: "/v1/customer-portal/seats/#{seat_id}/resend",
+      method: :post,
+      response: [
+        {200, {Polarex.CustomerSeat, :t}},
+        {400, :null},
+        {401, :null},
+        {403, :null},
+        {404, :null},
+        {422, {Polarex.HTTPValidationError, :t}}
+      ],
+      opts: opts
+    })
+  end
+
+  @doc """
+  Revoke Seat
+
+  **Scopes**: `customer_portal:write`
+  """
+  @spec customer_portal_seats_revoke_seat(String.t(), keyword) ::
+          {:ok, Polarex.CustomerSeat.t()} | {:error, Polarex.HTTPValidationError.t()}
+  def customer_portal_seats_revoke_seat(seat_id, opts \\ []) do
+    client = opts[:client] || @default_client
+
+    client.request(%{
+      args: [seat_id: seat_id],
+      call: {Polarex.CustomerPortal, :customer_portal_seats_revoke_seat},
+      url: "/v1/customer-portal/seats/#{seat_id}",
+      method: :delete,
+      response: [
+        {200, {Polarex.CustomerSeat, :t}},
+        {401, :null},
+        {403, :null},
+        {404, :null},
         {422, {Polarex.HTTPValidationError, :t}}
       ],
       opts: opts
@@ -895,7 +1091,6 @@ defmodule Polarex.CustomerPortal do
 
   ## Options
 
-    * `organization_id`: Filter by organization ID.
     * `product_id`: Filter by product ID.
     * `active`: Filter by active or cancelled subscription.
     * `query`: Search by product or organization name.
@@ -909,9 +1104,7 @@ defmodule Polarex.CustomerPortal do
           | {:error, Polarex.HTTPValidationError.t()}
   def customer_portal_subscriptions_list(opts \\ []) do
     client = opts[:client] || @default_client
-
-    query =
-      Keyword.take(opts, [:active, :limit, :organization_id, :page, :product_id, :query, :sorting])
+    query = Keyword.take(opts, [:active, :limit, :page, :product_id, :query, :sorting])
 
     client.request(%{
       args: [],
@@ -936,7 +1129,9 @@ defmodule Polarex.CustomerPortal do
   """
   @spec customer_portal_subscriptions_update(
           String.t(),
-          Polarex.CustomerSubscriptionCancel.t() | Polarex.CustomerSubscriptionUpdateProduct.t(),
+          Polarex.CustomerSubscriptionCancel.t()
+          | Polarex.CustomerSubscriptionUpdateProduct.t()
+          | Polarex.CustomerSubscriptionUpdateSeats.t(),
           keyword
         ) ::
           {:ok, Polarex.CustomerSubscription.t()}
@@ -958,13 +1153,76 @@ defmodule Polarex.CustomerPortal do
          {:union,
           [
             {Polarex.CustomerSubscriptionCancel, :t},
-            {Polarex.CustomerSubscriptionUpdateProduct, :t}
+            {Polarex.CustomerSubscriptionUpdateProduct, :t},
+            {Polarex.CustomerSubscriptionUpdateSeats, :t}
           ]}}
       ],
       response: [
         {200, {Polarex.CustomerSubscription, :t}},
         {403, {Polarex.AlreadyCanceledSubscription, :t}},
         {404, {Polarex.ResourceNotFound, :t}},
+        {422, {Polarex.HTTPValidationError, :t}}
+      ],
+      opts: opts
+    })
+  end
+
+  @doc """
+  Get Wallet
+
+  Get a wallet by ID for the authenticated customer.
+
+  **Scopes**: `customer_portal:read` `customer_portal:write`
+  """
+  @spec customer_portal_wallets_get(String.t(), keyword) ::
+          {:ok, Polarex.CustomerWallet.t()}
+          | {:error, Polarex.HTTPValidationError.t() | Polarex.ResourceNotFound.t()}
+  def customer_portal_wallets_get(id, opts \\ []) do
+    client = opts[:client] || @default_client
+
+    client.request(%{
+      args: [id: id],
+      call: {Polarex.CustomerPortal, :customer_portal_wallets_get},
+      url: "/v1/customer-portal/wallets/#{id}",
+      method: :get,
+      response: [
+        {200, {Polarex.CustomerWallet, :t}},
+        {404, {Polarex.ResourceNotFound, :t}},
+        {422, {Polarex.HTTPValidationError, :t}}
+      ],
+      opts: opts
+    })
+  end
+
+  @doc """
+  List Wallets
+
+  List wallets of the authenticated customer.
+
+  **Scopes**: `customer_portal:read` `customer_portal:write`
+
+  ## Options
+
+    * `page`: Page number, defaults to 1.
+    * `limit`: Size of a page, defaults to 10. Maximum is 100.
+    * `sorting`: Sorting criterion. Several criteria can be used simultaneously and will be applied in order. Add a minus sign `-` before the criteria name to sort by descending order.
+
+  """
+  @spec customer_portal_wallets_list(keyword) ::
+          {:ok, Polarex.ListResourceCustomerWallet.t()}
+          | {:error, Polarex.HTTPValidationError.t()}
+  def customer_portal_wallets_list(opts \\ []) do
+    client = opts[:client] || @default_client
+    query = Keyword.take(opts, [:limit, :page, :sorting])
+
+    client.request(%{
+      args: [],
+      call: {Polarex.CustomerPortal, :customer_portal_wallets_list},
+      url: "/v1/customer-portal/wallets/",
+      method: :get,
+      query: query,
+      response: [
+        {200, {Polarex.ListResourceCustomerWallet, :t}},
         {422, {Polarex.HTTPValidationError, :t}}
       ],
       opts: opts

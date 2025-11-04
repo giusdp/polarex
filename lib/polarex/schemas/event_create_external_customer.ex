@@ -5,13 +5,23 @@ defmodule Polarex.EventCreateExternalCustomer do
 
   @type t :: %__MODULE__{
           external_customer_id: String.t(),
-          metadata: Polarex.Metadata.t() | nil,
+          external_id: String.t() | nil,
+          metadata: Polarex.EventMetadataInput.t() | nil,
           name: String.t(),
           organization_id: String.t() | nil,
+          parent_id: String.t() | nil,
           timestamp: DateTime.t() | nil
         }
 
-  defstruct [:external_customer_id, :metadata, :name, :organization_id, :timestamp]
+  defstruct [
+    :external_customer_id,
+    :external_id,
+    :metadata,
+    :name,
+    :organization_id,
+    :parent_id,
+    :timestamp
+  ]
 
   @doc false
   @spec __fields__(atom) :: keyword
@@ -20,9 +30,11 @@ defmodule Polarex.EventCreateExternalCustomer do
   def __fields__(:t) do
     [
       external_customer_id: {:string, :generic},
-      metadata: {Polarex.Metadata, :t},
+      external_id: {:union, [{:string, :generic}, :null]},
+      metadata: {Polarex.EventMetadataInput, :t},
       name: {:string, :generic},
       organization_id: {:union, [{:string, :generic}, :null]},
+      parent_id: {:union, [{:string, :generic}, :null]},
       timestamp: {:string, :date_time}
     ]
   end

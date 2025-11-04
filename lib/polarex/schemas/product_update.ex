@@ -17,9 +17,13 @@ defmodule Polarex.ProductUpdate do
               | Polarex.ProductPriceFixedCreate.t()
               | Polarex.ProductPriceFreeCreate.t()
               | Polarex.ProductPriceMeteredUnitCreate.t()
+              | Polarex.ProductPriceSeatBasedCreate.t()
             ]
             | nil,
-          recurring_interval: String.t() | nil
+          recurring_interval: String.t() | nil,
+          recurring_interval_count: integer | nil,
+          trial_interval: String.t() | nil,
+          trial_interval_count: integer | nil
         }
 
   defstruct [
@@ -30,7 +34,10 @@ defmodule Polarex.ProductUpdate do
     :metadata,
     :name,
     :prices,
-    :recurring_interval
+    :recurring_interval,
+    :recurring_interval_count,
+    :trial_interval,
+    :trial_interval_count
   ]
 
   @doc false
@@ -54,12 +61,16 @@ defmodule Polarex.ProductUpdate do
                {Polarex.ProductPriceCustomCreate, :t},
                {Polarex.ProductPriceFixedCreate, :t},
                {Polarex.ProductPriceFreeCreate, :t},
-               {Polarex.ProductPriceMeteredUnitCreate, :t}
+               {Polarex.ProductPriceMeteredUnitCreate, :t},
+               {Polarex.ProductPriceSeatBasedCreate, :t}
              ]
            ],
            :null
          ]},
-      recurring_interval: {:union, [{:enum, ["day", "week", "month", "year"]}, :null]}
+      recurring_interval: {:union, [{:enum, ["day", "week", "month", "year"]}, :null]},
+      recurring_interval_count: {:union, [:integer, :null]},
+      trial_interval: {:union, [{:enum, ["day", "week", "month", "year"]}, :null]},
+      trial_interval_count: {:union, [:integer, :null]}
     ]
   end
 end

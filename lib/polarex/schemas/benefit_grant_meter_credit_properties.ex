@@ -4,9 +4,9 @@ defmodule Polarex.BenefitGrantMeterCreditProperties do
   """
 
   @type t :: %__MODULE__{
-          last_credited_at: String.t(),
-          last_credited_meter_id: String.t(),
-          last_credited_units: integer
+          last_credited_at: String.t() | nil,
+          last_credited_meter_id: String.t() | nil,
+          last_credited_units: integer | nil
         }
 
   defstruct [:last_credited_at, :last_credited_meter_id, :last_credited_units]

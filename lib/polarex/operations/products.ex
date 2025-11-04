@@ -12,8 +12,10 @@ defmodule Polarex.Products do
 
   **Scopes**: `products:write`
   """
-  @spec products_create(Polarex.ProductCreate.t(), keyword) ::
-          {:ok, Polarex.Product.t()} | {:error, Polarex.HTTPValidationError.t()}
+  @spec products_create(
+          Polarex.ProductCreateOneTime.t() | Polarex.ProductCreateRecurring.t(),
+          keyword
+        ) :: {:ok, Polarex.Product.t()} | {:error, Polarex.HTTPValidationError.t()}
   def products_create(body, opts \\ []) do
     client = opts[:client] || @default_client
 
@@ -23,7 +25,10 @@ defmodule Polarex.Products do
       url: "/v1/products/",
       body: body,
       method: :post,
-      request: [{"application/json", {Polarex.ProductCreate, :t}}],
+      request: [
+        {"application/json",
+         {:union, [{Polarex.ProductCreateOneTime, :t}, {Polarex.ProductCreateRecurring, :t}]}}
+      ],
       response: [{201, {Polarex.Product, :t}}, {422, {Polarex.HTTPValidationError, :t}}],
       opts: opts
     })

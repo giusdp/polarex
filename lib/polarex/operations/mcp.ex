@@ -171,6 +171,34 @@ defmodule Polarex.Mcp do
   end
 
   @doc """
+  Export Customers
+
+  Export customers as a CSV file.
+
+  **Scopes**: `customers:read` `customers:write`
+
+  ## Options
+
+    * `organization_id`: Filter by organization ID.
+
+  """
+  @spec customers_export(keyword) :: {:ok, map} | {:error, Polarex.HTTPValidationError.t()}
+  def customers_export(opts \\ []) do
+    client = opts[:client] || @default_client
+    query = Keyword.take(opts, [:organization_id])
+
+    client.request(%{
+      args: [],
+      call: {Polarex.Mcp, :customers_export},
+      url: "/v1/customers/export",
+      method: :get,
+      query: query,
+      response: [{200, :map}, {422, {Polarex.HTTPValidationError, :t}}],
+      opts: opts
+    })
+  end
+
+  @doc """
   Get Customer
 
   Get a customer by ID.
@@ -190,6 +218,33 @@ defmodule Polarex.Mcp do
       method: :get,
       response: [
         {200, {Polarex.Customer, :t}},
+        {404, {Polarex.ResourceNotFound, :t}},
+        {422, {Polarex.HTTPValidationError, :t}}
+      ],
+      opts: opts
+    })
+  end
+
+  @doc """
+  Get Customer Balance
+
+  Get customer balance information.
+
+  **Scopes**: `customers:read` `customers:write`
+  """
+  @spec customers_get_balance(String.t(), keyword) ::
+          {:ok, Polarex.CustomerBalance.t()}
+          | {:error, Polarex.HTTPValidationError.t() | Polarex.ResourceNotFound.t()}
+  def customers_get_balance(id, opts \\ []) do
+    client = opts[:client] || @default_client
+
+    client.request(%{
+      args: [id: id],
+      call: {Polarex.Mcp, :customers_get_balance},
+      url: "/v1/customers/#{id}/balance",
+      method: :get,
+      response: [
+        {200, {Polarex.CustomerBalance, :t}},
         {404, {Polarex.ResourceNotFound, :t}},
         {422, {Polarex.HTTPValidationError, :t}}
       ],
@@ -301,7 +356,7 @@ defmodule Polarex.Mcp do
 
     * `organization_id`: Filter by organization ID.
     * `email`: Filter by exact email.
-    * `query`: Filter by name or email.
+    * `query`: Filter by name, email, or external ID.
     * `page`: Page number, defaults to 1.
     * `limit`: Size of a page, defaults to 10. Maximum is 100.
     * `sorting`: Sorting criterion. Several criteria can be used simultaneously and will be applied in order. Add a minus sign `-` before the criteria name to sort by descending order.
@@ -459,6 +514,35 @@ defmodule Polarex.Mcp do
   end
 
   @doc """
+  Export Subscriptions
+
+  Export orders as a CSV file.
+
+  **Scopes**: `orders:read`
+
+  ## Options
+
+    * `organization_id`: Filter by organization ID.
+    * `product_id`: Filter by product ID.
+
+  """
+  @spec orders_export(keyword) :: {:ok, map} | {:error, Polarex.HTTPValidationError.t()}
+  def orders_export(opts \\ []) do
+    client = opts[:client] || @default_client
+    query = Keyword.take(opts, [:organization_id, :product_id])
+
+    client.request(%{
+      args: [],
+      call: {Polarex.Mcp, :orders_export},
+      url: "/v1/orders/export",
+      method: :get,
+      query: query,
+      response: [{200, :map}, {422, {Polarex.HTTPValidationError, :t}}],
+      opts: opts
+    })
+  end
+
+  @doc """
   Generate Order Invoice
 
   Trigger generation of an order's invoice.
@@ -467,10 +551,7 @@ defmodule Polarex.Mcp do
   """
   @spec orders_generate_invoice(String.t(), keyword) ::
           {:ok, map}
-          | {:error,
-             Polarex.InvoiceAlreadyExists.t()
-             | Polarex.MissingInvoiceBillingDetails.t()
-             | Polarex.NotPaidOrder.t()}
+          | {:error, Polarex.MissingInvoiceBillingDetails.t() | Polarex.NotPaidOrder.t()}
   def orders_generate_invoice(id, opts \\ []) do
     client = opts[:client] || @default_client
 
@@ -481,7 +562,6 @@ defmodule Polarex.Mcp do
       method: :post,
       response: [
         {202, :map},
-        {409, {Polarex.InvoiceAlreadyExists, :t}},
         {422, {:union, [{Polarex.MissingInvoiceBillingDetails, :t}, {Polarex.NotPaidOrder, :t}]}}
       ],
       opts: opts
@@ -705,8 +785,10 @@ defmodule Polarex.Mcp do
 
   **Scopes**: `products:write`
   """
-  @spec products_create(Polarex.ProductCreate.t(), keyword) ::
-          {:ok, Polarex.Product.t()} | {:error, Polarex.HTTPValidationError.t()}
+  @spec products_create(
+          Polarex.ProductCreateOneTime.t() | Polarex.ProductCreateRecurring.t(),
+          keyword
+        ) :: {:ok, Polarex.Product.t()} | {:error, Polarex.HTTPValidationError.t()}
   def products_create(body, opts \\ []) do
     client = opts[:client] || @default_client
 
@@ -716,7 +798,10 @@ defmodule Polarex.Mcp do
       url: "/v1/products/",
       body: body,
       method: :post,
-      request: [{"application/json", {Polarex.ProductCreate, :t}}],
+      request: [
+        {"application/json",
+         {:union, [{Polarex.ProductCreateOneTime, :t}, {Polarex.ProductCreateRecurring, :t}]}}
+      ],
       response: [{201, {Polarex.Product, :t}}, {422, {Polarex.HTTPValidationError, :t}}],
       opts: opts
     })
@@ -865,6 +950,44 @@ defmodule Polarex.Mcp do
         {404, {Polarex.ResourceNotFound, :t}},
         {422, {Polarex.HTTPValidationError, :t}}
       ],
+      opts: opts
+    })
+  end
+
+  @doc """
+  Create Subscription
+
+  Create a subscription programmatically.
+
+  This endpoint only allows to create subscription on free products.
+  For paid products, use the checkout flow.
+
+  No initial order will be created and no confirmation email will be sent.
+
+  **Scopes**: `subscriptions:write`
+  """
+  @spec subscriptions_create(
+          Polarex.SubscriptionCreateCustomer.t() | Polarex.SubscriptionCreateExternalCustomer.t(),
+          keyword
+        ) :: {:ok, Polarex.Subscription.t()} | {:error, Polarex.HTTPValidationError.t()}
+  def subscriptions_create(body, opts \\ []) do
+    client = opts[:client] || @default_client
+
+    client.request(%{
+      args: [body: body],
+      call: {Polarex.Mcp, :subscriptions_create},
+      url: "/v1/subscriptions/",
+      body: body,
+      method: :post,
+      request: [
+        {"application/json",
+         {:union,
+          [
+            {Polarex.SubscriptionCreateCustomer, :t},
+            {Polarex.SubscriptionCreateExternalCustomer, :t}
+          ]}}
+      ],
+      response: [{201, {Polarex.Subscription, :t}}, {422, {Polarex.HTTPValidationError, :t}}],
       opts: opts
     })
   end
@@ -1023,7 +1146,9 @@ defmodule Polarex.Mcp do
           Polarex.SubscriptionCancel.t()
           | Polarex.SubscriptionRevoke.t()
           | Polarex.SubscriptionUpdateDiscount.t()
-          | Polarex.SubscriptionUpdateProduct.t(),
+          | Polarex.SubscriptionUpdateProduct.t()
+          | Polarex.SubscriptionUpdateSeats.t()
+          | Polarex.SubscriptionUpdateTrial.t(),
           keyword
         ) ::
           {:ok, Polarex.Subscription.t()}
@@ -1048,7 +1173,9 @@ defmodule Polarex.Mcp do
             {Polarex.SubscriptionCancel, :t},
             {Polarex.SubscriptionRevoke, :t},
             {Polarex.SubscriptionUpdateDiscount, :t},
-            {Polarex.SubscriptionUpdateProduct, :t}
+            {Polarex.SubscriptionUpdateProduct, :t},
+            {Polarex.SubscriptionUpdateSeats, :t},
+            {Polarex.SubscriptionUpdateTrial, :t}
           ]}}
       ],
       response: [
@@ -1056,6 +1183,107 @@ defmodule Polarex.Mcp do
         {403, {Polarex.AlreadyCanceledSubscription, :t}},
         {404, {Polarex.ResourceNotFound, :t}},
         {409, {Polarex.SubscriptionLocked, :t}},
+        {422, {Polarex.HTTPValidationError, :t}}
+      ],
+      opts: opts
+    })
+  end
+
+  @doc """
+  Get Wallet
+
+  Get a wallet by ID.
+
+  **Scopes**: `wallets:read`
+  """
+  @spec wallets_get(String.t(), keyword) ::
+          {:ok, Polarex.Wallet.t()}
+          | {:error, Polarex.HTTPValidationError.t() | Polarex.ResourceNotFound.t()}
+  def wallets_get(id, opts \\ []) do
+    client = opts[:client] || @default_client
+
+    client.request(%{
+      args: [id: id],
+      call: {Polarex.Mcp, :wallets_get},
+      url: "/v1/wallets/#{id}",
+      method: :get,
+      response: [
+        {200, {Polarex.Wallet, :t}},
+        {404, {Polarex.ResourceNotFound, :t}},
+        {422, {Polarex.HTTPValidationError, :t}}
+      ],
+      opts: opts
+    })
+  end
+
+  @doc """
+  List Wallets
+
+  List wallets.
+
+  **Scopes**: `wallets:read`
+
+  ## Options
+
+    * `organization_id`: Filter by organization ID.
+    * `customer_id`: Filter by customer ID.
+    * `page`: Page number, defaults to 1.
+    * `limit`: Size of a page, defaults to 10. Maximum is 100.
+    * `sorting`: Sorting criterion. Several criteria can be used simultaneously and will be applied in order. Add a minus sign `-` before the criteria name to sort by descending order.
+
+  """
+  @spec wallets_list(keyword) ::
+          {:ok, Polarex.ListResourceWallet.t()} | {:error, Polarex.HTTPValidationError.t()}
+  def wallets_list(opts \\ []) do
+    client = opts[:client] || @default_client
+    query = Keyword.take(opts, [:customer_id, :limit, :organization_id, :page, :sorting])
+
+    client.request(%{
+      args: [],
+      call: {Polarex.Mcp, :wallets_list},
+      url: "/v1/wallets/",
+      method: :get,
+      query: query,
+      response: [
+        {200, {Polarex.ListResourceWallet, :t}},
+        {422, {Polarex.HTTPValidationError, :t}}
+      ],
+      opts: opts
+    })
+  end
+
+  @doc """
+  Top-Up Wallet
+
+  Top-up a wallet by adding funds to its balance.
+
+  The customer should have a valid payment method on file.
+
+  **Scopes**: `wallets:write`
+  """
+  @spec wallets_top_up(String.t(), Polarex.WalletTopUpCreate.t(), keyword) ::
+          {:ok, Polarex.Wallet.t()}
+          | {:error,
+             Polarex.HTTPValidationError.t()
+             | Polarex.MissingPaymentMethodError.t()
+             | Polarex.PaymentIntentFailedError.t()
+             | Polarex.ResourceNotFound.t()}
+  def wallets_top_up(id, body, opts \\ []) do
+    client = opts[:client] || @default_client
+
+    client.request(%{
+      args: [id: id, body: body],
+      call: {Polarex.Mcp, :wallets_top_up},
+      url: "/v1/wallets/#{id}/top-up",
+      body: body,
+      method: :post,
+      request: [{"application/json", {Polarex.WalletTopUpCreate, :t}}],
+      response: [
+        {200, {Polarex.Wallet, :t}},
+        {201, :null},
+        {400, {Polarex.PaymentIntentFailedError, :t}},
+        {402, {Polarex.MissingPaymentMethodError, :t}},
+        {404, {Polarex.ResourceNotFound, :t}},
         {422, {Polarex.HTTPValidationError, :t}}
       ],
       opts: opts

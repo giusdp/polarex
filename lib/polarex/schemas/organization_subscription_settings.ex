@@ -6,10 +6,16 @@ defmodule Polarex.OrganizationSubscriptionSettings do
   @type t :: %__MODULE__{
           allow_customer_updates: boolean,
           allow_multiple_subscriptions: boolean,
+          benefit_revocation_grace_period: integer,
           proration_behavior: String.t()
         }
 
-  defstruct [:allow_customer_updates, :allow_multiple_subscriptions, :proration_behavior]
+  defstruct [
+    :allow_customer_updates,
+    :allow_multiple_subscriptions,
+    :benefit_revocation_grace_period,
+    :proration_behavior
+  ]
 
   @doc false
   @spec __fields__(atom) :: keyword
@@ -19,6 +25,7 @@ defmodule Polarex.OrganizationSubscriptionSettings do
     [
       allow_customer_updates: :boolean,
       allow_multiple_subscriptions: :boolean,
+      benefit_revocation_grace_period: :integer,
       proration_behavior: {:enum, ["invoice", "prorate"]}
     ]
   end

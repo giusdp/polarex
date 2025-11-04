@@ -4,11 +4,12 @@ defmodule Polarex.UserEvent do
   """
 
   @type t :: %__MODULE__{
+          child_count: integer | nil,
           customer: Polarex.Customer.t() | nil,
           customer_id: String.t() | nil,
           external_customer_id: String.t() | nil,
           id: String.t(),
-          metadata: Polarex.Metadata.t(),
+          metadata: Polarex.EventMetadataOutput.t(),
           name: String.t(),
           organization_id: String.t(),
           source: String.t(),
@@ -16,6 +17,7 @@ defmodule Polarex.UserEvent do
         }
 
   defstruct [
+    :child_count,
     :customer,
     :customer_id,
     :external_customer_id,
@@ -33,11 +35,12 @@ defmodule Polarex.UserEvent do
 
   def __fields__(:t) do
     [
+      child_count: :integer,
       customer: {:union, [{Polarex.Customer, :t}, :null]},
       customer_id: {:union, [{:string, :generic}, :null]},
       external_customer_id: {:union, [{:string, :generic}, :null]},
       id: {:string, :generic},
-      metadata: {Polarex.Metadata, :t},
+      metadata: {Polarex.EventMetadataOutput, :t},
       name: {:string, :generic},
       organization_id: {:string, :generic},
       source: {:const, "user"},

@@ -115,6 +115,7 @@ defmodule Polarex.Meters do
     * `interval`: Interval between two timestamps.
     * `customer_id`: Filter by customer ID.
     * `external_customer_id`: Filter by external customer ID.
+    * `customer_aggregation_function`: If set, will first compute the quantities per customer before aggregating them using the given function. If not set, the quantities will be aggregated across all events.
     * `metadata`: Filter by metadata key-value pairs. It uses the `deepObject` style, e.g. `?metadata[key]=value`.
 
   """
@@ -126,6 +127,7 @@ defmodule Polarex.Meters do
 
     query =
       Keyword.take(opts, [
+        :customer_aggregation_function,
         :customer_id,
         :end_timestamp,
         :external_customer_id,

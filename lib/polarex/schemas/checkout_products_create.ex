@@ -7,7 +7,7 @@ defmodule Polarex.CheckoutProductsCreate do
           allow_discount_codes: boolean | nil,
           amount: integer | nil,
           custom_field_data: Polarex.CustomFieldData.t() | nil,
-          customer_billing_address: Polarex.Address.t() | nil,
+          customer_billing_address: Polarex.AddressInput.t() | nil,
           customer_billing_name: String.t() | nil,
           customer_email: String.t() | nil,
           customer_id: String.t() | nil,
@@ -22,8 +22,12 @@ defmodule Polarex.CheckoutProductsCreate do
           metadata: Polarex.Metadata.t() | nil,
           products: [String.t()],
           require_billing_address: boolean | nil,
+          return_url: String.t() | nil,
+          seats: integer | nil,
           subscription_id: String.t() | nil,
-          success_url: String.t() | nil
+          success_url: String.t() | nil,
+          trial_interval: String.t() | nil,
+          trial_interval_count: integer | nil
         }
 
   defstruct [
@@ -45,8 +49,12 @@ defmodule Polarex.CheckoutProductsCreate do
     :metadata,
     :products,
     :require_billing_address,
+    :return_url,
+    :seats,
     :subscription_id,
-    :success_url
+    :success_url,
+    :trial_interval,
+    :trial_interval_count
   ]
 
   @doc false
@@ -58,7 +66,7 @@ defmodule Polarex.CheckoutProductsCreate do
       allow_discount_codes: :boolean,
       amount: {:union, [:integer, :null]},
       custom_field_data: {Polarex.CustomFieldData, :t},
-      customer_billing_address: {:union, [{Polarex.Address, :t}, :null]},
+      customer_billing_address: {:union, [{Polarex.AddressInput, :t}, :null]},
       customer_billing_name: {:union, [{:string, :generic}, :null]},
       customer_email: {:union, [{:string, :email}, :null]},
       customer_id: {:union, [{:string, :generic}, :null]},
@@ -73,8 +81,12 @@ defmodule Polarex.CheckoutProductsCreate do
       metadata: {Polarex.Metadata, :t},
       products: [string: :generic],
       require_billing_address: :boolean,
+      return_url: {:union, [{:string, :uri}, :null]},
+      seats: {:union, [:integer, :null]},
       subscription_id: {:union, [{:string, :generic}, :null]},
-      success_url: {:union, [{:string, :uri}, :null]}
+      success_url: {:union, [{:string, :uri}, :null]},
+      trial_interval: {:union, [{:enum, ["day", "week", "month", "year"]}, :null]},
+      trial_interval_count: {:union, [:integer, :null]}
     ]
   end
 end

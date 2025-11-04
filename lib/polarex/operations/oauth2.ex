@@ -29,6 +29,93 @@ defmodule Polarex.Oauth2 do
   end
 
   @doc """
+  Create Client
+
+  Create an OAuth2 client.
+  """
+  @spec oauth2_clients_oauth2_create_client(Polarex.OAuth2ClientConfiguration.t(), keyword) ::
+          {:ok, map} | {:error, Polarex.HTTPValidationError.t()}
+  def oauth2_clients_oauth2_create_client(body, opts \\ []) do
+    client = opts[:client] || @default_client
+
+    client.request(%{
+      args: [body: body],
+      call: {Polarex.Oauth2, :oauth2_clients_oauth2_create_client},
+      url: "/v1/oauth2/register",
+      body: body,
+      method: :post,
+      request: [{"application/json", {Polarex.OAuth2ClientConfiguration, :t}}],
+      response: [{200, :map}, {422, {Polarex.HTTPValidationError, :t}}],
+      opts: opts
+    })
+  end
+
+  @doc """
+  Delete Client
+
+  Delete an OAuth2 client.
+  """
+  @spec oauth2_clients_oauth2_delete_client(String.t(), keyword) ::
+          {:ok, map} | {:error, Polarex.HTTPValidationError.t()}
+  def oauth2_clients_oauth2_delete_client(client_id, opts \\ []) do
+    client = opts[:client] || @default_client
+
+    client.request(%{
+      args: [client_id: client_id],
+      call: {Polarex.Oauth2, :oauth2_clients_oauth2_delete_client},
+      url: "/v1/oauth2/register/#{client_id}",
+      method: :delete,
+      response: [{200, :map}, {422, {Polarex.HTTPValidationError, :t}}],
+      opts: opts
+    })
+  end
+
+  @doc """
+  Get Client
+
+  Get an OAuth2 client by Client ID.
+  """
+  @spec oauth2_clients_oauth2_get_client(String.t(), keyword) ::
+          {:ok, map} | {:error, Polarex.HTTPValidationError.t()}
+  def oauth2_clients_oauth2_get_client(client_id, opts \\ []) do
+    client = opts[:client] || @default_client
+
+    client.request(%{
+      args: [client_id: client_id],
+      call: {Polarex.Oauth2, :oauth2_clients_oauth2_get_client},
+      url: "/v1/oauth2/register/#{client_id}",
+      method: :get,
+      response: [{200, :map}, {422, {Polarex.HTTPValidationError, :t}}],
+      opts: opts
+    })
+  end
+
+  @doc """
+  Update Client
+
+  Update an OAuth2 client.
+  """
+  @spec oauth2_clients_oauth2_update_client(
+          String.t(),
+          Polarex.OAuth2ClientConfigurationUpdate.t(),
+          keyword
+        ) :: {:ok, map} | {:error, Polarex.HTTPValidationError.t()}
+  def oauth2_clients_oauth2_update_client(client_id, body, opts \\ []) do
+    client = opts[:client] || @default_client
+
+    client.request(%{
+      args: [client_id: client_id, body: body],
+      call: {Polarex.Oauth2, :oauth2_clients_oauth2_update_client},
+      url: "/v1/oauth2/register/#{client_id}",
+      body: body,
+      method: :put,
+      request: [{"application/json", {Polarex.OAuth2ClientConfigurationUpdate, :t}}],
+      response: [{200, :map}, {422, {Polarex.HTTPValidationError, :t}}],
+      opts: opts
+    })
+  end
+
+  @doc """
   Introspect Token
 
   Get information about an access token.
@@ -56,7 +143,9 @@ defmodule Polarex.Oauth2 do
   Request an access token using a valid grant.
   """
   @spec oauth2_request_token(
-          Polarex.AuthorizationCodeTokenRequest.t() | Polarex.RefreshTokenRequest.t(),
+          Polarex.AuthorizationCodeTokenRequest.t()
+          | Polarex.RefreshTokenRequest.t()
+          | Polarex.WebTokenRequest.t(),
           keyword
         ) :: {:ok, Polarex.TokenResponse.t()} | :error
   def oauth2_request_token(body, opts \\ []) do
@@ -71,7 +160,11 @@ defmodule Polarex.Oauth2 do
       request: [
         {"application/x-www-form-urlencoded",
          {:union,
-          [{Polarex.AuthorizationCodeTokenRequest, :t}, {Polarex.RefreshTokenRequest, :t}]}}
+          [
+            {Polarex.AuthorizationCodeTokenRequest, :t},
+            {Polarex.RefreshTokenRequest, :t},
+            {Polarex.WebTokenRequest, :t}
+          ]}}
       ],
       response: [{200, {Polarex.TokenResponse, :t}}],
       opts: opts

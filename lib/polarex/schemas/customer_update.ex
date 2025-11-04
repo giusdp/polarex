@@ -4,7 +4,7 @@ defmodule Polarex.CustomerUpdate do
   """
 
   @type t :: %__MODULE__{
-          billing_address: Polarex.Address.t() | nil,
+          billing_address: Polarex.AddressInput.t() | nil,
           email: String.t() | nil,
           external_id: String.t() | nil,
           metadata: Polarex.Metadata.t() | nil,
@@ -20,7 +20,7 @@ defmodule Polarex.CustomerUpdate do
 
   def __fields__(:t) do
     [
-      billing_address: {:union, [{Polarex.Address, :t}, :null]},
+      billing_address: {:union, [{Polarex.AddressInput, :t}, :null]},
       email: {:union, [{:string, :email}, :null]},
       external_id: {:union, [{:string, :generic}, :null]},
       metadata: {Polarex.Metadata, :t},

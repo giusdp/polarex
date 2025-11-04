@@ -11,7 +11,9 @@ defmodule Polarex.CheckoutLinkCreateProductPrice do
           payment_processor: String.t(),
           product_price_id: String.t(),
           require_billing_address: boolean | nil,
-          success_url: String.t() | nil
+          success_url: String.t() | nil,
+          trial_interval: String.t() | nil,
+          trial_interval_count: integer | nil
         }
 
   defstruct [
@@ -22,7 +24,9 @@ defmodule Polarex.CheckoutLinkCreateProductPrice do
     :payment_processor,
     :product_price_id,
     :require_billing_address,
-    :success_url
+    :success_url,
+    :trial_interval,
+    :trial_interval_count
   ]
 
   @doc false
@@ -38,7 +42,9 @@ defmodule Polarex.CheckoutLinkCreateProductPrice do
       payment_processor: {:const, "stripe"},
       product_price_id: {:string, :generic},
       require_billing_address: :boolean,
-      success_url: {:union, [{:string, :uri}, :null]}
+      success_url: {:union, [{:string, :uri}, :null]},
+      trial_interval: {:union, [{:enum, ["day", "week", "month", "year"]}, :null]},
+      trial_interval_count: {:union, [:integer, :null]}
     ]
   end
 end

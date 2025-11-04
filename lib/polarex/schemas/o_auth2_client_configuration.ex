@@ -6,6 +6,7 @@ defmodule Polarex.OAuth2ClientConfiguration do
   @type t :: %__MODULE__{
           client_name: String.t(),
           client_uri: String.t() | nil,
+          default_sub_type: String.t() | nil,
           grant_types: [String.t()] | nil,
           logo_uri: String.t() | nil,
           policy_uri: String.t() | nil,
@@ -19,6 +20,7 @@ defmodule Polarex.OAuth2ClientConfiguration do
   defstruct [
     :client_name,
     :client_uri,
+    :default_sub_type,
     :grant_types,
     :logo_uri,
     :policy_uri,
@@ -37,6 +39,7 @@ defmodule Polarex.OAuth2ClientConfiguration do
     [
       client_name: {:string, :generic},
       client_uri: {:union, [{:string, :generic}, :null]},
+      default_sub_type: {:enum, ["user", "organization"]},
       grant_types: [enum: ["authorization_code", "refresh_token"]],
       logo_uri: {:union, [{:string, :uri}, :null]},
       policy_uri: {:union, [{:string, :uri}, :null]},

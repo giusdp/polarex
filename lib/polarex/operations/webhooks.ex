@@ -94,6 +94,8 @@ defmodule Polarex.Webhooks do
   ## Options
 
     * `endpoint_id`: Filter by webhook endpoint ID.
+    * `start_timestamp`: Filter deliveries after this timestamp.
+    * `end_timestamp`: Filter deliveries before this timestamp.
     * `page`: Page number, defaults to 1.
     * `limit`: Size of a page, defaults to 10. Maximum is 100.
 
@@ -103,7 +105,7 @@ defmodule Polarex.Webhooks do
           | {:error, Polarex.HTTPValidationError.t()}
   def webhooks_list_webhook_deliveries(opts \\ []) do
     client = opts[:client] || @default_client
-    query = Keyword.take(opts, [:endpoint_id, :limit, :page])
+    query = Keyword.take(opts, [:end_timestamp, :endpoint_id, :limit, :page, :start_timestamp])
 
     client.request(%{
       args: [],

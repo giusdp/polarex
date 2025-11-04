@@ -4,8 +4,10 @@ defmodule Polarex.Organization do
   """
 
   @type t :: %__MODULE__{
+          allow_customer_updates: boolean,
           avatar_url: String.t() | nil,
           created_at: DateTime.t(),
+          customer_email_settings: Polarex.OrganizationCustomerEmailSettings.t(),
           details_submitted_at: DateTime.t() | nil,
           email: String.t() | nil,
           feature_settings: Polarex.OrganizationFeatureSettings.t() | nil,
@@ -13,6 +15,7 @@ defmodule Polarex.Organization do
           modified_at: DateTime.t() | nil,
           name: String.t(),
           notification_settings: Polarex.OrganizationNotificationSettings.t(),
+          proration_behavior: String.t(),
           slug: String.t(),
           socials: [Polarex.OrganizationSocialLink.t()],
           status: String.t(),
@@ -21,8 +24,10 @@ defmodule Polarex.Organization do
         }
 
   defstruct [
+    :allow_customer_updates,
     :avatar_url,
     :created_at,
+    :customer_email_settings,
     :details_submitted_at,
     :email,
     :feature_settings,
@@ -30,6 +35,7 @@ defmodule Polarex.Organization do
     :modified_at,
     :name,
     :notification_settings,
+    :proration_behavior,
     :slug,
     :socials,
     :status,
@@ -43,8 +49,10 @@ defmodule Polarex.Organization do
 
   def __fields__(:t) do
     [
+      allow_customer_updates: :boolean,
       avatar_url: {:union, [{:string, :generic}, :null]},
       created_at: {:string, :date_time},
+      customer_email_settings: {Polarex.OrganizationCustomerEmailSettings, :t},
       details_submitted_at: {:union, [{:string, :date_time}, :null]},
       email: {:union, [{:string, :generic}, :null]},
       feature_settings: {:union, [{Polarex.OrganizationFeatureSettings, :t}, :null]},
@@ -52,9 +60,12 @@ defmodule Polarex.Organization do
       modified_at: {:union, [{:string, :date_time}, :null]},
       name: {:string, :generic},
       notification_settings: {Polarex.OrganizationNotificationSettings, :t},
+      proration_behavior: {:enum, ["invoice", "prorate"]},
       slug: {:string, :generic},
       socials: [{Polarex.OrganizationSocialLink, :t}],
-      status: {:enum, ["created", "onboarding_started", "under_review", "denied", "active"]},
+      status:
+        {:enum,
+         ["created", "onboarding_started", "initial_review", "ongoing_review", "denied", "active"]},
       subscription_settings: {Polarex.OrganizationSubscriptionSettings, :t},
       website: {:union, [{:string, :generic}, :null]}
     ]

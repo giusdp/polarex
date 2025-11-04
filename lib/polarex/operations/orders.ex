@@ -51,10 +51,7 @@ defmodule Polarex.Orders do
   """
   @spec customer_portal_orders_generate_invoice(String.t(), keyword) ::
           {:ok, map}
-          | {:error,
-             Polarex.InvoiceAlreadyExists.t()
-             | Polarex.MissingInvoiceBillingDetails.t()
-             | Polarex.NotPaidOrder.t()}
+          | {:error, Polarex.MissingInvoiceBillingDetails.t() | Polarex.NotPaidOrder.t()}
   def customer_portal_orders_generate_invoice(id, opts \\ []) do
     client = opts[:client] || @default_client
 
@@ -65,7 +62,6 @@ defmodule Polarex.Orders do
       method: :post,
       response: [
         {202, :map},
-        {409, {Polarex.InvoiceAlreadyExists, :t}},
         {422, {:union, [{Polarex.MissingInvoiceBillingDetails, :t}, {Polarex.NotPaidOrder, :t}]}}
       ],
       opts: opts
@@ -162,7 +158,6 @@ defmodule Polarex.Orders do
 
   ## Options
 
-    * `organization_id`: Filter by organization ID.
     * `product_id`: Filter by product ID.
     * `product_billing_type`: Filter by product billing type. `recurring` will filter data corresponding to subscriptions creations or renewals. `one_time` will filter data corresponding to one-time purchases.
     * `subscription_id`: Filter by subscription ID.
@@ -180,7 +175,6 @@ defmodule Polarex.Orders do
     query =
       Keyword.take(opts, [
         :limit,
-        :organization_id,
         :page,
         :product_billing_type,
         :product_id,
@@ -233,6 +227,35 @@ defmodule Polarex.Orders do
   end
 
   @doc """
+  Export Subscriptions
+
+  Export orders as a CSV file.
+
+  **Scopes**: `orders:read`
+
+  ## Options
+
+    * `organization_id`: Filter by organization ID.
+    * `product_id`: Filter by product ID.
+
+  """
+  @spec orders_export(keyword) :: {:ok, map} | {:error, Polarex.HTTPValidationError.t()}
+  def orders_export(opts \\ []) do
+    client = opts[:client] || @default_client
+    query = Keyword.take(opts, [:organization_id, :product_id])
+
+    client.request(%{
+      args: [],
+      call: {Polarex.Orders, :orders_export},
+      url: "/v1/orders/export",
+      method: :get,
+      query: query,
+      response: [{200, :map}, {422, {Polarex.HTTPValidationError, :t}}],
+      opts: opts
+    })
+  end
+
+  @doc """
   Generate Order Invoice
 
   Trigger generation of an order's invoice.
@@ -241,10 +264,7 @@ defmodule Polarex.Orders do
   """
   @spec orders_generate_invoice(String.t(), keyword) ::
           {:ok, map}
-          | {:error,
-             Polarex.InvoiceAlreadyExists.t()
-             | Polarex.MissingInvoiceBillingDetails.t()
-             | Polarex.NotPaidOrder.t()}
+          | {:error, Polarex.MissingInvoiceBillingDetails.t() | Polarex.NotPaidOrder.t()}
   def orders_generate_invoice(id, opts \\ []) do
     client = opts[:client] || @default_client
 
@@ -255,7 +275,6 @@ defmodule Polarex.Orders do
       method: :post,
       response: [
         {202, :map},
-        {409, {Polarex.InvoiceAlreadyExists, :t}},
         {422, {:union, [{Polarex.MissingInvoiceBillingDetails, :t}, {Polarex.NotPaidOrder, :t}]}}
       ],
       opts: opts

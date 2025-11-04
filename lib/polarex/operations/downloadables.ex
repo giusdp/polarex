@@ -12,7 +12,6 @@ defmodule Polarex.Downloadables do
 
   ## Options
 
-    * `organization_id`: Filter by organization ID.
     * `benefit_id`: Filter by benefit ID.
     * `page`: Page number, defaults to 1.
     * `limit`: Size of a page, defaults to 10. Maximum is 100.
@@ -23,7 +22,7 @@ defmodule Polarex.Downloadables do
           | {:error, Polarex.HTTPValidationError.t()}
   def customer_portal_downloadables_list(opts \\ []) do
     client = opts[:client] || @default_client
-    query = Keyword.take(opts, [:benefit_id, :limit, :organization_id, :page])
+    query = Keyword.take(opts, [:benefit_id, :limit, :page])
 
     client.request(%{
       args: [],

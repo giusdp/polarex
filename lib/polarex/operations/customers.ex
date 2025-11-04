@@ -16,7 +16,9 @@ defmodule Polarex.Customers do
           Polarex.CustomerPaymentMethodCreate.t(),
           keyword
         ) ::
-          {:ok, Polarex.PaymentMethodCard.t() | Polarex.PaymentMethodGeneric.t()}
+          {:ok,
+           Polarex.CustomerPaymentMethodCreateRequiresActionResponse.t()
+           | Polarex.CustomerPaymentMethodCreateSucceededResponse.t()}
           | {:error, Polarex.HTTPValidationError.t()}
   def customer_portal_customers_add_payment_method(body, opts \\ []) do
     client = opts[:client] || @default_client
@@ -29,7 +31,51 @@ defmodule Polarex.Customers do
       method: :post,
       request: [{"application/json", {Polarex.CustomerPaymentMethodCreate, :t}}],
       response: [
-        {201, {:union, [{Polarex.PaymentMethodCard, :t}, {Polarex.PaymentMethodGeneric, :t}]}},
+        {201,
+         {:union,
+          [
+            {Polarex.CustomerPaymentMethodCreateRequiresActionResponse, :t},
+            {Polarex.CustomerPaymentMethodCreateSucceededResponse, :t}
+          ]}},
+        {422, {Polarex.HTTPValidationError, :t}}
+      ],
+      opts: opts
+    })
+  end
+
+  @doc """
+  Confirm Customer Payment Method
+
+  Confirm a payment method for the authenticated customer.
+
+  **Scopes**: `customer_portal:read` `customer_portal:write`
+  """
+  @spec customer_portal_customers_confirm_payment_method(
+          Polarex.CustomerPaymentMethodConfirm.t(),
+          keyword
+        ) ::
+          {:ok,
+           Polarex.CustomerPaymentMethodCreateRequiresActionResponse.t()
+           | Polarex.CustomerPaymentMethodCreateSucceededResponse.t()}
+          | {:error, Polarex.CustomerNotReady.t() | Polarex.HTTPValidationError.t()}
+  def customer_portal_customers_confirm_payment_method(body, opts \\ []) do
+    client = opts[:client] || @default_client
+
+    client.request(%{
+      args: [body: body],
+      call: {Polarex.Customers, :customer_portal_customers_confirm_payment_method},
+      url: "/v1/customer-portal/customers/me/payment-methods/confirm",
+      body: body,
+      method: :post,
+      request: [{"application/json", {Polarex.CustomerPaymentMethodConfirm, :t}}],
+      response: [
+        {201,
+         {:union,
+          [
+            {Polarex.CustomerPaymentMethodCreateRequiresActionResponse, :t},
+            {Polarex.CustomerPaymentMethodCreateSucceededResponse, :t}
+          ]}},
+        {400, {Polarex.CustomerNotReady, :t}},
         {422, {Polarex.HTTPValidationError, :t}}
       ],
       opts: opts
@@ -241,6 +287,34 @@ defmodule Polarex.Customers do
   end
 
   @doc """
+  Export Customers
+
+  Export customers as a CSV file.
+
+  **Scopes**: `customers:read` `customers:write`
+
+  ## Options
+
+    * `organization_id`: Filter by organization ID.
+
+  """
+  @spec customers_export(keyword) :: {:ok, map} | {:error, Polarex.HTTPValidationError.t()}
+  def customers_export(opts \\ []) do
+    client = opts[:client] || @default_client
+    query = Keyword.take(opts, [:organization_id])
+
+    client.request(%{
+      args: [],
+      call: {Polarex.Customers, :customers_export},
+      url: "/v1/customers/export",
+      method: :get,
+      query: query,
+      response: [{200, :map}, {422, {Polarex.HTTPValidationError, :t}}],
+      opts: opts
+    })
+  end
+
+  @doc """
   Get Customer
 
   Get a customer by ID.
@@ -260,6 +334,33 @@ defmodule Polarex.Customers do
       method: :get,
       response: [
         {200, {Polarex.Customer, :t}},
+        {404, {Polarex.ResourceNotFound, :t}},
+        {422, {Polarex.HTTPValidationError, :t}}
+      ],
+      opts: opts
+    })
+  end
+
+  @doc """
+  Get Customer Balance
+
+  Get customer balance information.
+
+  **Scopes**: `customers:read` `customers:write`
+  """
+  @spec customers_get_balance(String.t(), keyword) ::
+          {:ok, Polarex.CustomerBalance.t()}
+          | {:error, Polarex.HTTPValidationError.t() | Polarex.ResourceNotFound.t()}
+  def customers_get_balance(id, opts \\ []) do
+    client = opts[:client] || @default_client
+
+    client.request(%{
+      args: [id: id],
+      call: {Polarex.Customers, :customers_get_balance},
+      url: "/v1/customers/#{id}/balance",
+      method: :get,
+      response: [
+        {200, {Polarex.CustomerBalance, :t}},
         {404, {Polarex.ResourceNotFound, :t}},
         {422, {Polarex.HTTPValidationError, :t}}
       ],
@@ -371,7 +472,7 @@ defmodule Polarex.Customers do
 
     * `organization_id`: Filter by organization ID.
     * `email`: Filter by exact email.
-    * `query`: Filter by name or email.
+    * `query`: Filter by name, email, or external ID.
     * `page`: Page number, defaults to 1.
     * `limit`: Size of a page, defaults to 10. Maximum is 100.
     * `sorting`: Sorting criterion. Several criteria can be used simultaneously and will be applied in order. Add a minus sign `-` before the criteria name to sort by descending order.

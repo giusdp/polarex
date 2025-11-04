@@ -106,7 +106,6 @@ defmodule Polarex.LicenseKeys do
 
   ## Options
 
-    * `organization_id`: Filter by organization ID.
     * `benefit_id`: Filter by a specific benefit
     * `page`: Page number, defaults to 1.
     * `limit`: Size of a page, defaults to 10. Maximum is 100.
@@ -120,7 +119,7 @@ defmodule Polarex.LicenseKeys do
              | Polarex.Unauthorized.t()}
   def customer_portal_license_keys_list(opts \\ []) do
     client = opts[:client] || @default_client
-    query = Keyword.take(opts, [:benefit_id, :limit, :organization_id, :page])
+    query = Keyword.take(opts, [:benefit_id, :limit, :page])
 
     client.request(%{
       args: [],

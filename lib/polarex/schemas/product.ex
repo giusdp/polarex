@@ -24,7 +24,10 @@ defmodule Polarex.Product do
           name: String.t(),
           organization_id: String.t(),
           prices: [map],
-          recurring_interval: String.t() | nil
+          recurring_interval: String.t() | nil,
+          recurring_interval_count: integer | nil,
+          trial_interval: String.t() | nil,
+          trial_interval_count: integer | nil
         }
 
   defstruct [
@@ -41,7 +44,10 @@ defmodule Polarex.Product do
     :name,
     :organization_id,
     :prices,
-    :recurring_interval
+    :recurring_interval,
+    :recurring_interval_count,
+    :trial_interval,
+    :trial_interval_count
   ]
 
   @doc false
@@ -72,7 +78,10 @@ defmodule Polarex.Product do
       name: {:string, :generic},
       organization_id: {:string, :generic},
       prices: [:map],
-      recurring_interval: {:union, [{:enum, ["day", "week", "month", "year"]}, :null]}
+      recurring_interval: {:union, [{:enum, ["day", "week", "month", "year"]}, :null]},
+      recurring_interval_count: {:union, [:integer, :null]},
+      trial_interval: {:union, [{:enum, ["day", "week", "month", "year"]}, :null]},
+      trial_interval_count: {:union, [:integer, :null]}
     ]
   end
 end

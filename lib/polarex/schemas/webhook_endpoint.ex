@@ -5,6 +5,7 @@ defmodule Polarex.WebhookEndpoint do
 
   @type t :: %__MODULE__{
           created_at: DateTime.t(),
+          enabled: boolean,
           events: [String.t()],
           format: String.t(),
           id: String.t(),
@@ -14,7 +15,17 @@ defmodule Polarex.WebhookEndpoint do
           url: String.t()
         }
 
-  defstruct [:created_at, :events, :format, :id, :modified_at, :organization_id, :secret, :url]
+  defstruct [
+    :created_at,
+    :enabled,
+    :events,
+    :format,
+    :id,
+    :modified_at,
+    :organization_id,
+    :secret,
+    :url
+  ]
 
   @doc false
   @spec __fields__(atom) :: keyword
@@ -23,6 +34,7 @@ defmodule Polarex.WebhookEndpoint do
   def __fields__(:t) do
     [
       created_at: {:string, :date_time},
+      enabled: :boolean,
       events: [
         enum: [
           "checkout.created",
@@ -31,6 +43,9 @@ defmodule Polarex.WebhookEndpoint do
           "customer.updated",
           "customer.deleted",
           "customer.state_changed",
+          "customer_seat.assigned",
+          "customer_seat.claimed",
+          "customer_seat.revoked",
           "order.created",
           "order.updated",
           "order.paid",

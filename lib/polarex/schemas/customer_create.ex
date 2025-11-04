@@ -4,7 +4,7 @@ defmodule Polarex.CustomerCreate do
   """
 
   @type t :: %__MODULE__{
-          billing_address: Polarex.Address.t() | nil,
+          billing_address: Polarex.AddressInput.t() | nil,
           email: String.t(),
           external_id: String.t() | nil,
           metadata: Polarex.Metadata.t() | nil,
@@ -21,7 +21,7 @@ defmodule Polarex.CustomerCreate do
 
   def __fields__(:t) do
     [
-      billing_address: {:union, [{Polarex.Address, :t}, :null]},
+      billing_address: {:union, [{Polarex.AddressInput, :t}, :null]},
       email: {:string, :email},
       external_id: {:union, [{:string, :generic}, :null]},
       metadata: {Polarex.Metadata, :t},

@@ -6,37 +6,6 @@ defmodule Polarex.Clients do
   @default_client Polarex.Support.Client
 
   @doc """
-  List Clients
-
-  List OAuth2 clients.
-
-  ## Options
-
-    * `page`: Page number, defaults to 1.
-    * `limit`: Size of a page, defaults to 10. Maximum is 100.
-
-  """
-  @spec oauth2_clients_list(keyword) ::
-          {:ok, Polarex.ListResourceOAuth2Client.t()} | {:error, Polarex.HTTPValidationError.t()}
-  def oauth2_clients_list(opts \\ []) do
-    client = opts[:client] || @default_client
-    query = Keyword.take(opts, [:limit, :page])
-
-    client.request(%{
-      args: [],
-      call: {Polarex.Clients, :oauth2_clients_list},
-      url: "/v1/oauth2/",
-      method: :get,
-      query: query,
-      response: [
-        {200, {Polarex.ListResourceOAuth2Client, :t}},
-        {422, {Polarex.HTTPValidationError, :t}}
-      ],
-      opts: opts
-    })
-  end
-
-  @doc """
   Create Client
 
   Create an OAuth2 client.

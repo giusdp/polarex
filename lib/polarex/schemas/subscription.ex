@@ -29,8 +29,12 @@ defmodule Polarex.Subscription do
           product: Polarex.Product.t(),
           product_id: String.t(),
           recurring_interval: String.t(),
+          recurring_interval_count: integer,
+          seats: integer | nil,
           started_at: DateTime.t() | nil,
-          status: String.t()
+          status: String.t(),
+          trial_end: DateTime.t() | nil,
+          trial_start: DateTime.t() | nil
         }
 
   defstruct [
@@ -59,8 +63,12 @@ defmodule Polarex.Subscription do
     :product,
     :product_id,
     :recurring_interval,
+    :recurring_interval_count,
+    :seats,
     :started_at,
-    :status
+    :status,
+    :trial_end,
+    :trial_start
   ]
 
   @doc false
@@ -109,6 +117,8 @@ defmodule Polarex.Subscription do
       product: {Polarex.Product, :t},
       product_id: {:string, :generic},
       recurring_interval: {:enum, ["day", "week", "month", "year"]},
+      recurring_interval_count: :integer,
+      seats: {:union, [:integer, :null]},
       started_at: {:union, [{:string, :date_time}, :null]},
       status:
         {:enum,
@@ -120,7 +130,9 @@ defmodule Polarex.Subscription do
            "past_due",
            "canceled",
            "unpaid"
-         ]}
+         ]},
+      trial_end: {:union, [{:string, :date_time}, :null]},
+      trial_start: {:union, [{:string, :date_time}, :null]}
     ]
   end
 end

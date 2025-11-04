@@ -21,7 +21,9 @@ defmodule Polarex.CustomerStateSubscription do
           product_id: String.t(),
           recurring_interval: String.t(),
           started_at: DateTime.t() | nil,
-          status: String.t()
+          status: String.t(),
+          trial_end: DateTime.t() | nil,
+          trial_start: DateTime.t() | nil
         }
 
   defstruct [
@@ -42,7 +44,9 @@ defmodule Polarex.CustomerStateSubscription do
     :product_id,
     :recurring_interval,
     :started_at,
-    :status
+    :status,
+    :trial_end,
+    :trial_start
   ]
 
   @doc false
@@ -68,7 +72,9 @@ defmodule Polarex.CustomerStateSubscription do
       product_id: {:string, :generic},
       recurring_interval: {:enum, ["day", "week", "month", "year"]},
       started_at: {:union, [{:string, :date_time}, :null]},
-      status: {:const, "active"}
+      status: {:enum, ["active", "trialing"]},
+      trial_end: {:union, [{:string, :date_time}, :null]},
+      trial_start: {:union, [{:string, :date_time}, :null]}
     ]
   end
 end

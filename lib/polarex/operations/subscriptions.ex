@@ -72,7 +72,6 @@ defmodule Polarex.Subscriptions do
 
   ## Options
 
-    * `organization_id`: Filter by organization ID.
     * `product_id`: Filter by product ID.
     * `active`: Filter by active or cancelled subscription.
     * `query`: Search by product or organization name.
@@ -86,9 +85,7 @@ defmodule Polarex.Subscriptions do
           | {:error, Polarex.HTTPValidationError.t()}
   def customer_portal_subscriptions_list(opts \\ []) do
     client = opts[:client] || @default_client
-
-    query =
-      Keyword.take(opts, [:active, :limit, :organization_id, :page, :product_id, :query, :sorting])
+    query = Keyword.take(opts, [:active, :limit, :page, :product_id, :query, :sorting])
 
     client.request(%{
       args: [],
@@ -113,7 +110,9 @@ defmodule Polarex.Subscriptions do
   """
   @spec customer_portal_subscriptions_update(
           String.t(),
-          Polarex.CustomerSubscriptionCancel.t() | Polarex.CustomerSubscriptionUpdateProduct.t(),
+          Polarex.CustomerSubscriptionCancel.t()
+          | Polarex.CustomerSubscriptionUpdateProduct.t()
+          | Polarex.CustomerSubscriptionUpdateSeats.t(),
           keyword
         ) ::
           {:ok, Polarex.CustomerSubscription.t()}
@@ -135,7 +134,8 @@ defmodule Polarex.Subscriptions do
          {:union,
           [
             {Polarex.CustomerSubscriptionCancel, :t},
-            {Polarex.CustomerSubscriptionUpdateProduct, :t}
+            {Polarex.CustomerSubscriptionUpdateProduct, :t},
+            {Polarex.CustomerSubscriptionUpdateSeats, :t}
           ]}}
       ],
       response: [
@@ -144,6 +144,44 @@ defmodule Polarex.Subscriptions do
         {404, {Polarex.ResourceNotFound, :t}},
         {422, {Polarex.HTTPValidationError, :t}}
       ],
+      opts: opts
+    })
+  end
+
+  @doc """
+  Create Subscription
+
+  Create a subscription programmatically.
+
+  This endpoint only allows to create subscription on free products.
+  For paid products, use the checkout flow.
+
+  No initial order will be created and no confirmation email will be sent.
+
+  **Scopes**: `subscriptions:write`
+  """
+  @spec subscriptions_create(
+          Polarex.SubscriptionCreateCustomer.t() | Polarex.SubscriptionCreateExternalCustomer.t(),
+          keyword
+        ) :: {:ok, Polarex.Subscription.t()} | {:error, Polarex.HTTPValidationError.t()}
+  def subscriptions_create(body, opts \\ []) do
+    client = opts[:client] || @default_client
+
+    client.request(%{
+      args: [body: body],
+      call: {Polarex.Subscriptions, :subscriptions_create},
+      url: "/v1/subscriptions/",
+      body: body,
+      method: :post,
+      request: [
+        {"application/json",
+         {:union,
+          [
+            {Polarex.SubscriptionCreateCustomer, :t},
+            {Polarex.SubscriptionCreateExternalCustomer, :t}
+          ]}}
+      ],
+      response: [{201, {Polarex.Subscription, :t}}, {422, {Polarex.HTTPValidationError, :t}}],
       opts: opts
     })
   end
@@ -302,7 +340,9 @@ defmodule Polarex.Subscriptions do
           Polarex.SubscriptionCancel.t()
           | Polarex.SubscriptionRevoke.t()
           | Polarex.SubscriptionUpdateDiscount.t()
-          | Polarex.SubscriptionUpdateProduct.t(),
+          | Polarex.SubscriptionUpdateProduct.t()
+          | Polarex.SubscriptionUpdateSeats.t()
+          | Polarex.SubscriptionUpdateTrial.t(),
           keyword
         ) ::
           {:ok, Polarex.Subscription.t()}
@@ -327,7 +367,9 @@ defmodule Polarex.Subscriptions do
             {Polarex.SubscriptionCancel, :t},
             {Polarex.SubscriptionRevoke, :t},
             {Polarex.SubscriptionUpdateDiscount, :t},
-            {Polarex.SubscriptionUpdateProduct, :t}
+            {Polarex.SubscriptionUpdateProduct, :t},
+            {Polarex.SubscriptionUpdateSeats, :t},
+            {Polarex.SubscriptionUpdateTrial, :t}
           ]}}
       ],
       response: [

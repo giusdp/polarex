@@ -11,7 +11,7 @@ defmodule Polarex.Organizations do
   Get a customer portal's organization by slug.
   """
   @spec customer_portal_organizations_get(String.t(), keyword) ::
-          {:ok, Polarex.CustomerOrganization.t()}
+          {:ok, Polarex.CustomerOrganizationData.t()}
           | {:error, Polarex.HTTPValidationError.t() | Polarex.ResourceNotFound.t()}
   def customer_portal_organizations_get(slug, opts \\ []) do
     client = opts[:client] || @default_client
@@ -22,7 +22,7 @@ defmodule Polarex.Organizations do
       url: "/v1/customer-portal/organizations/#{slug}",
       method: :get,
       response: [
-        {200, {Polarex.CustomerOrganization, :t}},
+        {200, {Polarex.CustomerOrganizationData, :t}},
         {404, {Polarex.ResourceNotFound, :t}},
         {422, {Polarex.HTTPValidationError, :t}}
       ],

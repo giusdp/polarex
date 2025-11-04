@@ -4,13 +4,14 @@ defmodule Polarex.WebhookEndpointUpdate do
   """
 
   @type t :: %__MODULE__{
+          enabled: boolean | nil,
           events: [String.t()] | nil,
           format: String.t() | nil,
           secret: String.t() | nil,
           url: String.t() | nil
         }
 
-  defstruct [:events, :format, :secret, :url]
+  defstruct [:enabled, :events, :format, :secret, :url]
 
   @doc false
   @spec __fields__(atom) :: keyword
@@ -18,6 +19,7 @@ defmodule Polarex.WebhookEndpointUpdate do
 
   def __fields__(:t) do
     [
+      enabled: {:union, [:boolean, :null]},
       events:
         {:union,
          [
@@ -29,6 +31,9 @@ defmodule Polarex.WebhookEndpointUpdate do
                "customer.updated",
                "customer.deleted",
                "customer.state_changed",
+               "customer_seat.assigned",
+               "customer_seat.claimed",
+               "customer_seat.revoked",
                "order.created",
                "order.updated",
                "order.paid",

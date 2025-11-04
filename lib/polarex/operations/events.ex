@@ -77,6 +77,8 @@ defmodule Polarex.Events do
     * `meter_id`: Filter by a meter filter clause.
     * `name`: Filter by event name.
     * `source`: Filter by event source.
+    * `query`: Query to filter events.
+    * `parent_id`: Filter events by parent event ID. When not specified, returns root events only.
     * `page`: Page number, defaults to 1.
     * `limit`: Size of a page, defaults to 10. Maximum is 100.
     * `sorting`: Sorting criterion. Several criteria can be used simultaneously and will be applied in order. Add a minus sign `-` before the criteria name to sort by descending order.
@@ -100,6 +102,8 @@ defmodule Polarex.Events do
         :name,
         :organization_id,
         :page,
+        :parent_id,
+        :query,
         :sorting,
         :source,
         :start_timestamp

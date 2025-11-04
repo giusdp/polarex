@@ -10,7 +10,9 @@ defmodule Polarex.CheckoutLinkUpdate do
           metadata: Polarex.Metadata.t() | nil,
           products: [String.t()] | nil,
           require_billing_address: boolean | nil,
-          success_url: String.t() | nil
+          success_url: String.t() | nil,
+          trial_interval: String.t() | nil,
+          trial_interval_count: integer | nil
         }
 
   defstruct [
@@ -20,7 +22,9 @@ defmodule Polarex.CheckoutLinkUpdate do
     :metadata,
     :products,
     :require_billing_address,
-    :success_url
+    :success_url,
+    :trial_interval,
+    :trial_interval_count
   ]
 
   @doc false
@@ -35,7 +39,9 @@ defmodule Polarex.CheckoutLinkUpdate do
       metadata: {Polarex.Metadata, :t},
       products: {:union, [[string: :generic], :null]},
       require_billing_address: {:union, [:boolean, :null]},
-      success_url: {:union, [{:string, :uri}, :null]}
+      success_url: {:union, [{:string, :uri}, :null]},
+      trial_interval: {:union, [{:enum, ["day", "week", "month", "year"]}, :null]},
+      trial_interval_count: {:union, [:integer, :null]}
     ]
   end
 end

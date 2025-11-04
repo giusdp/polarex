@@ -15,7 +15,7 @@ defmodule Polarex.Metric do
     [
       display_name: {:string, :generic},
       slug: {:string, :generic},
-      type: {:enum, ["scalar", "currency", "percentage"]}
+      type: {:enum, ["scalar", "currency", "currency_sub_cent", "percentage"]}
     ]
   end
 end

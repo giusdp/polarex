@@ -4,6 +4,13 @@ defmodule Polarex.BenefitGrant do
   """
 
   @type t :: %__MODULE__{
+          benefit:
+            Polarex.BenefitCustom.t()
+            | Polarex.BenefitDiscord.t()
+            | Polarex.BenefitDownloadables.t()
+            | Polarex.BenefitGitHubRepository.t()
+            | Polarex.BenefitLicenseKeys.t()
+            | Polarex.BenefitMeterCredit.t(),
           benefit_id: String.t(),
           created_at: DateTime.t(),
           customer: Polarex.Customer.t(),
@@ -26,6 +33,7 @@ defmodule Polarex.BenefitGrant do
         }
 
   defstruct [
+    :benefit,
     :benefit_id,
     :created_at,
     :customer,
@@ -48,6 +56,16 @@ defmodule Polarex.BenefitGrant do
 
   def __fields__(:t) do
     [
+      benefit:
+        {:union,
+         [
+           {Polarex.BenefitCustom, :t},
+           {Polarex.BenefitDiscord, :t},
+           {Polarex.BenefitDownloadables, :t},
+           {Polarex.BenefitGitHubRepository, :t},
+           {Polarex.BenefitLicenseKeys, :t},
+           {Polarex.BenefitMeterCredit, :t}
+         ]},
       benefit_id: {:string, :generic},
       created_at: {:string, :date_time},
       customer: {Polarex.Customer, :t},

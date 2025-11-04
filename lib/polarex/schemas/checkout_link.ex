@@ -18,6 +18,8 @@ defmodule Polarex.CheckoutLink do
           products: [Polarex.CheckoutLinkProduct.t()],
           require_billing_address: boolean,
           success_url: String.t() | nil,
+          trial_interval: String.t() | nil,
+          trial_interval_count: integer | nil,
           url: String.t()
         }
 
@@ -36,6 +38,8 @@ defmodule Polarex.CheckoutLink do
     :products,
     :require_billing_address,
     :success_url,
+    :trial_interval,
+    :trial_interval_count,
     :url
   ]
 
@@ -59,6 +63,8 @@ defmodule Polarex.CheckoutLink do
       products: [{Polarex.CheckoutLinkProduct, :t}],
       require_billing_address: :boolean,
       success_url: {:union, [{:string, :generic}, :null]},
+      trial_interval: {:union, [{:enum, ["day", "week", "month", "year"]}, :null]},
+      trial_interval_count: {:union, [:integer, :null]},
       url: {:string, :generic}
     ]
   end

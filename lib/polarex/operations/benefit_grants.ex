@@ -6,6 +6,45 @@ defmodule Polarex.BenefitGrants do
   @default_client Polarex.Support.Client
 
   @doc """
+  List Benefit Grants
+
+  List benefit grants across all benefits for the authenticated organization.
+
+  **Scopes**: `benefits:read` `benefits:write`
+
+  ## Options
+
+    * `organization_id`: Filter by organization ID.
+    * `customer_id`: Filter by customer ID.
+    * `is_granted`: Filter by granted status. If `true`, only granted benefits will be returned. If `false`, only revoked benefits will be returned. 
+    * `page`: Page number, defaults to 1.
+    * `limit`: Size of a page, defaults to 10. Maximum is 100.
+    * `sorting`: Sorting criterion. Several criteria can be used simultaneously and will be applied in order. Add a minus sign `-` before the criteria name to sort by descending order.
+
+  """
+  @spec benefit_grants_list(keyword) ::
+          {:ok, Polarex.ListResourceBenefitGrant.t()} | {:error, Polarex.HTTPValidationError.t()}
+  def benefit_grants_list(opts \\ []) do
+    client = opts[:client] || @default_client
+
+    query =
+      Keyword.take(opts, [:customer_id, :is_granted, :limit, :organization_id, :page, :sorting])
+
+    client.request(%{
+      args: [],
+      call: {Polarex.BenefitGrants, :benefit_grants_list},
+      url: "/v1/benefit-grants/",
+      method: :get,
+      query: query,
+      response: [
+        {200, {Polarex.ListResourceBenefitGrant, :t}},
+        {422, {Polarex.HTTPValidationError, :t}}
+      ],
+      opts: opts
+    })
+  end
+
+  @doc """
   Get Benefit Grant
 
   Get a benefit grant by ID for the authenticated customer.
@@ -58,7 +97,6 @@ defmodule Polarex.BenefitGrants do
 
     * `type`: Filter by benefit type.
     * `benefit_id`: Filter by benefit ID.
-    * `organization_id`: Filter by organization ID.
     * `checkout_id`: Filter by checkout ID.
     * `order_id`: Filter by order ID.
     * `subscription_id`: Filter by subscription ID.
@@ -79,7 +117,6 @@ defmodule Polarex.BenefitGrants do
         :checkout_id,
         :limit,
         :order_id,
-        :organization_id,
         :page,
         :sorting,
         :subscription_id,

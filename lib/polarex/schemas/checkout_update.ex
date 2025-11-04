@@ -7,7 +7,7 @@ defmodule Polarex.CheckoutUpdate do
           allow_discount_codes: boolean | nil,
           amount: integer | nil,
           custom_field_data: Polarex.CustomFieldData.t() | nil,
-          customer_billing_address: Polarex.Address.t() | nil,
+          customer_billing_address: Polarex.AddressInput.t() | nil,
           customer_billing_name: String.t() | nil,
           customer_email: String.t() | nil,
           customer_ip_address: String.t() | nil,
@@ -21,7 +21,11 @@ defmodule Polarex.CheckoutUpdate do
           product_id: String.t() | nil,
           product_price_id: String.t() | nil,
           require_billing_address: boolean | nil,
-          success_url: String.t() | nil
+          return_url: String.t() | nil,
+          seats: integer | nil,
+          success_url: String.t() | nil,
+          trial_interval: String.t() | nil,
+          trial_interval_count: integer | nil
         }
 
   defstruct [
@@ -42,7 +46,11 @@ defmodule Polarex.CheckoutUpdate do
     :product_id,
     :product_price_id,
     :require_billing_address,
-    :success_url
+    :return_url,
+    :seats,
+    :success_url,
+    :trial_interval,
+    :trial_interval_count
   ]
 
   @doc false
@@ -54,7 +62,7 @@ defmodule Polarex.CheckoutUpdate do
       allow_discount_codes: {:union, [:boolean, :null]},
       amount: {:union, [:integer, :null]},
       custom_field_data: {Polarex.CustomFieldData, :t},
-      customer_billing_address: {:union, [{Polarex.Address, :t}, :null]},
+      customer_billing_address: {:union, [{Polarex.AddressInput, :t}, :null]},
       customer_billing_name: {:union, [{:string, :generic}, :null]},
       customer_email: {:union, [{:string, :email}, :null]},
       customer_ip_address: {:union, [{:string, :generic}, :null]},
@@ -68,7 +76,11 @@ defmodule Polarex.CheckoutUpdate do
       product_id: {:union, [{:string, :generic}, :null]},
       product_price_id: {:union, [{:string, :generic}, :null]},
       require_billing_address: {:union, [:boolean, :null]},
-      success_url: {:union, [{:string, :uri}, :null]}
+      return_url: {:union, [{:string, :uri}, :null]},
+      seats: {:union, [:integer, :null]},
+      success_url: {:union, [{:string, :uri}, :null]},
+      trial_interval: {:union, [{:enum, ["day", "week", "month", "year"]}, :null]},
+      trial_interval_count: {:union, [:integer, :null]}
     ]
   end
 end
