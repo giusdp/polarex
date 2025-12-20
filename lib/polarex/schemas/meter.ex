@@ -12,7 +12,7 @@ defmodule Polarex.Meter do
           created_at: DateTime.t(),
           filter: Polarex.Filter.t(),
           id: String.t(),
-          metadata: Polarex.Metadata.t(),
+          metadata: Polarex.MetadataOutputType.t(),
           modified_at: DateTime.t() | nil,
           name: String.t(),
           organization_id: String.t()
@@ -47,7 +47,7 @@ defmodule Polarex.Meter do
       created_at: {:string, :date_time},
       filter: {Polarex.Filter, :t},
       id: {:string, :generic},
-      metadata: {Polarex.Metadata, :t},
+      metadata: {Polarex.MetadataOutputType, :t},
       modified_at: {:union, [{:string, :date_time}, :null]},
       name: {:string, :generic},
       organization_id: {:string, :generic}

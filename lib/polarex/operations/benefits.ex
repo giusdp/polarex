@@ -157,6 +157,7 @@ defmodule Polarex.Benefits do
 
     * `is_granted`: Filter by granted status. If `true`, only granted benefits will be returned. If `false`, only revoked benefits will be returned. 
     * `customer_id`: Filter by customer.
+    * `member_id`: Filter by member.
     * `page`: Page number, defaults to 1.
     * `limit`: Size of a page, defaults to 10. Maximum is 100.
 
@@ -166,7 +167,7 @@ defmodule Polarex.Benefits do
           | {:error, Polarex.HTTPValidationError.t() | Polarex.ResourceNotFound.t()}
   def benefits_grants(id, opts \\ []) do
     client = opts[:client] || @default_client
-    query = Keyword.take(opts, [:customer_id, :is_granted, :limit, :page])
+    query = Keyword.take(opts, [:customer_id, :is_granted, :limit, :member_id, :page])
 
     client.request(%{
       args: [id: id],
@@ -194,6 +195,8 @@ defmodule Polarex.Benefits do
 
     * `organization_id`: Filter by organization ID.
     * `type`: Filter by benefit type.
+    * `id`: Filter by benefit IDs.
+    * `exclude_id`: Exclude benefits with these IDs.
     * `query`: Filter by description.
     * `page`: Page number, defaults to 1.
     * `limit`: Size of a page, defaults to 10. Maximum is 100.
@@ -207,7 +210,17 @@ defmodule Polarex.Benefits do
     client = opts[:client] || @default_client
 
     query =
-      Keyword.take(opts, [:limit, :metadata, :organization_id, :page, :query, :sorting, :type])
+      Keyword.take(opts, [
+        :exclude_id,
+        :id,
+        :limit,
+        :metadata,
+        :organization_id,
+        :page,
+        :query,
+        :sorting,
+        :type
+      ])
 
     client.request(%{
       args: [],

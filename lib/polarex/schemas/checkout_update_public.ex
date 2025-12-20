@@ -4,6 +4,7 @@ defmodule Polarex.CheckoutUpdatePublic do
   """
 
   @type t :: %__MODULE__{
+          allow_trial: false | nil,
           amount: integer | nil,
           custom_field_data: Polarex.CustomFieldData.t() | nil,
           customer_billing_address: Polarex.AddressInput.t() | nil,
@@ -19,6 +20,7 @@ defmodule Polarex.CheckoutUpdatePublic do
         }
 
   defstruct [
+    :allow_trial,
     :amount,
     :custom_field_data,
     :customer_billing_address,
@@ -39,6 +41,7 @@ defmodule Polarex.CheckoutUpdatePublic do
 
   def __fields__(:t) do
     [
+      allow_trial: {:union, [{:const, false}, :null]},
       amount: {:union, [:integer, :null]},
       custom_field_data: {Polarex.CustomFieldData, :t},
       customer_billing_address: {:union, [{Polarex.AddressInput, :t}, :null]},

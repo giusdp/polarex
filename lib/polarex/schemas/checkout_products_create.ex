@@ -5,6 +5,7 @@ defmodule Polarex.CheckoutProductsCreate do
 
   @type t :: %__MODULE__{
           allow_discount_codes: boolean | nil,
+          allow_trial: boolean | nil,
           amount: integer | nil,
           custom_field_data: Polarex.CustomFieldData.t() | nil,
           customer_billing_address: Polarex.AddressInput.t() | nil,
@@ -20,6 +21,7 @@ defmodule Polarex.CheckoutProductsCreate do
           external_customer_id: String.t() | nil,
           is_business_customer: boolean | nil,
           metadata: Polarex.Metadata.t() | nil,
+          prices: Polarex.CheckoutProductsCreatePrices.t() | nil,
           products: [String.t()],
           require_billing_address: boolean | nil,
           return_url: String.t() | nil,
@@ -32,6 +34,7 @@ defmodule Polarex.CheckoutProductsCreate do
 
   defstruct [
     :allow_discount_codes,
+    :allow_trial,
     :amount,
     :custom_field_data,
     :customer_billing_address,
@@ -47,6 +50,7 @@ defmodule Polarex.CheckoutProductsCreate do
     :external_customer_id,
     :is_business_customer,
     :metadata,
+    :prices,
     :products,
     :require_billing_address,
     :return_url,
@@ -64,6 +68,7 @@ defmodule Polarex.CheckoutProductsCreate do
   def __fields__(:t) do
     [
       allow_discount_codes: :boolean,
+      allow_trial: :boolean,
       amount: {:union, [:integer, :null]},
       custom_field_data: {Polarex.CustomFieldData, :t},
       customer_billing_address: {:union, [{Polarex.AddressInput, :t}, :null]},
@@ -79,6 +84,7 @@ defmodule Polarex.CheckoutProductsCreate do
       external_customer_id: {:union, [{:string, :generic}, :null]},
       is_business_customer: :boolean,
       metadata: {Polarex.Metadata, :t},
+      prices: {:union, [{Polarex.CheckoutProductsCreatePrices, :t}, :null]},
       products: [string: :generic],
       require_billing_address: :boolean,
       return_url: {:union, [{:string, :uri}, :null]},

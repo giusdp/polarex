@@ -4,6 +4,7 @@ defmodule Polarex.CheckoutConfirmStripe do
   """
 
   @type t :: %__MODULE__{
+          allow_trial: false | nil,
           amount: integer | nil,
           confirmation_token_id: String.t() | nil,
           custom_field_data: Polarex.CustomFieldData.t() | nil,
@@ -20,6 +21,7 @@ defmodule Polarex.CheckoutConfirmStripe do
         }
 
   defstruct [
+    :allow_trial,
     :amount,
     :confirmation_token_id,
     :custom_field_data,
@@ -41,6 +43,7 @@ defmodule Polarex.CheckoutConfirmStripe do
 
   def __fields__(:t) do
     [
+      allow_trial: {:union, [{:const, false}, :null]},
       amount: {:union, [:integer, :null]},
       confirmation_token_id: {:union, [{:string, :generic}, :null]},
       custom_field_data: {Polarex.CustomFieldData, :t},

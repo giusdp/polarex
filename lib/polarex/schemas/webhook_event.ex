@@ -10,6 +10,7 @@ defmodule Polarex.WebhookEvent do
           last_http_code: integer | nil,
           modified_at: DateTime.t() | nil,
           payload: String.t() | nil,
+          skipped: boolean,
           succeeded: boolean | nil,
           type: String.t()
         }
@@ -21,6 +22,7 @@ defmodule Polarex.WebhookEvent do
     :last_http_code,
     :modified_at,
     :payload,
+    :skipped,
     :succeeded,
     :type
   ]
@@ -37,6 +39,7 @@ defmodule Polarex.WebhookEvent do
       last_http_code: {:union, [:integer, :null]},
       modified_at: {:union, [{:string, :date_time}, :null]},
       payload: {:union, [{:string, :generic}, :null]},
+      skipped: :boolean,
       succeeded: {:union, [:boolean, :null]},
       type:
         {:enum,
@@ -60,6 +63,7 @@ defmodule Polarex.WebhookEvent do
            "subscription.canceled",
            "subscription.uncanceled",
            "subscription.revoked",
+           "subscription.past_due",
            "refund.created",
            "refund.updated",
            "product.created",

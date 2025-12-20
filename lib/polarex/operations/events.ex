@@ -78,7 +78,8 @@ defmodule Polarex.Events do
     * `name`: Filter by event name.
     * `source`: Filter by event source.
     * `query`: Query to filter events.
-    * `parent_id`: Filter events by parent event ID. When not specified, returns root events only.
+    * `parent_id`: When combined with depth, use this event as the anchor instead of root events.
+    * `depth`: Fetch descendants up to this depth. When set: 0=root events only, 1=roots+children, etc. Max 5. When not set, returns all events.
     * `page`: Page number, defaults to 1.
     * `limit`: Size of a page, defaults to 10. Maximum is 100.
     * `sorting`: Sorting criterion. Several criteria can be used simultaneously and will be applied in order. Add a minus sign `-` before the criteria name to sort by descending order.
@@ -86,13 +87,15 @@ defmodule Polarex.Events do
 
   """
   @spec events_list(keyword) ::
-          {:ok, Polarex.ListResourceEvent.t()} | {:error, Polarex.HTTPValidationError.t()}
+          {:ok, Polarex.ListResourceEvent.t() | Polarex.ListResourceWithCursorPaginationEvent.t()}
+          | {:error, Polarex.HTTPValidationError.t()}
   def events_list(opts \\ []) do
     client = opts[:client] || @default_client
 
     query =
       Keyword.take(opts, [
         :customer_id,
+        :depth,
         :end_timestamp,
         :external_customer_id,
         :filter,
@@ -115,7 +118,12 @@ defmodule Polarex.Events do
       url: "/v1/events/",
       method: :get,
       query: query,
-      response: [{200, {Polarex.ListResourceEvent, :t}}, {422, {Polarex.HTTPValidationError, :t}}],
+      response: [
+        {200,
+         {:union,
+          [{Polarex.ListResourceEvent, :t}, {Polarex.ListResourceWithCursorPaginationEvent, :t}]}},
+        {422, {Polarex.HTTPValidationError, :t}}
+      ],
       opts: opts
     })
   end
