@@ -61,6 +61,7 @@ defmodule Polarex.CustomerPortal do
     * `checkout_id`: Filter by checkout ID.
     * `order_id`: Filter by order ID.
     * `subscription_id`: Filter by subscription ID.
+    * `member_id`: Filter by member ID.
     * `page`: Page number, defaults to 1.
     * `limit`: Size of a page, defaults to 10. Maximum is 100.
     * `sorting`: Sorting criterion. Several criteria can be used simultaneously and will be applied in order. Add a minus sign `-` before the criteria name to sort by descending order.
@@ -77,6 +78,7 @@ defmodule Polarex.CustomerPortal do
         :benefit_id,
         :checkout_id,
         :limit,
+        :member_id,
         :order_id,
         :page,
         :sorting,

@@ -20,6 +20,7 @@ defmodule Polarex.BenefitGrant do
           id: String.t(),
           is_granted: boolean,
           is_revoked: boolean,
+          member_id: String.t() | nil,
           modified_at: DateTime.t() | nil,
           order_id: String.t() | nil,
           properties:
@@ -43,6 +44,7 @@ defmodule Polarex.BenefitGrant do
     :id,
     :is_granted,
     :is_revoked,
+    :member_id,
     :modified_at,
     :order_id,
     :properties,
@@ -75,6 +77,7 @@ defmodule Polarex.BenefitGrant do
       id: {:string, :generic},
       is_granted: :boolean,
       is_revoked: :boolean,
+      member_id: {:union, [{:string, :generic}, :null]},
       modified_at: {:union, [{:string, :date_time}, :null]},
       order_id: {:union, [{:string, :generic}, :null]},
       properties:

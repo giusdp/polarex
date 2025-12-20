@@ -7,6 +7,7 @@ defmodule Polarex.OrganizationSubscriptionSettings do
           allow_customer_updates: boolean,
           allow_multiple_subscriptions: boolean,
           benefit_revocation_grace_period: integer,
+          prevent_trial_abuse: boolean,
           proration_behavior: String.t()
         }
 
@@ -14,6 +15,7 @@ defmodule Polarex.OrganizationSubscriptionSettings do
     :allow_customer_updates,
     :allow_multiple_subscriptions,
     :benefit_revocation_grace_period,
+    :prevent_trial_abuse,
     :proration_behavior
   ]
 
@@ -26,6 +28,7 @@ defmodule Polarex.OrganizationSubscriptionSettings do
       allow_customer_updates: :boolean,
       allow_multiple_subscriptions: :boolean,
       benefit_revocation_grace_period: :integer,
+      prevent_trial_abuse: :boolean,
       proration_behavior: {:enum, ["invoice", "prorate"]}
     ]
   end

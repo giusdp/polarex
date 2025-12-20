@@ -32,6 +32,7 @@ defmodule Polarex.RefundCreate do
            "customer_request",
            "service_disruption",
            "satisfaction_guarantee",
+           "dispute_prevention",
            "other"
          ]},
       revoke_benefits: :boolean

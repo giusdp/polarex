@@ -256,6 +256,7 @@ defmodule Polarex.Subscriptions do
     * `external_customer_id`: Filter by customer external ID.
     * `discount_id`: Filter by discount ID.
     * `active`: Filter by active or inactive subscription.
+    * `cancel_at_period_end`: Filter by subscriptions that are set to cancel at period end.
     * `page`: Page number, defaults to 1.
     * `limit`: Size of a page, defaults to 10. Maximum is 100.
     * `sorting`: Sorting criterion. Several criteria can be used simultaneously and will be applied in order. Add a minus sign `-` before the criteria name to sort by descending order.
@@ -270,6 +271,7 @@ defmodule Polarex.Subscriptions do
     query =
       Keyword.take(opts, [
         :active,
+        :cancel_at_period_end,
         :customer_id,
         :discount_id,
         :external_customer_id,
@@ -339,6 +341,7 @@ defmodule Polarex.Subscriptions do
           String.t(),
           Polarex.SubscriptionCancel.t()
           | Polarex.SubscriptionRevoke.t()
+          | Polarex.SubscriptionUpdateBillingPeriod.t()
           | Polarex.SubscriptionUpdateDiscount.t()
           | Polarex.SubscriptionUpdateProduct.t()
           | Polarex.SubscriptionUpdateSeats.t()
@@ -366,6 +369,7 @@ defmodule Polarex.Subscriptions do
           [
             {Polarex.SubscriptionCancel, :t},
             {Polarex.SubscriptionRevoke, :t},
+            {Polarex.SubscriptionUpdateBillingPeriod, :t},
             {Polarex.SubscriptionUpdateDiscount, :t},
             {Polarex.SubscriptionUpdateProduct, :t},
             {Polarex.SubscriptionUpdateSeats, :t},

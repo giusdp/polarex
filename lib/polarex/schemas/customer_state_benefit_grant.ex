@@ -5,7 +5,7 @@ defmodule Polarex.CustomerStateBenefitGrant do
 
   @type t :: %__MODULE__{
           benefit_id: String.t(),
-          benefit_metadata: Polarex.BenefitMetadata.t(),
+          benefit_metadata: Polarex.MetadataOutputType.t(),
           benefit_type: String.t(),
           created_at: DateTime.t(),
           granted_at: DateTime.t(),
@@ -37,7 +37,7 @@ defmodule Polarex.CustomerStateBenefitGrant do
   def __fields__(:t) do
     [
       benefit_id: {:string, :generic},
-      benefit_metadata: {Polarex.BenefitMetadata, :t},
+      benefit_metadata: {Polarex.MetadataOutputType, :t},
       benefit_type:
         {:enum,
          [

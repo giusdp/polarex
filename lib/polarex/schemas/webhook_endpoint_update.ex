@@ -44,6 +44,7 @@ defmodule Polarex.WebhookEndpointUpdate do
                "subscription.canceled",
                "subscription.uncanceled",
                "subscription.revoked",
+               "subscription.past_due",
                "refund.created",
                "refund.updated",
                "product.created",

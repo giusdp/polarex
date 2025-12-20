@@ -5,6 +5,7 @@ defmodule Polarex.OrganizationFeatureSettings do
 
   @type t :: %__MODULE__{
           issue_funding_enabled: boolean | nil,
+          member_model_enabled: boolean | nil,
           revops_enabled: boolean | nil,
           seat_based_pricing_enabled: boolean | nil,
           wallets_enabled: boolean | nil
@@ -12,6 +13,7 @@ defmodule Polarex.OrganizationFeatureSettings do
 
   defstruct [
     :issue_funding_enabled,
+    :member_model_enabled,
     :revops_enabled,
     :seat_based_pricing_enabled,
     :wallets_enabled
@@ -24,6 +26,7 @@ defmodule Polarex.OrganizationFeatureSettings do
   def __fields__(:t) do
     [
       issue_funding_enabled: :boolean,
+      member_model_enabled: :boolean,
       revops_enabled: :boolean,
       seat_based_pricing_enabled: :boolean,
       wallets_enabled: :boolean

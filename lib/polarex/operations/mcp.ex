@@ -86,11 +86,17 @@ defmodule Polarex.Mcp do
   Create a customer.
 
   **Scopes**: `customers:write`
+
+  ## Options
+
+    * `include_members`: Include members in the response. Only populated when set to true.
+
   """
   @spec customers_create(Polarex.CustomerCreate.t(), keyword) ::
-          {:ok, Polarex.Customer.t()} | {:error, Polarex.HTTPValidationError.t()}
+          {:ok, Polarex.CustomerWithMembers.t()} | {:error, Polarex.HTTPValidationError.t()}
   def customers_create(body, opts \\ []) do
     client = opts[:client] || @default_client
+    query = Keyword.take(opts, [:include_members])
 
     client.request(%{
       args: [body: body],
@@ -98,8 +104,12 @@ defmodule Polarex.Mcp do
       url: "/v1/customers/",
       body: body,
       method: :post,
+      query: query,
       request: [{"application/json", {Polarex.CustomerCreate, :t}}],
-      response: [{201, {Polarex.Customer, :t}}, {422, {Polarex.HTTPValidationError, :t}}],
+      response: [
+        {201, {Polarex.CustomerWithMembers, :t}},
+        {422, {Polarex.HTTPValidationError, :t}}
+      ],
       opts: opts
     })
   end
@@ -204,47 +214,27 @@ defmodule Polarex.Mcp do
   Get a customer by ID.
 
   **Scopes**: `customers:read` `customers:write`
+
+  ## Options
+
+    * `include_members`: Include members in the response. Only populated when set to true.
+
   """
   @spec customers_get(String.t(), keyword) ::
-          {:ok, Polarex.Customer.t()}
+          {:ok, Polarex.CustomerWithMembers.t()}
           | {:error, Polarex.HTTPValidationError.t() | Polarex.ResourceNotFound.t()}
   def customers_get(id, opts \\ []) do
     client = opts[:client] || @default_client
+    query = Keyword.take(opts, [:include_members])
 
     client.request(%{
       args: [id: id],
       call: {Polarex.Mcp, :customers_get},
       url: "/v1/customers/#{id}",
       method: :get,
+      query: query,
       response: [
-        {200, {Polarex.Customer, :t}},
-        {404, {Polarex.ResourceNotFound, :t}},
-        {422, {Polarex.HTTPValidationError, :t}}
-      ],
-      opts: opts
-    })
-  end
-
-  @doc """
-  Get Customer Balance
-
-  Get customer balance information.
-
-  **Scopes**: `customers:read` `customers:write`
-  """
-  @spec customers_get_balance(String.t(), keyword) ::
-          {:ok, Polarex.CustomerBalance.t()}
-          | {:error, Polarex.HTTPValidationError.t() | Polarex.ResourceNotFound.t()}
-  def customers_get_balance(id, opts \\ []) do
-    client = opts[:client] || @default_client
-
-    client.request(%{
-      args: [id: id],
-      call: {Polarex.Mcp, :customers_get_balance},
-      url: "/v1/customers/#{id}/balance",
-      method: :get,
-      response: [
-        {200, {Polarex.CustomerBalance, :t}},
+        {200, {Polarex.CustomerWithMembers, :t}},
         {404, {Polarex.ResourceNotFound, :t}},
         {422, {Polarex.HTTPValidationError, :t}}
       ],
@@ -258,20 +248,27 @@ defmodule Polarex.Mcp do
   Get a customer by external ID.
 
   **Scopes**: `customers:read` `customers:write`
+
+  ## Options
+
+    * `include_members`: Include members in the response. Only populated when set to true.
+
   """
   @spec customers_get_external(String.t(), keyword) ::
-          {:ok, Polarex.Customer.t()}
+          {:ok, Polarex.CustomerWithMembers.t()}
           | {:error, Polarex.HTTPValidationError.t() | Polarex.ResourceNotFound.t()}
   def customers_get_external(external_id, opts \\ []) do
     client = opts[:client] || @default_client
+    query = Keyword.take(opts, [:include_members])
 
     client.request(%{
       args: [external_id: external_id],
       call: {Polarex.Mcp, :customers_get_external},
       url: "/v1/customers/external/#{external_id}",
       method: :get,
+      query: query,
       response: [
-        {200, {Polarex.Customer, :t}},
+        {200, {Polarex.CustomerWithMembers, :t}},
         {404, {Polarex.ResourceNotFound, :t}},
         {422, {Polarex.HTTPValidationError, :t}}
       ],
@@ -357,6 +354,7 @@ defmodule Polarex.Mcp do
     * `organization_id`: Filter by organization ID.
     * `email`: Filter by exact email.
     * `query`: Filter by name, email, or external ID.
+    * `include_members`: Include members in the response. Only populated when set to true.
     * `page`: Page number, defaults to 1.
     * `limit`: Size of a page, defaults to 10. Maximum is 100.
     * `sorting`: Sorting criterion. Several criteria can be used simultaneously and will be applied in order. Add a minus sign `-` before the criteria name to sort by descending order.
@@ -364,12 +362,22 @@ defmodule Polarex.Mcp do
 
   """
   @spec customers_list(keyword) ::
-          {:ok, Polarex.ListResourceCustomer.t()} | {:error, Polarex.HTTPValidationError.t()}
+          {:ok, Polarex.ListResourceCustomerWithMembers.t()}
+          | {:error, Polarex.HTTPValidationError.t()}
   def customers_list(opts \\ []) do
     client = opts[:client] || @default_client
 
     query =
-      Keyword.take(opts, [:email, :limit, :metadata, :organization_id, :page, :query, :sorting])
+      Keyword.take(opts, [
+        :email,
+        :include_members,
+        :limit,
+        :metadata,
+        :organization_id,
+        :page,
+        :query,
+        :sorting
+      ])
 
     client.request(%{
       args: [],
@@ -378,7 +386,7 @@ defmodule Polarex.Mcp do
       method: :get,
       query: query,
       response: [
-        {200, {Polarex.ListResourceCustomer, :t}},
+        {200, {Polarex.ListResourceCustomerWithMembers, :t}},
         {422, {Polarex.HTTPValidationError, :t}}
       ],
       opts: opts
@@ -391,12 +399,18 @@ defmodule Polarex.Mcp do
   Update a customer.
 
   **Scopes**: `customers:write`
+
+  ## Options
+
+    * `include_members`: Include members in the response. Only populated when set to true.
+
   """
   @spec customers_update(String.t(), Polarex.CustomerUpdate.t(), keyword) ::
-          {:ok, Polarex.Customer.t()}
+          {:ok, Polarex.CustomerWithMembers.t()}
           | {:error, Polarex.HTTPValidationError.t() | Polarex.ResourceNotFound.t()}
   def customers_update(id, body, opts \\ []) do
     client = opts[:client] || @default_client
+    query = Keyword.take(opts, [:include_members])
 
     client.request(%{
       args: [id: id, body: body],
@@ -404,9 +418,10 @@ defmodule Polarex.Mcp do
       url: "/v1/customers/#{id}",
       body: body,
       method: :patch,
+      query: query,
       request: [{"application/json", {Polarex.CustomerUpdate, :t}}],
       response: [
-        {200, {Polarex.Customer, :t}},
+        {200, {Polarex.CustomerWithMembers, :t}},
         {404, {Polarex.ResourceNotFound, :t}},
         {422, {Polarex.HTTPValidationError, :t}}
       ],
@@ -420,12 +435,18 @@ defmodule Polarex.Mcp do
   Update a customer by external ID.
 
   **Scopes**: `customers:write`
+
+  ## Options
+
+    * `include_members`: Include members in the response. Only populated when set to true.
+
   """
   @spec customers_update_external(String.t(), Polarex.CustomerUpdateExternalID.t(), keyword) ::
-          {:ok, Polarex.Customer.t()}
+          {:ok, Polarex.CustomerWithMembers.t()}
           | {:error, Polarex.HTTPValidationError.t() | Polarex.ResourceNotFound.t()}
   def customers_update_external(external_id, body, opts \\ []) do
     client = opts[:client] || @default_client
+    query = Keyword.take(opts, [:include_members])
 
     client.request(%{
       args: [external_id: external_id, body: body],
@@ -433,10 +454,107 @@ defmodule Polarex.Mcp do
       url: "/v1/customers/external/#{external_id}",
       body: body,
       method: :patch,
+      query: query,
       request: [{"application/json", {Polarex.CustomerUpdateExternalID, :t}}],
       response: [
-        {200, {Polarex.Customer, :t}},
+        {200, {Polarex.CustomerWithMembers, :t}},
         {404, {Polarex.ResourceNotFound, :t}},
+        {422, {Polarex.HTTPValidationError, :t}}
+      ],
+      opts: opts
+    })
+  end
+
+  @doc """
+  Create Member
+
+  Create a new member for a customer.
+
+  Only B2B customers with the member management feature enabled can add members.
+  The authenticated user or organization must have access to the customer's organization.
+
+  **Scopes**: `members:write`
+  """
+  @spec members_create_member(Polarex.MemberCreate.t(), keyword) ::
+          {:ok, Polarex.Member.t()}
+          | {:error, Polarex.HTTPValidationError.t() | Polarex.ResourceNotFound.t()}
+  def members_create_member(body, opts \\ []) do
+    client = opts[:client] || @default_client
+
+    client.request(%{
+      args: [body: body],
+      call: {Polarex.Mcp, :members_create_member},
+      url: "/v1/members/",
+      body: body,
+      method: :post,
+      request: [{"application/json", {Polarex.MemberCreate, :t}}],
+      response: [
+        {201, {Polarex.Member, :t}},
+        {403, :null},
+        {404, {Polarex.ResourceNotFound, :t}},
+        {422, {Polarex.HTTPValidationError, :t}}
+      ],
+      opts: opts
+    })
+  end
+
+  @doc """
+  Delete Member
+
+  Delete a member.
+
+  The authenticated user or organization must have access to the member's organization.
+
+  **Scopes**: `members:write`
+  """
+  @spec members_delete_member(String.t(), keyword) ::
+          :ok | {:error, Polarex.HTTPValidationError.t() | Polarex.ResourceNotFound.t()}
+  def members_delete_member(id, opts \\ []) do
+    client = opts[:client] || @default_client
+
+    client.request(%{
+      args: [id: id],
+      call: {Polarex.Mcp, :members_delete_member},
+      url: "/v1/members/#{id}",
+      method: :delete,
+      response: [
+        {204, :null},
+        {404, {Polarex.ResourceNotFound, :t}},
+        {422, {Polarex.HTTPValidationError, :t}}
+      ],
+      opts: opts
+    })
+  end
+
+  @doc """
+  List Members
+
+  List members with optional customer ID filter.
+
+  **Scopes**: `members:read` `members:write`
+
+  ## Options
+
+    * `customer_id`: Filter by customer ID.
+    * `page`: Page number, defaults to 1.
+    * `limit`: Size of a page, defaults to 10. Maximum is 100.
+    * `sorting`: Sorting criterion. Several criteria can be used simultaneously and will be applied in order. Add a minus sign `-` before the criteria name to sort by descending order.
+
+  """
+  @spec members_list_members(keyword) ::
+          {:ok, Polarex.ListResourceMember.t()} | {:error, Polarex.HTTPValidationError.t()}
+  def members_list_members(opts \\ []) do
+    client = opts[:client] || @default_client
+    query = Keyword.take(opts, [:customer_id, :limit, :page, :sorting])
+
+    client.request(%{
+      args: [],
+      call: {Polarex.Mcp, :members_list_members},
+      url: "/v1/members/",
+      method: :get,
+      query: query,
+      response: [
+        {200, {Polarex.ListResourceMember, :t}},
         {422, {Polarex.HTTPValidationError, :t}}
       ],
       opts: opts
@@ -462,6 +580,7 @@ defmodule Polarex.Mcp do
     * `product_id`: Filter by product ID.
     * `billing_type`: Filter by billing type. `recurring` will filter data corresponding to subscriptions creations or renewals. `one_time` will filter data corresponding to one-time purchases.
     * `customer_id`: Filter by customer ID.
+    * `metrics`: List of metric slugs to focus on. When provided, only the queries needed for these metrics will be executed, improving performance. If not provided, all metrics are returned.
 
   """
   @spec metrics_get(keyword) ::
@@ -475,6 +594,7 @@ defmodule Polarex.Mcp do
         :customer_id,
         :end_date,
         :interval,
+        :metrics,
         :organization_id,
         :product_id,
         :start_date,
@@ -1062,6 +1182,7 @@ defmodule Polarex.Mcp do
     * `external_customer_id`: Filter by customer external ID.
     * `discount_id`: Filter by discount ID.
     * `active`: Filter by active or inactive subscription.
+    * `cancel_at_period_end`: Filter by subscriptions that are set to cancel at period end.
     * `page`: Page number, defaults to 1.
     * `limit`: Size of a page, defaults to 10. Maximum is 100.
     * `sorting`: Sorting criterion. Several criteria can be used simultaneously and will be applied in order. Add a minus sign `-` before the criteria name to sort by descending order.
@@ -1076,6 +1197,7 @@ defmodule Polarex.Mcp do
     query =
       Keyword.take(opts, [
         :active,
+        :cancel_at_period_end,
         :customer_id,
         :discount_id,
         :external_customer_id,
@@ -1145,6 +1267,7 @@ defmodule Polarex.Mcp do
           String.t(),
           Polarex.SubscriptionCancel.t()
           | Polarex.SubscriptionRevoke.t()
+          | Polarex.SubscriptionUpdateBillingPeriod.t()
           | Polarex.SubscriptionUpdateDiscount.t()
           | Polarex.SubscriptionUpdateProduct.t()
           | Polarex.SubscriptionUpdateSeats.t()
@@ -1172,6 +1295,7 @@ defmodule Polarex.Mcp do
           [
             {Polarex.SubscriptionCancel, :t},
             {Polarex.SubscriptionRevoke, :t},
+            {Polarex.SubscriptionUpdateBillingPeriod, :t},
             {Polarex.SubscriptionUpdateDiscount, :t},
             {Polarex.SubscriptionUpdateProduct, :t},
             {Polarex.SubscriptionUpdateSeats, :t},
@@ -1183,107 +1307,6 @@ defmodule Polarex.Mcp do
         {403, {Polarex.AlreadyCanceledSubscription, :t}},
         {404, {Polarex.ResourceNotFound, :t}},
         {409, {Polarex.SubscriptionLocked, :t}},
-        {422, {Polarex.HTTPValidationError, :t}}
-      ],
-      opts: opts
-    })
-  end
-
-  @doc """
-  Get Wallet
-
-  Get a wallet by ID.
-
-  **Scopes**: `wallets:read`
-  """
-  @spec wallets_get(String.t(), keyword) ::
-          {:ok, Polarex.Wallet.t()}
-          | {:error, Polarex.HTTPValidationError.t() | Polarex.ResourceNotFound.t()}
-  def wallets_get(id, opts \\ []) do
-    client = opts[:client] || @default_client
-
-    client.request(%{
-      args: [id: id],
-      call: {Polarex.Mcp, :wallets_get},
-      url: "/v1/wallets/#{id}",
-      method: :get,
-      response: [
-        {200, {Polarex.Wallet, :t}},
-        {404, {Polarex.ResourceNotFound, :t}},
-        {422, {Polarex.HTTPValidationError, :t}}
-      ],
-      opts: opts
-    })
-  end
-
-  @doc """
-  List Wallets
-
-  List wallets.
-
-  **Scopes**: `wallets:read`
-
-  ## Options
-
-    * `organization_id`: Filter by organization ID.
-    * `customer_id`: Filter by customer ID.
-    * `page`: Page number, defaults to 1.
-    * `limit`: Size of a page, defaults to 10. Maximum is 100.
-    * `sorting`: Sorting criterion. Several criteria can be used simultaneously and will be applied in order. Add a minus sign `-` before the criteria name to sort by descending order.
-
-  """
-  @spec wallets_list(keyword) ::
-          {:ok, Polarex.ListResourceWallet.t()} | {:error, Polarex.HTTPValidationError.t()}
-  def wallets_list(opts \\ []) do
-    client = opts[:client] || @default_client
-    query = Keyword.take(opts, [:customer_id, :limit, :organization_id, :page, :sorting])
-
-    client.request(%{
-      args: [],
-      call: {Polarex.Mcp, :wallets_list},
-      url: "/v1/wallets/",
-      method: :get,
-      query: query,
-      response: [
-        {200, {Polarex.ListResourceWallet, :t}},
-        {422, {Polarex.HTTPValidationError, :t}}
-      ],
-      opts: opts
-    })
-  end
-
-  @doc """
-  Top-Up Wallet
-
-  Top-up a wallet by adding funds to its balance.
-
-  The customer should have a valid payment method on file.
-
-  **Scopes**: `wallets:write`
-  """
-  @spec wallets_top_up(String.t(), Polarex.WalletTopUpCreate.t(), keyword) ::
-          {:ok, Polarex.Wallet.t()}
-          | {:error,
-             Polarex.HTTPValidationError.t()
-             | Polarex.MissingPaymentMethodError.t()
-             | Polarex.PaymentIntentFailedError.t()
-             | Polarex.ResourceNotFound.t()}
-  def wallets_top_up(id, body, opts \\ []) do
-    client = opts[:client] || @default_client
-
-    client.request(%{
-      args: [id: id, body: body],
-      call: {Polarex.Mcp, :wallets_top_up},
-      url: "/v1/wallets/#{id}/top-up",
-      body: body,
-      method: :post,
-      request: [{"application/json", {Polarex.WalletTopUpCreate, :t}}],
-      response: [
-        {200, {Polarex.Wallet, :t}},
-        {201, :null},
-        {400, {Polarex.PaymentIntentFailedError, :t}},
-        {402, {Polarex.MissingPaymentMethodError, :t}},
-        {404, {Polarex.ResourceNotFound, :t}},
         {422, {Polarex.HTTPValidationError, :t}}
       ],
       opts: opts

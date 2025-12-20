@@ -6,6 +6,7 @@ defmodule Polarex.OrganizationCreate do
   @type t :: %__MODULE__{
           avatar_url: String.t() | nil,
           customer_email_settings: Polarex.OrganizationCustomerEmailSettings.t() | nil,
+          customer_portal_settings: Polarex.OrganizationCustomerPortalSettings.t() | nil,
           details: Polarex.OrganizationDetails.t() | nil,
           email: String.t() | nil,
           feature_settings: Polarex.OrganizationFeatureSettings.t() | nil,
@@ -20,6 +21,7 @@ defmodule Polarex.OrganizationCreate do
   defstruct [
     :avatar_url,
     :customer_email_settings,
+    :customer_portal_settings,
     :details,
     :email,
     :feature_settings,
@@ -39,6 +41,8 @@ defmodule Polarex.OrganizationCreate do
     [
       avatar_url: {:union, [{:string, :uri}, :null]},
       customer_email_settings: {:union, [{Polarex.OrganizationCustomerEmailSettings, :t}, :null]},
+      customer_portal_settings:
+        {:union, [{Polarex.OrganizationCustomerPortalSettings, :t}, :null]},
       details: {:union, [{Polarex.OrganizationDetails, :t}, :null]},
       email: {:union, [{:string, :email}, :null]},
       feature_settings: {:union, [{Polarex.OrganizationFeatureSettings, :t}, :null]},

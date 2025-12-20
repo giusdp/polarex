@@ -14,10 +14,7 @@ defmodule Polarex.Refunds do
   """
   @spec refunds_create(Polarex.RefundCreate.t(), keyword) ::
           {:ok, Polarex.Refund.t()}
-          | {:error,
-             Polarex.HTTPValidationError.t()
-             | Polarex.RefundAmountTooHigh.t()
-             | Polarex.RefundedAlready.t()}
+          | {:error, Polarex.HTTPValidationError.t() | Polarex.RefundedAlready.t()}
   def refunds_create(body, opts \\ []) do
     client = opts[:client] || @default_client
 
@@ -31,7 +28,6 @@ defmodule Polarex.Refunds do
       response: [
         {200, {Polarex.Refund, :t}},
         {201, :null},
-        {400, {Polarex.RefundAmountTooHigh, :t}},
         {403, {Polarex.RefundedAlready, :t}},
         {422, {Polarex.HTTPValidationError, :t}}
       ],
@@ -42,7 +38,7 @@ defmodule Polarex.Refunds do
   @doc """
   List Refunds
 
-  List products.
+  List refunds.
 
   **Scopes**: `refunds:read` `refunds:write`
 

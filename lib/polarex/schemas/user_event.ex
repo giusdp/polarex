@@ -9,9 +9,11 @@ defmodule Polarex.UserEvent do
           customer_id: String.t() | nil,
           external_customer_id: String.t() | nil,
           id: String.t(),
+          label: String.t(),
           metadata: Polarex.EventMetadataOutput.t(),
           name: String.t(),
           organization_id: String.t(),
+          parent_id: String.t() | nil,
           source: String.t(),
           timestamp: DateTime.t()
         }
@@ -22,9 +24,11 @@ defmodule Polarex.UserEvent do
     :customer_id,
     :external_customer_id,
     :id,
+    :label,
     :metadata,
     :name,
     :organization_id,
+    :parent_id,
     :source,
     :timestamp
   ]
@@ -40,9 +44,11 @@ defmodule Polarex.UserEvent do
       customer_id: {:union, [{:string, :generic}, :null]},
       external_customer_id: {:union, [{:string, :generic}, :null]},
       id: {:string, :generic},
+      label: {:string, :generic},
       metadata: {Polarex.EventMetadataOutput, :t},
       name: {:string, :generic},
       organization_id: {:string, :generic},
+      parent_id: {:union, [{:string, :generic}, :null]},
       source: {:const, "user"},
       timestamp: {:string, :date_time}
     ]
