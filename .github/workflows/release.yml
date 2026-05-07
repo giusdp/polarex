@@ -20,7 +20,35 @@ jobs:
           persist-credentials: false
           fetch-depth: 0
 
+      - name: Determine next version (dry run)
+        id: dryrun
+        uses: cycjimmy/semantic-release-action@v6.0.0
+        with:
+          dry_run: true
+          extra_plugins: |
+            conventional-changelog-conventionalcommits@9.1.0
+            @semantic-release/changelog@6.0.3
+            @semantic-release/git@10.0.1
+            @google/semantic-release-replace-plugin@1.2.7
+          branches: |
+            ['main']
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_PAT }}
+
+      - name: Abort if target tag already exists
+        if: steps.dryrun.outputs.new_release_published == 'true'
+        run: |
+          NEXT="${{ steps.dryrun.outputs.new_release_version }}"
+          if git ls-remote --tags origin "v$NEXT" | grep -q "refs/tags/v$NEXT$"; then
+            echo "::error::Tag v$NEXT already exists on origin. Refusing to release to avoid pushing a rogue commit."
+            echo "::error::This usually means the tag is orphaned (not in main's ancestry)."
+            echo "::error::To fix: move the tag to an in-ancestry commit, then re-run."
+            exit 1
+          fi
+          echo "Tag v$NEXT is free. Proceeding with release."
+
       - name: Run semantic-release
+        if: steps.dryrun.outputs.new_release_published == 'true'
         uses: cycjimmy/semantic-release-action@v6.0.0
         with:
           extra_plugins: |
