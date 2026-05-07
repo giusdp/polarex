@@ -9,14 +9,15 @@ defmodule Polarex.DiscountProduct do
           id: String.t(),
           is_archived: boolean,
           is_recurring: boolean,
-          metadata: Polarex.MetadataOutputType.t(),
+          metadata: map,
           modified_at: DateTime.t() | nil,
           name: String.t(),
           organization_id: String.t(),
           recurring_interval: String.t() | nil,
           recurring_interval_count: integer | nil,
           trial_interval: String.t() | nil,
-          trial_interval_count: integer | nil
+          trial_interval_count: integer | nil,
+          visibility: String.t()
         }
 
   defstruct [
@@ -32,7 +33,8 @@ defmodule Polarex.DiscountProduct do
     :recurring_interval,
     :recurring_interval_count,
     :trial_interval,
-    :trial_interval_count
+    :trial_interval_count,
+    :visibility
   ]
 
   @doc false
@@ -41,19 +43,20 @@ defmodule Polarex.DiscountProduct do
 
   def __fields__(:t) do
     [
-      created_at: {:string, :date_time},
-      description: {:union, [{:string, :generic}, :null]},
-      id: {:string, :generic},
+      created_at: {:string, "date-time"},
+      description: {:union, [:string, :null]},
+      id: {:string, "uuid4"},
       is_archived: :boolean,
       is_recurring: :boolean,
-      metadata: {Polarex.MetadataOutputType, :t},
-      modified_at: {:union, [{:string, :date_time}, :null]},
-      name: {:string, :generic},
-      organization_id: {:string, :generic},
+      metadata: :map,
+      modified_at: {:union, [{:string, "date-time"}, :null]},
+      name: :string,
+      organization_id: {:string, "uuid4"},
       recurring_interval: {:union, [{:enum, ["day", "week", "month", "year"]}, :null]},
       recurring_interval_count: {:union, [:integer, :null]},
       trial_interval: {:union, [{:enum, ["day", "week", "month", "year"]}, :null]},
-      trial_interval_count: {:union, [:integer, :null]}
+      trial_interval_count: {:union, [:integer, :null]},
+      visibility: {:enum, ["draft", "private", "public"]}
     ]
   end
 end

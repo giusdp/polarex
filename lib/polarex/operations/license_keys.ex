@@ -14,8 +14,15 @@ defmodule Polarex.LicenseKeys do
   > client, like a desktop application or a mobile app.
   > If you plan to validate a license key on a server, use the `/v1/license-keys/activate`
   > endpoint instead.
+
+  ## Request Body
+
+  **Content Types**: `application/json`
   """
-  @spec customer_portal_license_keys_activate(Polarex.LicenseKeyActivate.t(), keyword) ::
+  @spec customer_portal_license_keys_activate(
+          body :: Polarex.LicenseKeyActivate.t(),
+          opts :: keyword
+        ) ::
           {:ok, Polarex.LicenseKeyActivationRead.t()}
           | {:error,
              Polarex.HTTPValidationError.t()
@@ -50,9 +57,15 @@ defmodule Polarex.LicenseKeys do
   > client, like a desktop application or a mobile app.
   > If you plan to validate a license key on a server, use the `/v1/license-keys/deactivate`
   > endpoint instead.
+
+  ## Request Body
+
+  **Content Types**: `application/json`
   """
-  @spec customer_portal_license_keys_deactivate(Polarex.LicenseKeyDeactivate.t(), keyword) ::
-          :ok | {:error, Polarex.HTTPValidationError.t() | Polarex.ResourceNotFound.t()}
+  @spec customer_portal_license_keys_deactivate(
+          body :: Polarex.LicenseKeyDeactivate.t(),
+          opts :: keyword
+        ) :: :ok | {:error, Polarex.HTTPValidationError.t() | Polarex.ResourceNotFound.t()}
   def customer_portal_license_keys_deactivate(body, opts \\ []) do
     client = opts[:client] || @default_client
 
@@ -79,7 +92,7 @@ defmodule Polarex.LicenseKeys do
 
   **Scopes**: `customer_portal:read` `customer_portal:write`
   """
-  @spec customer_portal_license_keys_get(String.t(), keyword) ::
+  @spec customer_portal_license_keys_get(id :: String.t(), opts :: keyword) ::
           {:ok, Polarex.LicenseKeyWithActivations.t()}
           | {:error, Polarex.HTTPValidationError.t() | Polarex.ResourceNotFound.t()}
   def customer_portal_license_keys_get(id, opts \\ []) do
@@ -111,7 +124,7 @@ defmodule Polarex.LicenseKeys do
     * `limit`: Size of a page, defaults to 10. Maximum is 100.
 
   """
-  @spec customer_portal_license_keys_list(keyword) ::
+  @spec customer_portal_license_keys_list(opts :: keyword) ::
           {:ok, Polarex.ListResourceLicenseKeyRead.t()}
           | {:error,
              Polarex.HTTPValidationError.t()
@@ -146,8 +159,15 @@ defmodule Polarex.LicenseKeys do
   > client, like a desktop application or a mobile app.
   > If you plan to validate a license key on a server, use the `/v1/license-keys/validate`
   > endpoint instead.
+
+  ## Request Body
+
+  **Content Types**: `application/json`
   """
-  @spec customer_portal_license_keys_validate(Polarex.LicenseKeyValidate.t(), keyword) ::
+  @spec customer_portal_license_keys_validate(
+          body :: Polarex.LicenseKeyValidate.t(),
+          opts :: keyword
+        ) ::
           {:ok, Polarex.ValidatedLicenseKey.t()}
           | {:error, Polarex.HTTPValidationError.t() | Polarex.ResourceNotFound.t()}
   def customer_portal_license_keys_validate(body, opts \\ []) do
@@ -175,8 +195,12 @@ defmodule Polarex.LicenseKeys do
   Activate a license key instance.
 
   **Scopes**: `license_keys:write`
+
+  ## Request Body
+
+  **Content Types**: `application/json`
   """
-  @spec license_keys_activate(Polarex.LicenseKeyActivate.t(), keyword) ::
+  @spec license_keys_activate(body :: Polarex.LicenseKeyActivate.t(), opts :: keyword) ::
           {:ok, Polarex.LicenseKeyActivationRead.t()}
           | {:error,
              Polarex.HTTPValidationError.t()
@@ -208,8 +232,12 @@ defmodule Polarex.LicenseKeys do
   Deactivate a license key instance.
 
   **Scopes**: `license_keys:write`
+
+  ## Request Body
+
+  **Content Types**: `application/json`
   """
-  @spec license_keys_deactivate(Polarex.LicenseKeyDeactivate.t(), keyword) ::
+  @spec license_keys_deactivate(body :: Polarex.LicenseKeyDeactivate.t(), opts :: keyword) ::
           :ok | {:error, Polarex.HTTPValidationError.t() | Polarex.ResourceNotFound.t()}
   def license_keys_deactivate(body, opts \\ []) do
     client = opts[:client] || @default_client
@@ -237,7 +265,7 @@ defmodule Polarex.LicenseKeys do
 
   **Scopes**: `license_keys:read` `license_keys:write`
   """
-  @spec license_keys_get(String.t(), keyword) ::
+  @spec license_keys_get(id :: String.t(), opts :: keyword) ::
           {:ok, Polarex.LicenseKeyWithActivations.t()}
           | {:error,
              Polarex.HTTPValidationError.t()
@@ -268,7 +296,11 @@ defmodule Polarex.LicenseKeys do
 
   **Scopes**: `license_keys:read` `license_keys:write`
   """
-  @spec license_keys_get_activation(String.t(), String.t(), keyword) ::
+  @spec license_keys_get_activation(
+          id :: String.t(),
+          activation_id :: String.t(),
+          opts :: keyword
+        ) ::
           {:ok, Polarex.LicenseKeyActivationRead.t()}
           | {:error,
              Polarex.HTTPValidationError.t()
@@ -303,11 +335,12 @@ defmodule Polarex.LicenseKeys do
 
     * `organization_id`: Filter by organization ID.
     * `benefit_id`: Filter by benefit ID.
+    * `status`: Filter by license key status.
     * `page`: Page number, defaults to 1.
     * `limit`: Size of a page, defaults to 10. Maximum is 100.
 
   """
-  @spec license_keys_list(keyword) ::
+  @spec license_keys_list(opts :: keyword) ::
           {:ok, Polarex.ListResourceLicenseKeyRead.t()}
           | {:error,
              Polarex.HTTPValidationError.t()
@@ -315,7 +348,7 @@ defmodule Polarex.LicenseKeys do
              | Polarex.Unauthorized.t()}
   def license_keys_list(opts \\ []) do
     client = opts[:client] || @default_client
-    query = Keyword.take(opts, [:benefit_id, :limit, :organization_id, :page])
+    query = Keyword.take(opts, [:benefit_id, :limit, :organization_id, :page, :status])
 
     client.request(%{
       args: [],
@@ -339,8 +372,16 @@ defmodule Polarex.LicenseKeys do
   Update a license key.
 
   **Scopes**: `license_keys:write`
+
+  ## Request Body
+
+  **Content Types**: `application/json`
   """
-  @spec license_keys_update(String.t(), Polarex.LicenseKeyUpdate.t(), keyword) ::
+  @spec license_keys_update(
+          id :: String.t(),
+          body :: Polarex.LicenseKeyUpdate.t(),
+          opts :: keyword
+        ) ::
           {:ok, Polarex.LicenseKeyRead.t()}
           | {:error,
              Polarex.HTTPValidationError.t()
@@ -372,8 +413,12 @@ defmodule Polarex.LicenseKeys do
   Validate a license key.
 
   **Scopes**: `license_keys:write`
+
+  ## Request Body
+
+  **Content Types**: `application/json`
   """
-  @spec license_keys_validate(Polarex.LicenseKeyValidate.t(), keyword) ::
+  @spec license_keys_validate(body :: Polarex.LicenseKeyValidate.t(), opts :: keyword) ::
           {:ok, Polarex.ValidatedLicenseKey.t()}
           | {:error, Polarex.HTTPValidationError.t() | Polarex.ResourceNotFound.t()}
   def license_keys_validate(body, opts \\ []) do

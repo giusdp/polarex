@@ -10,12 +10,20 @@ defmodule Polarex.CustomerSessions do
 
   Create a customer session.
 
+  For organizations with `member_model_enabled`, this will automatically
+  create a member session for the owner member of the customer.
+
   **Scopes**: `customer_sessions:write`
+
+  ## Request Body
+
+  **Content Types**: `application/json`
   """
   @spec customer_sessions_create(
-          Polarex.CustomerSessionCustomerExternalIDCreate.t()
-          | Polarex.CustomerSessionCustomerIDCreate.t(),
-          keyword
+          body ::
+            Polarex.CustomerSessionCustomerExternalIDCreate.t()
+            | Polarex.CustomerSessionCustomerIDCreate.t(),
+          opts :: keyword
         ) :: {:ok, Polarex.CustomerSession.t()} | {:error, Polarex.HTTPValidationError.t()}
   def customer_sessions_create(body, opts \\ []) do
     client = opts[:client] || @default_client

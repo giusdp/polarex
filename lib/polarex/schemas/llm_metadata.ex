@@ -33,12 +33,12 @@ defmodule Polarex.LLMMetadata do
     [
       cached_input_tokens: :integer,
       input_tokens: :integer,
-      model: {:string, :generic},
+      model: :string,
       output_tokens: :integer,
-      prompt: {:union, [{:string, :generic}, :null]},
-      response: {:union, [{:string, :generic}, :null]},
+      prompt: {:union, [:string, :null]},
+      response: {:union, [:string, :null]},
       total_tokens: :integer,
-      vendor: {:string, :generic}
+      vendor: :string
     ]
   end
 end

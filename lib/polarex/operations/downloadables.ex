@@ -17,7 +17,7 @@ defmodule Polarex.Downloadables do
     * `limit`: Size of a page, defaults to 10. Maximum is 100.
 
   """
-  @spec customer_portal_downloadables_list(keyword) ::
+  @spec customer_portal_downloadables_list(opts :: keyword) ::
           {:ok, Polarex.ListResourceDownloadableRead.t()}
           | {:error, Polarex.HTTPValidationError.t()}
   def customer_portal_downloadables_list(opts \\ []) do

@@ -17,9 +17,9 @@ defmodule Polarex.CustomerOrderPaymentConfirmation do
 
   def __fields__(:t) do
     [
-      client_secret: {:union, [{:string, :generic}, :null]},
-      error: {:union, [{:string, :generic}, :null]},
-      status: {:string, :generic}
+      client_secret: {:union, [:string, :null]},
+      error: {:union, [:string, :null]},
+      status: :string
     ]
   end
 end

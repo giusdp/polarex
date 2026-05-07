@@ -12,6 +12,6 @@ defmodule Polarex.NotPaidOrder do
   def __fields__(type \\ :t)
 
   def __fields__(:t) do
-    [detail: {:string, :generic}, error: {:const, "NotPaidOrder"}]
+    [detail: :string, error: {:const, "NotPaidOrder"}]
   end
 end

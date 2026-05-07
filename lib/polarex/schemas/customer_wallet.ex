@@ -21,11 +21,11 @@ defmodule Polarex.CustomerWallet do
   def __fields__(:t) do
     [
       balance: :integer,
-      created_at: {:string, :date_time},
-      currency: {:string, :generic},
-      customer_id: {:string, :generic},
-      id: {:string, :generic},
-      modified_at: {:union, [{:string, :date_time}, :null]}
+      created_at: {:string, "date-time"},
+      currency: :string,
+      customer_id: {:string, "uuid4"},
+      id: {:string, "uuid4"},
+      modified_at: {:union, [{:string, "date-time"}, :null]}
     ]
   end
 end

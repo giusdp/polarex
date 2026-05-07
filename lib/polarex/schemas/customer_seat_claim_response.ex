@@ -12,6 +12,6 @@ defmodule Polarex.CustomerSeatClaimResponse do
   def __fields__(type \\ :t)
 
   def __fields__(:t) do
-    [customer_session_token: {:string, :generic}, seat: {Polarex.CustomerSeat, :t}]
+    [customer_session_token: :string, seat: {Polarex.CustomerSeat, :t}]
   end
 end

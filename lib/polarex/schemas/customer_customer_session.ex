@@ -12,6 +12,6 @@ defmodule Polarex.CustomerCustomerSession do
   def __fields__(type \\ :t)
 
   def __fields__(:t) do
-    [expires_at: {:string, :date_time}, return_url: {:union, [{:string, :generic}, :null]}]
+    [expires_at: {:string, "date-time"}, return_url: {:union, [:string, :null]}]
   end
 end

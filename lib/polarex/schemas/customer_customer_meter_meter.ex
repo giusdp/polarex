@@ -18,10 +18,10 @@ defmodule Polarex.CustomerCustomerMeterMeter do
 
   def __fields__(:t) do
     [
-      created_at: {:string, :date_time},
-      id: {:string, :generic},
-      modified_at: {:union, [{:string, :date_time}, :null]},
-      name: {:string, :generic}
+      created_at: {:string, "date-time"},
+      id: {:string, "uuid4"},
+      modified_at: {:union, [{:string, "date-time"}, :null]},
+      name: :string
     ]
   end
 end

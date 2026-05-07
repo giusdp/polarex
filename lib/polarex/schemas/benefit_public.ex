@@ -8,6 +8,7 @@ defmodule Polarex.BenefitPublic do
           deletable: boolean,
           description: String.t(),
           id: String.t(),
+          is_deleted: boolean,
           modified_at: DateTime.t() | nil,
           organization_id: String.t(),
           selectable: boolean,
@@ -19,6 +20,7 @@ defmodule Polarex.BenefitPublic do
     :deletable,
     :description,
     :id,
+    :is_deleted,
     :modified_at,
     :organization_id,
     :selectable,
@@ -31,12 +33,13 @@ defmodule Polarex.BenefitPublic do
 
   def __fields__(:t) do
     [
-      created_at: {:string, :date_time},
+      created_at: {:string, "date-time"},
       deletable: :boolean,
-      description: {:string, :generic},
-      id: {:string, :generic},
-      modified_at: {:union, [{:string, :date_time}, :null]},
-      organization_id: {:string, :generic},
+      description: :string,
+      id: {:string, "uuid4"},
+      is_deleted: :boolean,
+      modified_at: {:union, [{:string, "date-time"}, :null]},
+      organization_id: {:string, "uuid4"},
       selectable: :boolean,
       type:
         {:enum,
@@ -46,7 +49,8 @@ defmodule Polarex.BenefitPublic do
            "github_repository",
            "downloadables",
            "license_keys",
-           "meter_credit"
+           "meter_credit",
+           "feature_flag"
          ]}
     ]
   end

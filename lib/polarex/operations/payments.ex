@@ -12,7 +12,7 @@ defmodule Polarex.Payments do
 
   **Scopes**: `payments:read`
   """
-  @spec payments_get(String.t(), keyword) ::
+  @spec payments_get(id :: String.t(), opts :: keyword) ::
           {:ok, Polarex.CardPayment.t() | Polarex.GenericPayment.t()}
           | {:error, Polarex.HTTPValidationError.t() | Polarex.ResourceNotFound.t()}
   def payments_get(id, opts \\ []) do
@@ -52,8 +52,8 @@ defmodule Polarex.Payments do
     * `sorting`: Sorting criterion. Several criteria can be used simultaneously and will be applied in order. Add a minus sign `-` before the criteria name to sort by descending order.
 
   """
-  @spec payments_list(keyword) ::
-          {:ok, Polarex.ListResource.t()} | {:error, Polarex.HTTPValidationError.t()}
+  @spec payments_list(opts :: keyword) ::
+          {:ok, Polarex.ListResourcePayment.t()} | {:error, Polarex.HTTPValidationError.t()}
   def payments_list(opts \\ []) do
     client = opts[:client] || @default_client
 
@@ -76,7 +76,10 @@ defmodule Polarex.Payments do
       url: "/v1/payments/",
       method: :get,
       query: query,
-      response: [{200, {Polarex.ListResource, :t}}, {422, {Polarex.HTTPValidationError, :t}}],
+      response: [
+        {200, {Polarex.ListResourcePayment, :t}},
+        {422, {Polarex.HTTPValidationError, :t}}
+      ],
       opts: opts
     })
   end

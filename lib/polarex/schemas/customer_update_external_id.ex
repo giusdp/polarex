@@ -6,12 +6,13 @@ defmodule Polarex.CustomerUpdateExternalID do
   @type t :: %__MODULE__{
           billing_address: Polarex.AddressInput.t() | nil,
           email: String.t() | nil,
-          metadata: Polarex.Metadata.t() | nil,
+          locale: String.t() | nil,
+          metadata: map | nil,
           name: String.t() | nil,
-          tax_id: [any] | nil
+          tax_id: String.t() | nil
         }
 
-  defstruct [:billing_address, :email, :metadata, :name, :tax_id]
+  defstruct [:billing_address, :email, :locale, :metadata, :name, :tax_id]
 
   @doc false
   @spec __fields__(atom) :: keyword
@@ -20,10 +21,11 @@ defmodule Polarex.CustomerUpdateExternalID do
   def __fields__(:t) do
     [
       billing_address: {:union, [{Polarex.AddressInput, :t}, :null]},
-      email: {:union, [{:string, :email}, :null]},
-      metadata: {Polarex.Metadata, :t},
-      name: {:union, [{:string, :generic}, :null]},
-      tax_id: {:union, [[:unknown], :null]}
+      email: {:union, [{:string, "email"}, :null]},
+      locale: {:union, [:string, :null]},
+      metadata: :map,
+      name: {:union, [:string, :null]},
+      tax_id: {:union, [:string, :null]}
     ]
   end
 end

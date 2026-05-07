@@ -12,6 +12,6 @@ defmodule Polarex.CustomerSubscriptionUpdateProduct do
   def __fields__(type \\ :t)
 
   def __fields__(:t) do
-    [product_id: {:string, :generic}]
+    [product_id: {:string, "uuid4"}]
   end
 end

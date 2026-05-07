@@ -12,6 +12,6 @@ defmodule Polarex.CustomerOrderPaymentStatus do
   def __fields__(type \\ :t)
 
   def __fields__(:t) do
-    [error: {:union, [{:string, :generic}, :null]}, status: {:string, :generic}]
+    [error: {:union, [:string, :null]}, status: :string]
   end
 end

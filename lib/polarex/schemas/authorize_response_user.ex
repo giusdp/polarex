@@ -5,12 +5,13 @@ defmodule Polarex.AuthorizeResponseUser do
 
   @type t :: %__MODULE__{
           client: Polarex.OAuth2ClientPublic.t(),
+          scope_display_names: map | nil,
           scopes: [String.t()],
           sub: Polarex.AuthorizeUser.t() | nil,
           sub_type: String.t()
         }
 
-  defstruct [:client, :scopes, :sub, :sub_type]
+  defstruct [:client, :scope_display_names, :scopes, :sub, :sub_type]
 
   @doc false
   @spec __fields__(atom) :: keyword
@@ -19,6 +20,7 @@ defmodule Polarex.AuthorizeResponseUser do
   def __fields__(:t) do
     [
       client: {Polarex.OAuth2ClientPublic, :t},
+      scope_display_names: :map,
       scopes: [
         enum: [
           "openid",
@@ -63,6 +65,7 @@ defmodule Polarex.AuthorizeResponseUser do
           "disputes:read",
           "customer_meters:read",
           "customer_sessions:write",
+          "member_sessions:write",
           "customer_seats:read",
           "customer_seats:write",
           "orders:read",
@@ -71,21 +74,19 @@ defmodule Polarex.AuthorizeResponseUser do
           "refunds:write",
           "payments:read",
           "metrics:read",
+          "metrics:write",
           "webhooks:read",
           "webhooks:write",
-          "external_organizations:read",
           "license_keys:read",
           "license_keys:write",
-          "repositories:read",
-          "repositories:write",
-          "issues:read",
-          "issues:write",
           "customer_portal:read",
           "customer_portal:write",
           "notifications:read",
           "notifications:write",
           "notification_recipients:read",
-          "notification_recipients:write"
+          "notification_recipients:write",
+          "organization_access_tokens:read",
+          "organization_access_tokens:write"
         ]
       ],
       sub: {:union, [{Polarex.AuthorizeUser, :t}, :null]},

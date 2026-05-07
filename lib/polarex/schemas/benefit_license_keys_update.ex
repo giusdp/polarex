@@ -5,7 +5,7 @@ defmodule Polarex.BenefitLicenseKeysUpdate do
 
   @type t :: %__MODULE__{
           description: String.t() | nil,
-          metadata: Polarex.Metadata.t() | nil,
+          metadata: map | nil,
           properties: Polarex.BenefitLicenseKeysCreateProperties.t() | nil,
           type: String.t()
         }
@@ -18,8 +18,8 @@ defmodule Polarex.BenefitLicenseKeysUpdate do
 
   def __fields__(:t) do
     [
-      description: {:union, [{:string, :generic}, :null]},
-      metadata: {Polarex.Metadata, :t},
+      description: {:union, [:string, :null]},
+      metadata: :map,
       properties: {:union, [{Polarex.BenefitLicenseKeysCreateProperties, :t}, :null]},
       type: {:const, "license_keys"}
     ]

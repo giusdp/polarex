@@ -3,7 +3,10 @@ defmodule Polarex.ListResourceCustomer do
   Provides struct and type for a ListResourceCustomer
   """
 
-  @type t :: %__MODULE__{items: [Polarex.Customer.t()], pagination: Polarex.Pagination.t()}
+  @type t :: %__MODULE__{
+          items: [Polarex.CustomerIndividual.t() | Polarex.CustomerTeam.t()],
+          pagination: Polarex.Pagination.t()
+        }
 
   defstruct [:items, :pagination]
 
@@ -12,6 +15,9 @@ defmodule Polarex.ListResourceCustomer do
   def __fields__(type \\ :t)
 
   def __fields__(:t) do
-    [items: [{Polarex.Customer, :t}], pagination: {Polarex.Pagination, :t}]
+    [
+      items: [union: [{Polarex.CustomerIndividual, :t}, {Polarex.CustomerTeam, :t}]],
+      pagination: {Polarex.Pagination, :t}
+    ]
   end
 end

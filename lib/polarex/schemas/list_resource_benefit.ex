@@ -8,6 +8,7 @@ defmodule Polarex.ListResourceBenefit do
             Polarex.BenefitCustom.t()
             | Polarex.BenefitDiscord.t()
             | Polarex.BenefitDownloadables.t()
+            | Polarex.BenefitFeatureFlag.t()
             | Polarex.BenefitGitHubRepository.t()
             | Polarex.BenefitLicenseKeys.t()
             | Polarex.BenefitMeterCredit.t()
@@ -28,6 +29,7 @@ defmodule Polarex.ListResourceBenefit do
           {Polarex.BenefitCustom, :t},
           {Polarex.BenefitDiscord, :t},
           {Polarex.BenefitDownloadables, :t},
+          {Polarex.BenefitFeatureFlag, :t},
           {Polarex.BenefitGitHubRepository, :t},
           {Polarex.BenefitLicenseKeys, :t},
           {Polarex.BenefitMeterCredit, :t}

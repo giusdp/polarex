@@ -22,13 +22,13 @@ defmodule Polarex.Member do
 
   def __fields__(:t) do
     [
-      created_at: {:string, :date_time},
-      customer_id: {:string, :generic},
-      email: {:string, :generic},
-      external_id: {:union, [{:string, :generic}, :null]},
-      id: {:string, :generic},
-      modified_at: {:union, [{:string, :date_time}, :null]},
-      name: {:union, [{:string, :generic}, :null]},
+      created_at: {:string, "date-time"},
+      customer_id: {:string, "uuid4"},
+      email: :string,
+      external_id: {:union, [:string, :null]},
+      id: {:string, "uuid4"},
+      modified_at: {:union, [{:string, "date-time"}, :null]},
+      name: {:union, [:string, :null]},
       role: {:enum, ["owner", "billing_manager", "member"]}
     ]
   end

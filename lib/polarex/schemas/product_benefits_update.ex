@@ -12,6 +12,6 @@ defmodule Polarex.ProductBenefitsUpdate do
   def __fields__(type \\ :t)
 
   def __fields__(:t) do
-    [benefits: [string: :generic]]
+    [benefits: [string: "uuid4"]]
   end
 end

@@ -8,7 +8,7 @@ defmodule Polarex.LicenseKeyActivationBase do
           id: String.t(),
           label: String.t(),
           license_key_id: String.t(),
-          meta: Polarex.Meta.t(),
+          meta: map,
           modified_at: DateTime.t() | nil
         }
 
@@ -20,12 +20,12 @@ defmodule Polarex.LicenseKeyActivationBase do
 
   def __fields__(:t) do
     [
-      created_at: {:string, :date_time},
-      id: {:string, :generic},
-      label: {:string, :generic},
-      license_key_id: {:string, :generic},
-      meta: {Polarex.Meta, :t},
-      modified_at: {:union, [{:string, :date_time}, :null]}
+      created_at: {:string, "date-time"},
+      id: {:string, "uuid4"},
+      label: :string,
+      license_key_id: {:string, "uuid4"},
+      meta: :map,
+      modified_at: {:union, [{:string, "date-time"}, :null]}
     ]
   end
 end

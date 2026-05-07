@@ -12,6 +12,6 @@ defmodule Polarex.SeatClaim do
   def __fields__(type \\ :t)
 
   def __fields__(:t) do
-    [invitation_token: {:string, :generic}]
+    [invitation_token: :string]
   end
 end

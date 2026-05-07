@@ -6,8 +6,10 @@ defmodule Polarex.MetricsTotals do
   @type t :: %__MODULE__{
           active_subscriptions: integer | number | nil,
           active_user_by_event: integer | number | nil,
+          annual_recurring_revenue: integer | number | nil,
           average_order_value: integer | number | nil,
           average_revenue_per_user: integer | number | nil,
+          average_seats_per_customer: integer | number | nil,
           canceled_subscriptions: integer | number | nil,
           canceled_subscriptions_customer_service: integer | number | nil,
           canceled_subscriptions_low_quality: integer | number | nil,
@@ -21,7 +23,9 @@ defmodule Polarex.MetricsTotals do
           checkouts: integer | number | nil,
           checkouts_conversion: integer | number | nil,
           churn_rate: integer | number | nil,
+          churned_seat_customers: integer | number | nil,
           churned_subscriptions: integer | number | nil,
+          committed_annual_recurring_revenue: integer | number | nil,
           committed_monthly_recurring_revenue: integer | number | nil,
           committed_subscriptions: integer | number | nil,
           cost_per_user: integer | number | nil,
@@ -35,6 +39,7 @@ defmodule Polarex.MetricsTotals do
           net_average_order_value: integer | number | nil,
           net_cumulative_revenue: integer | number | nil,
           net_revenue: integer | number | nil,
+          new_seat_customers: integer | number | nil,
           new_subscriptions: integer | number | nil,
           new_subscriptions_net_revenue: integer | number | nil,
           new_subscriptions_revenue: integer | number | nil,
@@ -46,14 +51,23 @@ defmodule Polarex.MetricsTotals do
           renewed_subscriptions_net_revenue: integer | number | nil,
           renewed_subscriptions_revenue: integer | number | nil,
           revenue: integer | number | nil,
-          succeeded_checkouts: integer | number | nil
+          seat_customers: integer | number | nil,
+          seat_utilization_rate: integer | number | nil,
+          seats_claimed: integer | number | nil,
+          seats_pending: integer | number | nil,
+          seats_total: integer | number | nil,
+          succeeded_checkouts: integer | number | nil,
+          trial_committed_monthly_recurring_revenue: integer | number | nil,
+          trial_monthly_recurring_revenue: integer | number | nil
         }
 
   defstruct [
     :active_subscriptions,
     :active_user_by_event,
+    :annual_recurring_revenue,
     :average_order_value,
     :average_revenue_per_user,
+    :average_seats_per_customer,
     :canceled_subscriptions,
     :canceled_subscriptions_customer_service,
     :canceled_subscriptions_low_quality,
@@ -67,7 +81,9 @@ defmodule Polarex.MetricsTotals do
     :checkouts,
     :checkouts_conversion,
     :churn_rate,
+    :churned_seat_customers,
     :churned_subscriptions,
+    :committed_annual_recurring_revenue,
     :committed_monthly_recurring_revenue,
     :committed_subscriptions,
     :cost_per_user,
@@ -81,6 +97,7 @@ defmodule Polarex.MetricsTotals do
     :net_average_order_value,
     :net_cumulative_revenue,
     :net_revenue,
+    :new_seat_customers,
     :new_subscriptions,
     :new_subscriptions_net_revenue,
     :new_subscriptions_revenue,
@@ -92,7 +109,14 @@ defmodule Polarex.MetricsTotals do
     :renewed_subscriptions_net_revenue,
     :renewed_subscriptions_revenue,
     :revenue,
-    :succeeded_checkouts
+    :seat_customers,
+    :seat_utilization_rate,
+    :seats_claimed,
+    :seats_pending,
+    :seats_total,
+    :succeeded_checkouts,
+    :trial_committed_monthly_recurring_revenue,
+    :trial_monthly_recurring_revenue
   ]
 
   @doc false
@@ -103,8 +127,10 @@ defmodule Polarex.MetricsTotals do
     [
       active_subscriptions: {:union, [:integer, :number, :null]},
       active_user_by_event: {:union, [:integer, :number, :null]},
+      annual_recurring_revenue: {:union, [:integer, :number, :null]},
       average_order_value: {:union, [:integer, :number, :null]},
       average_revenue_per_user: {:union, [:integer, :number, :null]},
+      average_seats_per_customer: {:union, [:integer, :number, :null]},
       canceled_subscriptions: {:union, [:integer, :number, :null]},
       canceled_subscriptions_customer_service: {:union, [:integer, :number, :null]},
       canceled_subscriptions_low_quality: {:union, [:integer, :number, :null]},
@@ -118,7 +144,9 @@ defmodule Polarex.MetricsTotals do
       checkouts: {:union, [:integer, :number, :null]},
       checkouts_conversion: {:union, [:integer, :number, :null]},
       churn_rate: {:union, [:integer, :number, :null]},
+      churned_seat_customers: {:union, [:integer, :number, :null]},
       churned_subscriptions: {:union, [:integer, :number, :null]},
+      committed_annual_recurring_revenue: {:union, [:integer, :number, :null]},
       committed_monthly_recurring_revenue: {:union, [:integer, :number, :null]},
       committed_subscriptions: {:union, [:integer, :number, :null]},
       cost_per_user: {:union, [:integer, :number, :null]},
@@ -132,6 +160,7 @@ defmodule Polarex.MetricsTotals do
       net_average_order_value: {:union, [:integer, :number, :null]},
       net_cumulative_revenue: {:union, [:integer, :number, :null]},
       net_revenue: {:union, [:integer, :number, :null]},
+      new_seat_customers: {:union, [:integer, :number, :null]},
       new_subscriptions: {:union, [:integer, :number, :null]},
       new_subscriptions_net_revenue: {:union, [:integer, :number, :null]},
       new_subscriptions_revenue: {:union, [:integer, :number, :null]},
@@ -143,7 +172,14 @@ defmodule Polarex.MetricsTotals do
       renewed_subscriptions_net_revenue: {:union, [:integer, :number, :null]},
       renewed_subscriptions_revenue: {:union, [:integer, :number, :null]},
       revenue: {:union, [:integer, :number, :null]},
-      succeeded_checkouts: {:union, [:integer, :number, :null]}
+      seat_customers: {:union, [:integer, :number, :null]},
+      seat_utilization_rate: {:union, [:integer, :number, :null]},
+      seats_claimed: {:union, [:integer, :number, :null]},
+      seats_pending: {:union, [:integer, :number, :null]},
+      seats_total: {:union, [:integer, :number, :null]},
+      succeeded_checkouts: {:union, [:integer, :number, :null]},
+      trial_committed_monthly_recurring_revenue: {:union, [:integer, :number, :null]},
+      trial_monthly_recurring_revenue: {:union, [:integer, :number, :null]}
     ]
   end
 end

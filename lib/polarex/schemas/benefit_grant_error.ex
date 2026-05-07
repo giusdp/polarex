@@ -12,6 +12,6 @@ defmodule Polarex.BenefitGrantError do
   def __fields__(type \\ :t)
 
   def __fields__(:t) do
-    [message: {:string, :generic}, timestamp: {:string, :generic}, type: {:string, :generic}]
+    [message: :string, timestamp: :string, type: :string]
   end
 end

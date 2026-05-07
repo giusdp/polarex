@@ -12,6 +12,6 @@ defmodule Polarex.NotPermitted do
   def __fields__(type \\ :t)
 
   def __fields__(:t) do
-    [detail: {:string, :generic}, error: {:const, "NotPermitted"}]
+    [detail: :string, error: {:const, "NotPermitted"}]
   end
 end

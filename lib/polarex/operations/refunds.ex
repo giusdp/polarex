@@ -11,8 +11,12 @@ defmodule Polarex.Refunds do
   Create a refund.
 
   **Scopes**: `refunds:write`
+
+  ## Request Body
+
+  **Content Types**: `application/json`
   """
-  @spec refunds_create(Polarex.RefundCreate.t(), keyword) ::
+  @spec refunds_create(body :: Polarex.RefundCreate.t(), opts :: keyword) ::
           {:ok, Polarex.Refund.t()}
           | {:error, Polarex.HTTPValidationError.t() | Polarex.RefundedAlready.t()}
   def refunds_create(body, opts \\ []) do
@@ -26,8 +30,7 @@ defmodule Polarex.Refunds do
       method: :post,
       request: [{"application/json", {Polarex.RefundCreate, :t}}],
       response: [
-        {200, {Polarex.Refund, :t}},
-        {201, :null},
+        {201, {Polarex.Refund, :t}},
         {403, {Polarex.RefundedAlready, :t}},
         {422, {Polarex.HTTPValidationError, :t}}
       ],
@@ -49,13 +52,14 @@ defmodule Polarex.Refunds do
     * `order_id`: Filter by order ID.
     * `subscription_id`: Filter by subscription ID.
     * `customer_id`: Filter by customer ID.
+    * `external_customer_id`: Filter by customer external ID.
     * `succeeded`: Filter by `succeeded`.
     * `page`: Page number, defaults to 1.
     * `limit`: Size of a page, defaults to 10. Maximum is 100.
     * `sorting`: Sorting criterion. Several criteria can be used simultaneously and will be applied in order. Add a minus sign `-` before the criteria name to sort by descending order.
 
   """
-  @spec refunds_list(keyword) ::
+  @spec refunds_list(opts :: keyword) ::
           {:ok, Polarex.ListResourceRefund.t()} | {:error, Polarex.HTTPValidationError.t()}
   def refunds_list(opts \\ []) do
     client = opts[:client] || @default_client
@@ -63,6 +67,7 @@ defmodule Polarex.Refunds do
     query =
       Keyword.take(opts, [
         :customer_id,
+        :external_customer_id,
         :id,
         :limit,
         :order_id,

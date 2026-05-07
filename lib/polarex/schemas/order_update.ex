@@ -17,7 +17,7 @@ defmodule Polarex.OrderUpdate do
   def __fields__(:t) do
     [
       billing_address: {:union, [{Polarex.AddressInput, :t}, :null]},
-      billing_name: {:union, [{:string, :generic}, :null]}
+      billing_name: {:union, [:string, :null]}
     ]
   end
 end

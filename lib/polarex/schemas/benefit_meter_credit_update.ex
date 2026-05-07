@@ -5,7 +5,7 @@ defmodule Polarex.BenefitMeterCreditUpdate do
 
   @type t :: %__MODULE__{
           description: String.t() | nil,
-          metadata: Polarex.Metadata.t() | nil,
+          metadata: map | nil,
           properties: Polarex.BenefitMeterCreditCreateProperties.t() | nil,
           type: String.t()
         }
@@ -18,8 +18,8 @@ defmodule Polarex.BenefitMeterCreditUpdate do
 
   def __fields__(:t) do
     [
-      description: {:union, [{:string, :generic}, :null]},
-      metadata: {Polarex.Metadata, :t},
+      description: {:union, [:string, :null]},
+      metadata: :map,
       properties: {:union, [{Polarex.BenefitMeterCreditCreateProperties, :t}, :null]},
       type: {:const, "meter_credit"}
     ]

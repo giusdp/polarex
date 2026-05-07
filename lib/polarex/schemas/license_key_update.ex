@@ -19,7 +19,7 @@ defmodule Polarex.LicenseKeyUpdate do
 
   def __fields__(:t) do
     [
-      expires_at: {:union, [{:string, :date_time}, :null]},
+      expires_at: {:union, [{:string, "date-time"}, :null]},
       limit_activations: {:union, [:integer, :null]},
       limit_usage: {:union, [:integer, :null]},
       status: {:union, [{:enum, ["granted", "revoked", "disabled"]}, :null]},

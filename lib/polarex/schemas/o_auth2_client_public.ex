@@ -31,14 +31,14 @@ defmodule Polarex.OAuth2ClientPublic do
 
   def __fields__(:t) do
     [
-      client_id: {:string, :generic},
-      client_name: {:union, [{:string, :generic}, :null]},
-      client_uri: {:union, [{:string, :generic}, :null]},
-      created_at: {:string, :date_time},
-      logo_uri: {:union, [{:string, :generic}, :null]},
-      modified_at: {:union, [{:string, :date_time}, :null]},
-      policy_uri: {:union, [{:string, :generic}, :null]},
-      tos_uri: {:union, [{:string, :generic}, :null]}
+      client_id: :string,
+      client_name: {:union, [:string, :null]},
+      client_uri: {:union, [:string, :null]},
+      created_at: {:string, "date-time"},
+      logo_uri: {:union, [:string, :null]},
+      modified_at: {:union, [{:string, "date-time"}, :null]},
+      policy_uri: {:union, [:string, :null]},
+      tos_uri: {:union, [:string, :null]}
     ]
   end
 end

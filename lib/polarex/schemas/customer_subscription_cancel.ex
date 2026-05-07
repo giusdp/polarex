@@ -18,7 +18,7 @@ defmodule Polarex.CustomerSubscriptionCancel do
   def __fields__(:t) do
     [
       cancel_at_period_end: {:union, [:boolean, :null]},
-      cancellation_comment: {:union, [{:string, :generic}, :null]},
+      cancellation_comment: {:union, [:string, :null]},
       cancellation_reason:
         {:union,
          [

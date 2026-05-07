@@ -12,6 +12,6 @@ defmodule Polarex.CustomFieldSelectOption do
   def __fields__(type \\ :t)
 
   def __fields__(:t) do
-    [label: {:string, :generic}, value: {:string, :generic}]
+    [label: :string, value: :string]
   end
 end

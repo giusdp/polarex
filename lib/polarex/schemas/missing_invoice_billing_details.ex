@@ -12,6 +12,6 @@ defmodule Polarex.MissingInvoiceBillingDetails do
   def __fields__(type \\ :t)
 
   def __fields__(:t) do
-    [detail: {:string, :generic}, error: {:const, "MissingInvoiceBillingDetails"}]
+    [detail: :string, error: {:const, "MissingInvoiceBillingDetails"}]
   end
 end

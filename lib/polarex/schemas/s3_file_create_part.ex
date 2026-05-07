@@ -18,7 +18,7 @@ defmodule Polarex.S3FileCreatePart do
 
   def __fields__(:t) do
     [
-      checksum_sha2_56_base6_4: {:union, [{:string, :generic}, :null]},
+      checksum_sha2_56_base6_4: {:union, [:string, :null]},
       chunk_end: :integer,
       chunk_start: :integer,
       number: :integer

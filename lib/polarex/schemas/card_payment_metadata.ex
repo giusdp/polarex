@@ -12,6 +12,6 @@ defmodule Polarex.CardPaymentMetadata do
   def __fields__(type \\ :t)
 
   def __fields__(:t) do
-    [brand: {:string, :generic}, last4: {:string, :generic}]
+    [brand: :string, last4: :string]
   end
 end

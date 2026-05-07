@@ -12,6 +12,6 @@ defmodule Polarex.UniqueAggregation do
   def __fields__(type \\ :t)
 
   def __fields__(:t) do
-    [func: {:const, "unique"}, property: {:string, :generic}]
+    [func: {:const, "unique"}, property: :string]
   end
 end

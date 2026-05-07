@@ -12,6 +12,6 @@ defmodule Polarex.BenefitMeterCreditCreateProperties do
   def __fields__(type \\ :t)
 
   def __fields__(:t) do
-    [meter_id: {:string, :generic}, rollover: :boolean, units: :integer]
+    [meter_id: {:string, "uuid4"}, rollover: :boolean, units: :integer]
   end
 end

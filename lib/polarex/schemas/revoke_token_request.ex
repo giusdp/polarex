@@ -18,9 +18,9 @@ defmodule Polarex.RevokeTokenRequest do
 
   def __fields__(:t) do
     [
-      client_id: {:string, :generic},
-      client_secret: {:string, :generic},
-      token: {:string, :generic},
+      client_id: :string,
+      client_secret: :string,
+      token: :string,
       token_type_hint: {:union, [{:enum, ["access_token", "refresh_token"]}, :null]}
     ]
   end

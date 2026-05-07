@@ -12,6 +12,6 @@ defmodule Polarex.UserInfoOrganization do
   def __fields__(type \\ :t)
 
   def __fields__(:t) do
-    [name: {:union, [{:string, :generic}, :null]}, sub: {:string, :generic}]
+    [name: {:union, [:string, :null]}, sub: :string]
   end
 end

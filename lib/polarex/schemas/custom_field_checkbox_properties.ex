@@ -16,10 +16,6 @@ defmodule Polarex.CustomFieldCheckboxProperties do
   def __fields__(type \\ :t)
 
   def __fields__(:t) do
-    [
-      form_help_text: {:string, :generic},
-      form_label: {:string, :generic},
-      form_placeholder: {:string, :generic}
-    ]
+    [form_help_text: :string, form_label: :string, form_placeholder: :string]
   end
 end

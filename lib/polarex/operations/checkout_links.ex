@@ -11,12 +11,17 @@ defmodule Polarex.CheckoutLinks do
   Create a checkout link.
 
   **Scopes**: `checkout_links:write`
+
+  ## Request Body
+
+  **Content Types**: `application/json`
   """
   @spec checkout_links_create(
-          Polarex.CheckoutLinkCreateProduct.t()
-          | Polarex.CheckoutLinkCreateProductPrice.t()
-          | Polarex.CheckoutLinkCreateProducts.t(),
-          keyword
+          body ::
+            Polarex.CheckoutLinkCreateProduct.t()
+            | Polarex.CheckoutLinkCreateProductPrice.t()
+            | Polarex.CheckoutLinkCreateProducts.t(),
+          opts :: keyword
         ) :: {:ok, Polarex.CheckoutLink.t()} | {:error, Polarex.HTTPValidationError.t()}
   def checkout_links_create(body, opts \\ []) do
     client = opts[:client] || @default_client
@@ -48,7 +53,7 @@ defmodule Polarex.CheckoutLinks do
 
   **Scopes**: `checkout_links:write`
   """
-  @spec checkout_links_delete(String.t(), keyword) ::
+  @spec checkout_links_delete(id :: String.t(), opts :: keyword) ::
           :ok | {:error, Polarex.HTTPValidationError.t() | Polarex.ResourceNotFound.t()}
   def checkout_links_delete(id, opts \\ []) do
     client = opts[:client] || @default_client
@@ -74,7 +79,7 @@ defmodule Polarex.CheckoutLinks do
 
   **Scopes**: `checkout_links:read` `checkout_links:write`
   """
-  @spec checkout_links_get(String.t(), keyword) ::
+  @spec checkout_links_get(id :: String.t(), opts :: keyword) ::
           {:ok, Polarex.CheckoutLink.t()}
           | {:error, Polarex.HTTPValidationError.t() | Polarex.ResourceNotFound.t()}
   def checkout_links_get(id, opts \\ []) do
@@ -110,7 +115,7 @@ defmodule Polarex.CheckoutLinks do
     * `sorting`: Sorting criterion. Several criteria can be used simultaneously and will be applied in order. Add a minus sign `-` before the criteria name to sort by descending order.
 
   """
-  @spec checkout_links_list(keyword) ::
+  @spec checkout_links_list(opts :: keyword) ::
           {:ok, Polarex.ListResourceCheckoutLink.t()} | {:error, Polarex.HTTPValidationError.t()}
   def checkout_links_list(opts \\ []) do
     client = opts[:client] || @default_client
@@ -136,8 +141,16 @@ defmodule Polarex.CheckoutLinks do
   Update a checkout link.
 
   **Scopes**: `checkout_links:write`
+
+  ## Request Body
+
+  **Content Types**: `application/json`
   """
-  @spec checkout_links_update(String.t(), Polarex.CheckoutLinkUpdate.t(), keyword) ::
+  @spec checkout_links_update(
+          id :: String.t(),
+          body :: Polarex.CheckoutLinkUpdate.t(),
+          opts :: keyword
+        ) ::
           {:ok, Polarex.CheckoutLink.t()}
           | {:error, Polarex.HTTPValidationError.t() | Polarex.ResourceNotFound.t()}
   def checkout_links_update(id, body, opts \\ []) do

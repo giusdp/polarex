@@ -12,6 +12,6 @@ defmodule Polarex.EventTypeUpdate do
   def __fields__(type \\ :t)
 
   def __fields__(:t) do
-    [label: {:string, :generic}, label_property_selector: {:union, [{:string, :generic}, :null]}]
+    [label: :string, label_property_selector: {:union, [:string, :null]}]
   end
 end

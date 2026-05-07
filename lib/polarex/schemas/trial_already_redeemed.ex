@@ -12,6 +12,6 @@ defmodule Polarex.TrialAlreadyRedeemed do
   def __fields__(type \\ :t)
 
   def __fields__(:t) do
-    [detail: {:string, :generic}, error: {:const, "TrialAlreadyRedeemed"}]
+    [detail: :string, error: {:const, "TrialAlreadyRedeemed"}]
   end
 end

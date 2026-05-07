@@ -18,8 +18,8 @@ defmodule Polarex.BenefitGitHubRepositoryCreateProperties do
   def __fields__(:t) do
     [
       permission: {:enum, ["pull", "triage", "push", "maintain", "admin"]},
-      repository_name: {:string, :generic},
-      repository_owner: {:string, :generic}
+      repository_name: :string,
+      repository_owner: :string
     ]
   end
 end

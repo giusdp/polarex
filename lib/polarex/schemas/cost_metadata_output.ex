@@ -12,6 +12,6 @@ defmodule Polarex.CostMetadataOutput do
   def __fields__(type \\ :t)
 
   def __fields__(:t) do
-    [amount: {:string, :generic}, currency: {:string, :generic}]
+    [amount: :string, currency: :string]
   end
 end

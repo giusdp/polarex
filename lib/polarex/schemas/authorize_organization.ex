@@ -12,10 +12,6 @@ defmodule Polarex.AuthorizeOrganization do
   def __fields__(type \\ :t)
 
   def __fields__(:t) do
-    [
-      avatar_url: {:union, [{:string, :generic}, :null]},
-      id: {:string, :generic},
-      slug: {:string, :generic}
-    ]
+    [avatar_url: {:union, [:string, :null]}, id: {:string, "uuid4"}, slug: :string]
   end
 end

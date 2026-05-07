@@ -8,7 +8,8 @@ defmodule Polarex.BenefitGitHubRepository do
           deletable: boolean,
           description: String.t(),
           id: String.t(),
-          metadata: Polarex.MetadataOutputType.t(),
+          is_deleted: boolean,
+          metadata: map,
           modified_at: DateTime.t() | nil,
           organization_id: String.t(),
           properties: Polarex.BenefitGitHubRepositoryProperties.t(),
@@ -21,6 +22,7 @@ defmodule Polarex.BenefitGitHubRepository do
     :deletable,
     :description,
     :id,
+    :is_deleted,
     :metadata,
     :modified_at,
     :organization_id,
@@ -35,13 +37,14 @@ defmodule Polarex.BenefitGitHubRepository do
 
   def __fields__(:t) do
     [
-      created_at: {:string, :date_time},
+      created_at: {:string, "date-time"},
       deletable: :boolean,
-      description: {:string, :generic},
-      id: {:string, :generic},
-      metadata: {Polarex.MetadataOutputType, :t},
-      modified_at: {:union, [{:string, :date_time}, :null]},
-      organization_id: {:string, :generic},
+      description: :string,
+      id: {:string, "uuid4"},
+      is_deleted: :boolean,
+      metadata: :map,
+      modified_at: {:union, [{:string, "date-time"}, :null]},
+      organization_id: {:string, "uuid4"},
       properties: {Polarex.BenefitGitHubRepositoryProperties, :t},
       selectable: :boolean,
       type: {:const, "github_repository"}

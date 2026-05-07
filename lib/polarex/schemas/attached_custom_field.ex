@@ -32,7 +32,7 @@ defmodule Polarex.AttachedCustomField do
            {Polarex.CustomFieldSelect, :t},
            {Polarex.CustomFieldText, :t}
          ]},
-      custom_field_id: {:string, :generic},
+      custom_field_id: {:string, "uuid4"},
       order: :integer,
       required: :boolean
     ]

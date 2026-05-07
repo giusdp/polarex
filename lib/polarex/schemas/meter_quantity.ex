@@ -12,6 +12,6 @@ defmodule Polarex.MeterQuantity do
   def __fields__(type \\ :t)
 
   def __fields__(:t) do
-    [quantity: :number, timestamp: {:string, :date_time}]
+    [quantity: :number, timestamp: {:string, "date-time"}]
   end
 end

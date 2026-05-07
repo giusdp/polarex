@@ -12,6 +12,6 @@ defmodule Polarex.SubscriptionUpdateBillingPeriod do
   def __fields__(type \\ :t)
 
   def __fields__(:t) do
-    [current_billing_period_end: {:string, :date_time}]
+    [current_billing_period_end: {:string, "date-time"}]
   end
 end

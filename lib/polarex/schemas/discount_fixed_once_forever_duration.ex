@@ -5,6 +5,7 @@ defmodule Polarex.DiscountFixedOnceForeverDuration do
 
   @type t :: %__MODULE__{
           amount: integer,
+          amounts: map,
           code: String.t() | nil,
           created_at: DateTime.t(),
           currency: String.t(),
@@ -12,7 +13,7 @@ defmodule Polarex.DiscountFixedOnceForeverDuration do
           ends_at: DateTime.t() | nil,
           id: String.t(),
           max_redemptions: integer | nil,
-          metadata: Polarex.MetadataOutputType.t(),
+          metadata: map,
           modified_at: DateTime.t() | nil,
           name: String.t(),
           organization_id: String.t(),
@@ -24,6 +25,7 @@ defmodule Polarex.DiscountFixedOnceForeverDuration do
 
   defstruct [
     :amount,
+    :amounts,
     :code,
     :created_at,
     :currency,
@@ -48,20 +50,21 @@ defmodule Polarex.DiscountFixedOnceForeverDuration do
   def __fields__(:t) do
     [
       amount: :integer,
-      code: {:union, [{:string, :generic}, :null]},
-      created_at: {:string, :date_time},
-      currency: {:string, :generic},
+      amounts: :map,
+      code: {:union, [:string, :null]},
+      created_at: {:string, "date-time"},
+      currency: :string,
       duration: {:enum, ["once", "forever", "repeating"]},
-      ends_at: {:union, [{:string, :date_time}, :null]},
-      id: {:string, :generic},
+      ends_at: {:union, [{:string, "date-time"}, :null]},
+      id: {:string, "uuid4"},
       max_redemptions: {:union, [:integer, :null]},
-      metadata: {Polarex.MetadataOutputType, :t},
-      modified_at: {:union, [{:string, :date_time}, :null]},
-      name: {:string, :generic},
-      organization_id: {:string, :generic},
+      metadata: :map,
+      modified_at: {:union, [{:string, "date-time"}, :null]},
+      name: :string,
+      organization_id: {:string, "uuid4"},
       products: [{Polarex.DiscountProduct, :t}],
       redemptions_count: :integer,
-      starts_at: {:union, [{:string, :date_time}, :null]},
+      starts_at: {:union, [{:string, "date-time"}, :null]},
       type: {:enum, ["fixed", "percentage"]}
     ]
   end

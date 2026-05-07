@@ -17,7 +17,7 @@ defmodule Polarex.SubscriptionRevoke do
 
   def __fields__(:t) do
     [
-      customer_cancellation_comment: {:union, [{:string, :generic}, :null]},
+      customer_cancellation_comment: {:union, [:string, :null]},
       customer_cancellation_reason:
         {:union,
          [

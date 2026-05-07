@@ -32,13 +32,13 @@ defmodule Polarex.BenefitSubscriberOrganization do
   def __fields__(:t) do
     [
       allow_customer_updates: :boolean,
-      avatar_url: {:union, [{:string, :generic}, :null]},
-      created_at: {:string, :date_time},
-      id: {:string, :generic},
-      modified_at: {:union, [{:string, :date_time}, :null]},
-      name: {:string, :generic},
-      proration_behavior: {:enum, ["invoice", "prorate"]},
-      slug: {:string, :generic}
+      avatar_url: {:union, [:string, :null]},
+      created_at: {:string, "date-time"},
+      id: {:string, "uuid4"},
+      modified_at: {:union, [{:string, "date-time"}, :null]},
+      name: :string,
+      proration_behavior: {:enum, ["invoice", "prorate", "next_period", "reset"]},
+      slug: :string
     ]
   end
 end

@@ -13,8 +13,9 @@ defmodule Polarex.SubscriptionUpdateProduct do
 
   def __fields__(:t) do
     [
-      product_id: {:string, :generic},
-      proration_behavior: {:union, [{:enum, ["invoice", "prorate"]}, :null]}
+      product_id: {:string, "uuid4"},
+      proration_behavior:
+        {:union, [{:enum, ["invoice", "prorate", "next_period", "reset"]}, :null]}
     ]
   end
 end

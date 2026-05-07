@@ -5,7 +5,7 @@ defmodule Polarex.BenefitGitHubRepositoryCreate do
 
   @type t :: %__MODULE__{
           description: String.t(),
-          metadata: Polarex.Metadata.t() | nil,
+          metadata: map | nil,
           organization_id: String.t() | nil,
           properties: Polarex.BenefitGitHubRepositoryCreateProperties.t(),
           type: String.t()
@@ -19,9 +19,9 @@ defmodule Polarex.BenefitGitHubRepositoryCreate do
 
   def __fields__(:t) do
     [
-      description: {:string, :generic},
-      metadata: {Polarex.Metadata, :t},
-      organization_id: {:union, [{:string, :generic}, :null]},
+      description: :string,
+      metadata: :map,
+      organization_id: {:union, [{:string, "uuid4"}, :null]},
       properties: {Polarex.BenefitGitHubRepositoryCreateProperties, :t},
       type: {:const, "github_repository"}
     ]

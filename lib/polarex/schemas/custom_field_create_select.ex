@@ -4,7 +4,7 @@ defmodule Polarex.CustomFieldCreateSelect do
   """
 
   @type t :: %__MODULE__{
-          metadata: Polarex.Metadata.t() | nil,
+          metadata: map | nil,
           name: String.t(),
           organization_id: String.t() | nil,
           properties: Polarex.CustomFieldSelectProperties.t(),
@@ -20,11 +20,11 @@ defmodule Polarex.CustomFieldCreateSelect do
 
   def __fields__(:t) do
     [
-      metadata: {Polarex.Metadata, :t},
-      name: {:string, :generic},
-      organization_id: {:union, [{:string, :generic}, :null]},
+      metadata: :map,
+      name: :string,
+      organization_id: {:union, [{:string, "uuid4"}, :null]},
       properties: {Polarex.CustomFieldSelectProperties, :t},
-      slug: {:string, :generic},
+      slug: :string,
       type: {:const, "select"}
     ]
   end

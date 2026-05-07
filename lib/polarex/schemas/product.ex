@@ -9,6 +9,7 @@ defmodule Polarex.Product do
             Polarex.BenefitCustom.t()
             | Polarex.BenefitDiscord.t()
             | Polarex.BenefitDownloadables.t()
+            | Polarex.BenefitFeatureFlag.t()
             | Polarex.BenefitGitHubRepository.t()
             | Polarex.BenefitLicenseKeys.t()
             | Polarex.BenefitMeterCredit.t()
@@ -19,7 +20,7 @@ defmodule Polarex.Product do
           is_archived: boolean,
           is_recurring: boolean,
           medias: [Polarex.ProductMediaFileRead.t()],
-          metadata: Polarex.MetadataOutputType.t(),
+          metadata: map,
           modified_at: DateTime.t() | nil,
           name: String.t(),
           organization_id: String.t(),
@@ -27,7 +28,8 @@ defmodule Polarex.Product do
           recurring_interval: String.t() | nil,
           recurring_interval_count: integer | nil,
           trial_interval: String.t() | nil,
-          trial_interval_count: integer | nil
+          trial_interval_count: integer | nil,
+          visibility: String.t()
         }
 
   defstruct [
@@ -47,7 +49,8 @@ defmodule Polarex.Product do
     :recurring_interval,
     :recurring_interval_count,
     :trial_interval,
-    :trial_interval_count
+    :trial_interval_count,
+    :visibility
   ]
 
   @doc false
@@ -62,26 +65,28 @@ defmodule Polarex.Product do
           {Polarex.BenefitCustom, :t},
           {Polarex.BenefitDiscord, :t},
           {Polarex.BenefitDownloadables, :t},
+          {Polarex.BenefitFeatureFlag, :t},
           {Polarex.BenefitGitHubRepository, :t},
           {Polarex.BenefitLicenseKeys, :t},
           {Polarex.BenefitMeterCredit, :t}
         ]
       ],
-      created_at: {:string, :date_time},
-      description: {:union, [{:string, :generic}, :null]},
-      id: {:string, :generic},
+      created_at: {:string, "date-time"},
+      description: {:union, [:string, :null]},
+      id: {:string, "uuid4"},
       is_archived: :boolean,
       is_recurring: :boolean,
       medias: [{Polarex.ProductMediaFileRead, :t}],
-      metadata: {Polarex.MetadataOutputType, :t},
-      modified_at: {:union, [{:string, :date_time}, :null]},
-      name: {:string, :generic},
-      organization_id: {:string, :generic},
+      metadata: :map,
+      modified_at: {:union, [{:string, "date-time"}, :null]},
+      name: :string,
+      organization_id: {:string, "uuid4"},
       prices: [:map],
       recurring_interval: {:union, [{:enum, ["day", "week", "month", "year"]}, :null]},
       recurring_interval_count: {:union, [:integer, :null]},
       trial_interval: {:union, [{:enum, ["day", "week", "month", "year"]}, :null]},
-      trial_interval_count: {:union, [:integer, :null]}
+      trial_interval_count: {:union, [:integer, :null]},
+      visibility: {:enum, ["draft", "private", "public"]}
     ]
   end
 end

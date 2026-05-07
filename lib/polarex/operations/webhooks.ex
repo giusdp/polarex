@@ -11,9 +11,15 @@ defmodule Polarex.Webhooks do
   Create a webhook endpoint.
 
   **Scopes**: `webhooks:write`
+
+  ## Request Body
+
+  **Content Types**: `application/json`
   """
-  @spec webhooks_create_webhook_endpoint(Polarex.WebhookEndpointCreate.t(), keyword) ::
-          {:ok, Polarex.WebhookEndpoint.t()} | {:error, Polarex.HTTPValidationError.t()}
+  @spec webhooks_create_webhook_endpoint(
+          body :: Polarex.WebhookEndpointCreate.t(),
+          opts :: keyword
+        ) :: {:ok, Polarex.WebhookEndpoint.t()} | {:error, Polarex.HTTPValidationError.t()}
   def webhooks_create_webhook_endpoint(body, opts \\ []) do
     client = opts[:client] || @default_client
 
@@ -36,7 +42,7 @@ defmodule Polarex.Webhooks do
 
   **Scopes**: `webhooks:write`
   """
-  @spec webhooks_delete_webhook_endpoint(String.t(), keyword) ::
+  @spec webhooks_delete_webhook_endpoint(id :: String.t(), opts :: keyword) ::
           :ok | {:error, Polarex.HTTPValidationError.t() | Polarex.ResourceNotFound.t()}
   def webhooks_delete_webhook_endpoint(id, opts \\ []) do
     client = opts[:client] || @default_client
@@ -62,7 +68,7 @@ defmodule Polarex.Webhooks do
 
   **Scopes**: `webhooks:read` `webhooks:write`
   """
-  @spec webhooks_get_webhook_endpoint(String.t(), keyword) ::
+  @spec webhooks_get_webhook_endpoint(id :: String.t(), opts :: keyword) ::
           {:ok, Polarex.WebhookEndpoint.t()}
           | {:error, Polarex.HTTPValidationError.t() | Polarex.ResourceNotFound.t()}
   def webhooks_get_webhook_endpoint(id, opts \\ []) do
@@ -96,16 +102,32 @@ defmodule Polarex.Webhooks do
     * `endpoint_id`: Filter by webhook endpoint ID.
     * `start_timestamp`: Filter deliveries after this timestamp.
     * `end_timestamp`: Filter deliveries before this timestamp.
+    * `succeeded`: Filter by delivery success status.
+    * `query`: Query to filter webhook deliveries.
+    * `http_code_class`: Filter by HTTP response code class (2xx, 3xx, 4xx, 5xx).
+    * `event_type`: Filter by webhook event type.
     * `page`: Page number, defaults to 1.
     * `limit`: Size of a page, defaults to 10. Maximum is 100.
 
   """
-  @spec webhooks_list_webhook_deliveries(keyword) ::
+  @spec webhooks_list_webhook_deliveries(opts :: keyword) ::
           {:ok, Polarex.ListResourceWebhookDelivery.t()}
           | {:error, Polarex.HTTPValidationError.t()}
   def webhooks_list_webhook_deliveries(opts \\ []) do
     client = opts[:client] || @default_client
-    query = Keyword.take(opts, [:end_timestamp, :endpoint_id, :limit, :page, :start_timestamp])
+
+    query =
+      Keyword.take(opts, [
+        :end_timestamp,
+        :endpoint_id,
+        :event_type,
+        :http_code_class,
+        :limit,
+        :page,
+        :query,
+        :start_timestamp,
+        :succeeded
+      ])
 
     client.request(%{
       args: [],
@@ -135,7 +157,7 @@ defmodule Polarex.Webhooks do
     * `limit`: Size of a page, defaults to 10. Maximum is 100.
 
   """
-  @spec webhooks_list_webhook_endpoints(keyword) ::
+  @spec webhooks_list_webhook_endpoints(opts :: keyword) ::
           {:ok, Polarex.ListResourceWebhookEndpoint.t()}
           | {:error, Polarex.HTTPValidationError.t()}
   def webhooks_list_webhook_endpoints(opts \\ []) do
@@ -163,7 +185,7 @@ defmodule Polarex.Webhooks do
 
   **Scopes**: `webhooks:write`
   """
-  @spec webhooks_redeliver_webhook_event(String.t(), keyword) ::
+  @spec webhooks_redeliver_webhook_event(id :: String.t(), opts :: keyword) ::
           {:ok, map} | {:error, Polarex.HTTPValidationError.t() | Polarex.ResourceNotFound.t()}
   def webhooks_redeliver_webhook_event(id, opts \\ []) do
     client = opts[:client] || @default_client
@@ -189,7 +211,7 @@ defmodule Polarex.Webhooks do
 
   **Scopes**: `webhooks:write`
   """
-  @spec webhooks_reset_webhook_endpoint_secret(String.t(), keyword) ::
+  @spec webhooks_reset_webhook_endpoint_secret(id :: String.t(), opts :: keyword) ::
           {:ok, Polarex.WebhookEndpoint.t()}
           | {:error, Polarex.HTTPValidationError.t() | Polarex.ResourceNotFound.t()}
   def webhooks_reset_webhook_endpoint_secret(id, opts \\ []) do
@@ -215,8 +237,16 @@ defmodule Polarex.Webhooks do
   Update a webhook endpoint.
 
   **Scopes**: `webhooks:write`
+
+  ## Request Body
+
+  **Content Types**: `application/json`
   """
-  @spec webhooks_update_webhook_endpoint(String.t(), Polarex.WebhookEndpointUpdate.t(), keyword) ::
+  @spec webhooks_update_webhook_endpoint(
+          id :: String.t(),
+          body :: Polarex.WebhookEndpointUpdate.t(),
+          opts :: keyword
+        ) ::
           {:ok, Polarex.WebhookEndpoint.t()}
           | {:error, Polarex.HTTPValidationError.t() | Polarex.ResourceNotFound.t()}
   def webhooks_update_webhook_endpoint(id, body, opts \\ []) do

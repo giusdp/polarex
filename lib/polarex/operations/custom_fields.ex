@@ -11,14 +11,19 @@ defmodule Polarex.CustomFields do
   Create a custom field.
 
   **Scopes**: `custom_fields:write`
+
+  ## Request Body
+
+  **Content Types**: `application/json`
   """
   @spec custom_fields_create(
-          Polarex.CustomFieldCreateCheckbox.t()
-          | Polarex.CustomFieldCreateDate.t()
-          | Polarex.CustomFieldCreateNumber.t()
-          | Polarex.CustomFieldCreateSelect.t()
-          | Polarex.CustomFieldCreateText.t(),
-          keyword
+          body ::
+            Polarex.CustomFieldCreateCheckbox.t()
+            | Polarex.CustomFieldCreateDate.t()
+            | Polarex.CustomFieldCreateNumber.t()
+            | Polarex.CustomFieldCreateSelect.t()
+            | Polarex.CustomFieldCreateText.t(),
+          opts :: keyword
         ) ::
           {:ok,
            Polarex.CustomFieldCheckbox.t()
@@ -70,7 +75,7 @@ defmodule Polarex.CustomFields do
 
   **Scopes**: `custom_fields:write`
   """
-  @spec custom_fields_delete(String.t(), keyword) ::
+  @spec custom_fields_delete(id :: String.t(), opts :: keyword) ::
           :ok | {:error, Polarex.HTTPValidationError.t() | Polarex.ResourceNotFound.t()}
   def custom_fields_delete(id, opts \\ []) do
     client = opts[:client] || @default_client
@@ -96,7 +101,7 @@ defmodule Polarex.CustomFields do
 
   **Scopes**: `custom_fields:read` `custom_fields:write`
   """
-  @spec custom_fields_get(String.t(), keyword) ::
+  @spec custom_fields_get(id :: String.t(), opts :: keyword) ::
           {:ok,
            Polarex.CustomFieldCheckbox.t()
            | Polarex.CustomFieldDate.t()
@@ -146,7 +151,7 @@ defmodule Polarex.CustomFields do
     * `sorting`: Sorting criterion. Several criteria can be used simultaneously and will be applied in order. Add a minus sign `-` before the criteria name to sort by descending order.
 
   """
-  @spec custom_fields_list(keyword) ::
+  @spec custom_fields_list(opts :: keyword) ::
           {:ok, Polarex.ListResourceCustomField.t()} | {:error, Polarex.HTTPValidationError.t()}
   def custom_fields_list(opts \\ []) do
     client = opts[:client] || @default_client
@@ -172,15 +177,20 @@ defmodule Polarex.CustomFields do
   Update a custom field.
 
   **Scopes**: `custom_fields:write`
+
+  ## Request Body
+
+  **Content Types**: `application/json`
   """
   @spec custom_fields_update(
-          String.t(),
-          Polarex.CustomFieldUpdateCheckbox.t()
-          | Polarex.CustomFieldUpdateDate.t()
-          | Polarex.CustomFieldUpdateNumber.t()
-          | Polarex.CustomFieldUpdateSelect.t()
-          | Polarex.CustomFieldUpdateText.t(),
-          keyword
+          id :: String.t(),
+          body ::
+            Polarex.CustomFieldUpdateCheckbox.t()
+            | Polarex.CustomFieldUpdateDate.t()
+            | Polarex.CustomFieldUpdateNumber.t()
+            | Polarex.CustomFieldUpdateSelect.t()
+            | Polarex.CustomFieldUpdateText.t(),
+          opts :: keyword
         ) ::
           {:ok,
            Polarex.CustomFieldCheckbox.t()

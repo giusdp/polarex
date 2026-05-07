@@ -12,6 +12,6 @@ defmodule Polarex.BenefitGrantDownloadablesProperties do
   def __fields__(type \\ :t)
 
   def __fields__(:t) do
-    [files: [string: :generic]]
+    [files: [:string]]
   end
 end

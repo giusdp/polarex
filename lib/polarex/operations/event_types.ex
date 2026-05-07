@@ -26,7 +26,7 @@ defmodule Polarex.EventTypes do
     * `sorting`: Sorting criterion. Several criteria can be used simultaneously and will be applied in order. Add a minus sign `-` before the criteria name to sort by descending order.
 
   """
-  @spec event_types_list(keyword) ::
+  @spec event_types_list(opts :: keyword) ::
           {:ok, Polarex.ListResourceEventTypeWithStats.t()}
           | {:error, Polarex.HTTPValidationError.t()}
   def event_types_list(opts \\ []) do
@@ -64,8 +64,14 @@ defmodule Polarex.EventTypes do
   Update Event Type
 
   Update an event type's label.
+
+  **Scopes**: `events:write`
+
+  ## Request Body
+
+  **Content Types**: `application/json`
   """
-  @spec event_types_update(String.t(), Polarex.EventTypeUpdate.t(), keyword) ::
+  @spec event_types_update(id :: String.t(), body :: Polarex.EventTypeUpdate.t(), opts :: keyword) ::
           {:ok, Polarex.EventType.t()} | {:error, Polarex.HTTPValidationError.t()}
   def event_types_update(id, body, opts \\ []) do
     client = opts[:client] || @default_client

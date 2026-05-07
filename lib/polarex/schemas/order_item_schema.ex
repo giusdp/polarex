@@ -32,11 +32,11 @@ defmodule Polarex.OrderItemSchema do
   def __fields__(:t) do
     [
       amount: :integer,
-      created_at: {:string, :date_time},
-      id: {:string, :generic},
-      label: {:string, :generic},
-      modified_at: {:union, [{:string, :date_time}, :null]},
-      product_price_id: {:union, [{:string, :generic}, :null]},
+      created_at: {:string, "date-time"},
+      id: {:string, "uuid4"},
+      label: :string,
+      modified_at: {:union, [{:string, "date-time"}, :null]},
+      product_price_id: {:union, [{:string, "uuid4"}, :null]},
       proration: :boolean,
       tax_amount: :integer
     ]

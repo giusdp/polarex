@@ -5,11 +5,13 @@ defmodule Polarex.UserEvent do
 
   @type t :: %__MODULE__{
           child_count: integer | nil,
-          customer: Polarex.Customer.t() | nil,
+          customer: Polarex.CustomerIndividual.t() | Polarex.CustomerTeam.t() | nil,
           customer_id: String.t() | nil,
           external_customer_id: String.t() | nil,
+          external_member_id: String.t() | nil,
           id: String.t(),
           label: String.t(),
+          member_id: String.t() | nil,
           metadata: Polarex.EventMetadataOutput.t(),
           name: String.t(),
           organization_id: String.t(),
@@ -23,8 +25,10 @@ defmodule Polarex.UserEvent do
     :customer,
     :customer_id,
     :external_customer_id,
+    :external_member_id,
     :id,
     :label,
+    :member_id,
     :metadata,
     :name,
     :organization_id,
@@ -40,17 +44,19 @@ defmodule Polarex.UserEvent do
   def __fields__(:t) do
     [
       child_count: :integer,
-      customer: {:union, [{Polarex.Customer, :t}, :null]},
-      customer_id: {:union, [{:string, :generic}, :null]},
-      external_customer_id: {:union, [{:string, :generic}, :null]},
-      id: {:string, :generic},
-      label: {:string, :generic},
+      customer: {:union, [{Polarex.CustomerIndividual, :t}, {Polarex.CustomerTeam, :t}, :null]},
+      customer_id: {:union, [{:string, "uuid4"}, :null]},
+      external_customer_id: {:union, [:string, :null]},
+      external_member_id: {:union, [:string, :null]},
+      id: {:string, "uuid4"},
+      label: :string,
+      member_id: {:union, [{:string, "uuid4"}, :null]},
       metadata: {Polarex.EventMetadataOutput, :t},
-      name: {:string, :generic},
-      organization_id: {:string, :generic},
-      parent_id: {:union, [{:string, :generic}, :null]},
+      name: :string,
+      organization_id: {:string, "uuid4"},
+      parent_id: {:union, [{:string, "uuid4"}, :null]},
       source: {:const, "user"},
-      timestamp: {:string, :date_time}
+      timestamp: {:string, "date-time"}
     ]
   end
 end

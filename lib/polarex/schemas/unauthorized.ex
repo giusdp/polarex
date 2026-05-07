@@ -12,6 +12,6 @@ defmodule Polarex.Unauthorized do
   def __fields__(type \\ :t)
 
   def __fields__(:t) do
-    [detail: {:string, :generic}, error: {:const, "Unauthorized"}]
+    [detail: :string, error: {:const, "Unauthorized"}]
   end
 end

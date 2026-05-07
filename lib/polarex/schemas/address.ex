@@ -20,7 +20,7 @@ defmodule Polarex.Address do
 
   def __fields__(:t) do
     [
-      city: {:union, [{:string, :generic}, :null]},
+      city: {:union, [:string, :null]},
       country:
         {:enum,
          [
@@ -274,10 +274,10 @@ defmodule Polarex.Address do
            "ZM",
            "ZW"
          ]},
-      line1: {:union, [{:string, :generic}, :null]},
-      line2: {:union, [{:string, :generic}, :null]},
-      postal_code: {:union, [{:string, :generic}, :null]},
-      state: {:union, [{:string, :generic}, :null]}
+      line1: {:union, [:string, :null]},
+      line2: {:union, [:string, :null]},
+      postal_code: {:union, [:string, :null]},
+      state: {:union, [:string, :null]}
     ]
   end
 end

@@ -12,7 +12,7 @@ defmodule Polarex.Events do
 
   **Scopes**: `events:read` `events:write`
   """
-  @spec events_get(String.t(), keyword) ::
+  @spec events_get(id :: String.t(), opts :: keyword) ::
           {:ok, map | Polarex.UserEvent.t()}
           | {:error, Polarex.HTTPValidationError.t() | Polarex.ResourceNotFound.t()}
   def events_get(id, opts \\ []) do
@@ -38,8 +38,12 @@ defmodule Polarex.Events do
   Ingest batch of events.
 
   **Scopes**: `events:write`
+
+  ## Request Body
+
+  **Content Types**: `application/json`
   """
-  @spec events_ingest(Polarex.EventsIngest.t(), keyword) ::
+  @spec events_ingest(body :: Polarex.EventsIngest.t(), opts :: keyword) ::
           {:ok, Polarex.EventsIngestResponse.t()} | {:error, Polarex.HTTPValidationError.t()}
   def events_ingest(body, opts \\ []) do
     client = opts[:client] || @default_client
@@ -86,7 +90,7 @@ defmodule Polarex.Events do
     * `metadata`: Filter by metadata key-value pairs. It uses the `deepObject` style, e.g. `?metadata[key]=value`.
 
   """
-  @spec events_list(keyword) ::
+  @spec events_list(opts :: keyword) ::
           {:ok, Polarex.ListResourceEvent.t() | Polarex.ListResourceWithCursorPaginationEvent.t()}
           | {:error, Polarex.HTTPValidationError.t()}
   def events_list(opts \\ []) do
@@ -147,7 +151,7 @@ defmodule Polarex.Events do
     * `sorting`: Sorting criterion. Several criteria can be used simultaneously and will be applied in order. Add a minus sign `-` before the criteria name to sort by descending order.
 
   """
-  @spec events_list_names(keyword) ::
+  @spec events_list_names(opts :: keyword) ::
           {:ok, Polarex.ListResourceEventName.t()} | {:error, Polarex.HTTPValidationError.t()}
   def events_list_names(opts \\ []) do
     client = opts[:client] || @default_client

@@ -6,6 +6,7 @@ defmodule Polarex.EventCreateExternalCustomer do
   @type t :: %__MODULE__{
           external_customer_id: String.t(),
           external_id: String.t() | nil,
+          external_member_id: String.t() | nil,
           metadata: Polarex.EventMetadataInput.t() | nil,
           name: String.t(),
           organization_id: String.t() | nil,
@@ -16,6 +17,7 @@ defmodule Polarex.EventCreateExternalCustomer do
   defstruct [
     :external_customer_id,
     :external_id,
+    :external_member_id,
     :metadata,
     :name,
     :organization_id,
@@ -29,13 +31,14 @@ defmodule Polarex.EventCreateExternalCustomer do
 
   def __fields__(:t) do
     [
-      external_customer_id: {:string, :generic},
-      external_id: {:union, [{:string, :generic}, :null]},
+      external_customer_id: :string,
+      external_id: {:union, [:string, :null]},
+      external_member_id: {:union, [:string, :null]},
       metadata: {Polarex.EventMetadataInput, :t},
-      name: {:string, :generic},
-      organization_id: {:union, [{:string, :generic}, :null]},
-      parent_id: {:union, [{:string, :generic}, :null]},
-      timestamp: {:string, :date_time}
+      name: :string,
+      organization_id: {:union, [{:string, "uuid4"}, :null]},
+      parent_id: {:union, [:string, :null]},
+      timestamp: {:string, "date-time"}
     ]
   end
 end

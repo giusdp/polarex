@@ -12,7 +12,7 @@ defmodule Polarex.CustomerMeters do
 
   **Scopes**: `customer_meters:read`
   """
-  @spec customer_meters_get(String.t(), keyword) ::
+  @spec customer_meters_get(id :: String.t(), opts :: keyword) ::
           {:ok, Polarex.CustomerMeter.t()}
           | {:error, Polarex.HTTPValidationError.t() | Polarex.ResourceNotFound.t()}
   def customer_meters_get(id, opts \\ []) do
@@ -50,7 +50,7 @@ defmodule Polarex.CustomerMeters do
     * `sorting`: Sorting criterion. Several criteria can be used simultaneously and will be applied in order. Add a minus sign `-` before the criteria name to sort by descending order.
 
   """
-  @spec customer_meters_list(keyword) ::
+  @spec customer_meters_list(opts :: keyword) ::
           {:ok, Polarex.ListResourceCustomerMeter.t()} | {:error, Polarex.HTTPValidationError.t()}
   def customer_meters_list(opts \\ []) do
     client = opts[:client] || @default_client
@@ -87,7 +87,7 @@ defmodule Polarex.CustomerMeters do
 
   **Scopes**: `customer_portal:read` `customer_portal:write`
   """
-  @spec customer_portal_customer_meters_get(String.t(), keyword) ::
+  @spec customer_portal_customer_meters_get(id :: String.t(), opts :: keyword) ::
           {:ok, Polarex.CustomerCustomerMeter.t()}
           | {:error, Polarex.HTTPValidationError.t() | Polarex.ResourceNotFound.t()}
   def customer_portal_customer_meters_get(id, opts \\ []) do
@@ -123,7 +123,7 @@ defmodule Polarex.CustomerMeters do
     * `sorting`: Sorting criterion. Several criteria can be used simultaneously and will be applied in order. Add a minus sign `-` before the criteria name to sort by descending order.
 
   """
-  @spec customer_portal_customer_meters_list(keyword) ::
+  @spec customer_portal_customer_meters_list(opts :: keyword) ::
           {:ok, Polarex.ListResourceCustomerCustomerMeter.t()}
           | {:error, Polarex.HTTPValidationError.t()}
   def customer_portal_customer_meters_list(opts \\ []) do

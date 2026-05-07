@@ -16,10 +16,6 @@ defmodule Polarex.FileUploadCompleted do
   def __fields__(type \\ :t)
 
   def __fields__(:t) do
-    [
-      id: {:string, :generic},
-      parts: [{Polarex.S3FileUploadCompletedPart, :t}],
-      path: {:string, :generic}
-    ]
+    [id: :string, parts: [{Polarex.S3FileUploadCompletedPart, :t}], path: :string]
   end
 end

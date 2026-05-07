@@ -12,6 +12,6 @@ defmodule Polarex.BenefitCustomProperties do
   def __fields__(type \\ :t)
 
   def __fields__(:t) do
-    [note: {:union, [{:string, :generic}, :null]}]
+    [note: {:union, [:string, :null]}]
   end
 end

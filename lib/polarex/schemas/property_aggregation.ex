@@ -12,6 +12,6 @@ defmodule Polarex.PropertyAggregation do
   def __fields__(type \\ :t)
 
   def __fields__(:t) do
-    [func: {:enum, ["sum", "max", "min", "avg"]}, property: {:string, :generic}]
+    [func: {:enum, ["sum", "max", "min", "avg"]}, property: :string]
   end
 end

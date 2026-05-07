@@ -18,10 +18,10 @@ defmodule Polarex.BenefitGrantDiscordProperties do
 
   def __fields__(:t) do
     [
-      account_id: {:union, [{:string, :generic}, :null]},
-      granted_account_id: {:string, :generic},
-      guild_id: {:string, :generic},
-      role_id: {:string, :generic}
+      account_id: {:union, [:string, :null]},
+      granted_account_id: :string,
+      guild_id: :string,
+      role_id: :string
     ]
   end
 end

@@ -11,13 +11,14 @@ defmodule Polarex.Discounts do
   Create a discount.
 
   **Scopes**: `discounts:write`
+
+  ## Request Body
+
+  **Content Types**: `application/json`
   """
   @spec discounts_create(
-          Polarex.DiscountFixedOnceForeverDurationCreate.t()
-          | Polarex.DiscountFixedRepeatDurationCreate.t()
-          | Polarex.DiscountPercentageOnceForeverDurationCreate.t()
-          | Polarex.DiscountPercentageRepeatDurationCreate.t(),
-          keyword
+          body :: Polarex.DiscountFixedCreate.t() | Polarex.DiscountPercentageCreate.t(),
+          opts :: keyword
         ) ::
           {:ok,
            Polarex.DiscountFixedOnceForeverDuration.t()
@@ -36,13 +37,7 @@ defmodule Polarex.Discounts do
       method: :post,
       request: [
         {"application/json",
-         {:union,
-          [
-            {Polarex.DiscountFixedOnceForeverDurationCreate, :t},
-            {Polarex.DiscountFixedRepeatDurationCreate, :t},
-            {Polarex.DiscountPercentageOnceForeverDurationCreate, :t},
-            {Polarex.DiscountPercentageRepeatDurationCreate, :t}
-          ]}}
+         {:union, [{Polarex.DiscountFixedCreate, :t}, {Polarex.DiscountPercentageCreate, :t}]}}
       ],
       response: [
         {201,
@@ -66,7 +61,7 @@ defmodule Polarex.Discounts do
 
   **Scopes**: `discounts:write`
   """
-  @spec discounts_delete(String.t(), keyword) ::
+  @spec discounts_delete(id :: String.t(), opts :: keyword) ::
           :ok | {:error, Polarex.HTTPValidationError.t() | Polarex.ResourceNotFound.t()}
   def discounts_delete(id, opts \\ []) do
     client = opts[:client] || @default_client
@@ -92,7 +87,7 @@ defmodule Polarex.Discounts do
 
   **Scopes**: `discounts:read` `discounts:write`
   """
-  @spec discounts_get(String.t(), keyword) ::
+  @spec discounts_get(id :: String.t(), opts :: keyword) ::
           {:ok,
            Polarex.DiscountFixedOnceForeverDuration.t()
            | Polarex.DiscountFixedRepeatDuration.t()
@@ -139,7 +134,7 @@ defmodule Polarex.Discounts do
     * `sorting`: Sorting criterion. Several criteria can be used simultaneously and will be applied in order. Add a minus sign `-` before the criteria name to sort by descending order.
 
   """
-  @spec discounts_list(keyword) ::
+  @spec discounts_list(opts :: keyword) ::
           {:ok, Polarex.ListResourceDiscount.t()} | {:error, Polarex.HTTPValidationError.t()}
   def discounts_list(opts \\ []) do
     client = opts[:client] || @default_client
@@ -165,8 +160,12 @@ defmodule Polarex.Discounts do
   Update a discount.
 
   **Scopes**: `discounts:write`
+
+  ## Request Body
+
+  **Content Types**: `application/json`
   """
-  @spec discounts_update(String.t(), Polarex.DiscountUpdate.t(), keyword) ::
+  @spec discounts_update(id :: String.t(), body :: Polarex.DiscountUpdate.t(), opts :: keyword) ::
           {:ok,
            Polarex.DiscountFixedOnceForeverDuration.t()
            | Polarex.DiscountFixedRepeatDuration.t()

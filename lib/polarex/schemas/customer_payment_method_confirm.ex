@@ -12,6 +12,6 @@ defmodule Polarex.CustomerPaymentMethodConfirm do
   def __fields__(type \\ :t)
 
   def __fields__(:t) do
-    [set_default: :boolean, setup_intent_id: {:string, :generic}]
+    [set_default: :boolean, setup_intent_id: :string]
   end
 end

@@ -12,6 +12,6 @@ defmodule Polarex.OrderInvoice do
   def __fields__(type \\ :t)
 
   def __fields__(:t) do
-    [url: {:string, :generic}]
+    [url: :string]
   end
 end

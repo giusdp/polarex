@@ -19,9 +19,9 @@ defmodule Polarex.EventName do
 
   def __fields__(:t) do
     [
-      first_seen: {:string, :date_time},
-      last_seen: {:string, :date_time},
-      name: {:string, :generic},
+      first_seen: {:string, "date-time"},
+      last_seen: {:string, "date-time"},
+      name: :string,
       occurrences: :integer,
       source: {:enum, ["system", "user"]}
     ]

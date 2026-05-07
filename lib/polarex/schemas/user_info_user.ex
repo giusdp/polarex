@@ -18,10 +18,10 @@ defmodule Polarex.UserInfoUser do
 
   def __fields__(:t) do
     [
-      email: {:union, [{:string, :generic}, :null]},
+      email: {:union, [:string, :null]},
       email_verified: {:union, [:boolean, :null]},
-      name: {:union, [{:string, :generic}, :null]},
-      sub: {:string, :generic}
+      name: {:union, [:string, :null]},
+      sub: :string
     ]
   end
 end
