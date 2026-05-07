@@ -57,8 +57,8 @@ jobs:
         run: |
           NEXT="${{ steps.dryrun.outputs.new_release_version }}"
           if git ls-remote --tags origin "v$NEXT" | grep -q "refs/tags/v$NEXT$"; then
-            echo "::error::Tag v$NEXT already exists on origin.
-            echo "::error::This usually means the tag is orphaned (not in main's ancestry)."
+            echo "::error::Tag v$NEXT already exists on origin."
+            echo "::error::This usually means the tag is orphaned (not in main ancestry)."
             echo "::error::To fix: move the tag to an in-ancestry commit, then re-run."
             exit 1
           fi
