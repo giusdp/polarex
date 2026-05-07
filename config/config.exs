@@ -3,8 +3,8 @@ import Config
 if Mix.env() == :dev do
   config :oapi_generator,
     default: [
-      field_casing: :snake,
       output: [
+        field_casing: :snake,
         base_module: Polarex,
         default_client: Polarex.Support.Client,
         location: "lib/polarex",
