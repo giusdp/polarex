@@ -8,6 +8,7 @@ defmodule Polarex.ListResourceCustomerBenefitGrant do
             Polarex.CustomerBenefitGrantCustom.t()
             | Polarex.CustomerBenefitGrantDiscord.t()
             | Polarex.CustomerBenefitGrantDownloadables.t()
+            | Polarex.CustomerBenefitGrantFeatureFlag.t()
             | Polarex.CustomerBenefitGrantGitHubRepository.t()
             | Polarex.CustomerBenefitGrantLicenseKeys.t()
             | Polarex.CustomerBenefitGrantMeterCredit.t()
@@ -28,6 +29,7 @@ defmodule Polarex.ListResourceCustomerBenefitGrant do
           {Polarex.CustomerBenefitGrantCustom, :t},
           {Polarex.CustomerBenefitGrantDiscord, :t},
           {Polarex.CustomerBenefitGrantDownloadables, :t},
+          {Polarex.CustomerBenefitGrantFeatureFlag, :t},
           {Polarex.CustomerBenefitGrantGitHubRepository, :t},
           {Polarex.CustomerBenefitGrantLicenseKeys, :t},
           {Polarex.CustomerBenefitGrantMeterCredit, :t}

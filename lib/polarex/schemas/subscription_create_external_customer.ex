@@ -5,7 +5,7 @@ defmodule Polarex.SubscriptionCreateExternalCustomer do
 
   @type t :: %__MODULE__{
           external_customer_id: String.t(),
-          metadata: Polarex.Metadata.t() | nil,
+          metadata: map | nil,
           product_id: String.t()
         }
 
@@ -16,10 +16,6 @@ defmodule Polarex.SubscriptionCreateExternalCustomer do
   def __fields__(type \\ :t)
 
   def __fields__(:t) do
-    [
-      external_customer_id: {:string, :generic},
-      metadata: {Polarex.Metadata, :t},
-      product_id: {:string, :generic}
-    ]
+    [external_customer_id: :string, metadata: :map, product_id: {:string, "uuid4"}]
   end
 end

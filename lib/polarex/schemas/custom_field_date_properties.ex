@@ -19,9 +19,9 @@ defmodule Polarex.CustomFieldDateProperties do
 
   def __fields__(:t) do
     [
-      form_help_text: {:string, :generic},
-      form_label: {:string, :generic},
-      form_placeholder: {:string, :generic},
+      form_help_text: :string,
+      form_label: :string,
+      form_placeholder: :string,
       ge: :integer,
       le: :integer
     ]

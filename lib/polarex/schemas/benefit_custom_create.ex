@@ -5,7 +5,7 @@ defmodule Polarex.BenefitCustomCreate do
 
   @type t :: %__MODULE__{
           description: String.t(),
-          metadata: Polarex.Metadata.t() | nil,
+          metadata: map | nil,
           organization_id: String.t() | nil,
           properties: Polarex.BenefitCustomCreateProperties.t(),
           type: String.t()
@@ -19,9 +19,9 @@ defmodule Polarex.BenefitCustomCreate do
 
   def __fields__(:t) do
     [
-      description: {:string, :generic},
-      metadata: {Polarex.Metadata, :t},
-      organization_id: {:union, [{:string, :generic}, :null]},
+      description: :string,
+      metadata: :map,
+      organization_id: {:union, [{:string, "uuid4"}, :null]},
       properties: {Polarex.BenefitCustomCreateProperties, :t},
       type: {:const, "custom"}
     ]

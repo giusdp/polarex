@@ -11,20 +11,27 @@ defmodule Polarex.Benefits do
   Create a benefit.
 
   **Scopes**: `benefits:write`
+
+  ## Request Body
+
+  **Content Types**: `application/json`
   """
   @spec benefits_create(
-          Polarex.BenefitCustomCreate.t()
-          | Polarex.BenefitDiscordCreate.t()
-          | Polarex.BenefitDownloadablesCreate.t()
-          | Polarex.BenefitGitHubRepositoryCreate.t()
-          | Polarex.BenefitLicenseKeysCreate.t()
-          | Polarex.BenefitMeterCreditCreate.t(),
-          keyword
+          body ::
+            Polarex.BenefitCustomCreate.t()
+            | Polarex.BenefitDiscordCreate.t()
+            | Polarex.BenefitDownloadablesCreate.t()
+            | Polarex.BenefitFeatureFlagCreate.t()
+            | Polarex.BenefitGitHubRepositoryCreate.t()
+            | Polarex.BenefitLicenseKeysCreate.t()
+            | Polarex.BenefitMeterCreditCreate.t(),
+          opts :: keyword
         ) ::
           {:ok,
            Polarex.BenefitCustom.t()
            | Polarex.BenefitDiscord.t()
            | Polarex.BenefitDownloadables.t()
+           | Polarex.BenefitFeatureFlag.t()
            | Polarex.BenefitGitHubRepository.t()
            | Polarex.BenefitLicenseKeys.t()
            | Polarex.BenefitMeterCredit.t()}
@@ -45,6 +52,7 @@ defmodule Polarex.Benefits do
             {Polarex.BenefitCustomCreate, :t},
             {Polarex.BenefitDiscordCreate, :t},
             {Polarex.BenefitDownloadablesCreate, :t},
+            {Polarex.BenefitFeatureFlagCreate, :t},
             {Polarex.BenefitGitHubRepositoryCreate, :t},
             {Polarex.BenefitLicenseKeysCreate, :t},
             {Polarex.BenefitMeterCreditCreate, :t}
@@ -57,6 +65,7 @@ defmodule Polarex.Benefits do
             {Polarex.BenefitCustom, :t},
             {Polarex.BenefitDiscord, :t},
             {Polarex.BenefitDownloadables, :t},
+            {Polarex.BenefitFeatureFlag, :t},
             {Polarex.BenefitGitHubRepository, :t},
             {Polarex.BenefitLicenseKeys, :t},
             {Polarex.BenefitMeterCredit, :t}
@@ -78,7 +87,7 @@ defmodule Polarex.Benefits do
 
   **Scopes**: `benefits:write`
   """
-  @spec benefits_delete(String.t(), keyword) ::
+  @spec benefits_delete(id :: String.t(), opts :: keyword) ::
           :ok
           | {:error,
              Polarex.HTTPValidationError.t()
@@ -109,11 +118,12 @@ defmodule Polarex.Benefits do
 
   **Scopes**: `benefits:read` `benefits:write`
   """
-  @spec benefits_get(String.t(), keyword) ::
+  @spec benefits_get(id :: String.t(), opts :: keyword) ::
           {:ok,
            Polarex.BenefitCustom.t()
            | Polarex.BenefitDiscord.t()
            | Polarex.BenefitDownloadables.t()
+           | Polarex.BenefitFeatureFlag.t()
            | Polarex.BenefitGitHubRepository.t()
            | Polarex.BenefitLicenseKeys.t()
            | Polarex.BenefitMeterCredit.t()}
@@ -133,6 +143,7 @@ defmodule Polarex.Benefits do
             {Polarex.BenefitCustom, :t},
             {Polarex.BenefitDiscord, :t},
             {Polarex.BenefitDownloadables, :t},
+            {Polarex.BenefitFeatureFlag, :t},
             {Polarex.BenefitGitHubRepository, :t},
             {Polarex.BenefitLicenseKeys, :t},
             {Polarex.BenefitMeterCredit, :t}
@@ -162,7 +173,7 @@ defmodule Polarex.Benefits do
     * `limit`: Size of a page, defaults to 10. Maximum is 100.
 
   """
-  @spec benefits_grants(String.t(), keyword) ::
+  @spec benefits_grants(id :: String.t(), opts :: keyword) ::
           {:ok, Polarex.ListResourceBenefitGrant.t()}
           | {:error, Polarex.HTTPValidationError.t() | Polarex.ResourceNotFound.t()}
   def benefits_grants(id, opts \\ []) do
@@ -204,7 +215,7 @@ defmodule Polarex.Benefits do
     * `metadata`: Filter by metadata key-value pairs. It uses the `deepObject` style, e.g. `?metadata[key]=value`.
 
   """
-  @spec benefits_list(keyword) ::
+  @spec benefits_list(opts :: keyword) ::
           {:ok, Polarex.ListResourceBenefit.t()} | {:error, Polarex.HTTPValidationError.t()}
   def benefits_list(opts \\ []) do
     client = opts[:client] || @default_client
@@ -242,21 +253,28 @@ defmodule Polarex.Benefits do
   Update a benefit.
 
   **Scopes**: `benefits:write`
+
+  ## Request Body
+
+  **Content Types**: `application/json`
   """
   @spec benefits_update(
-          String.t(),
-          Polarex.BenefitCustomUpdate.t()
-          | Polarex.BenefitDiscordUpdate.t()
-          | Polarex.BenefitDownloadablesUpdate.t()
-          | Polarex.BenefitGitHubRepositoryUpdate.t()
-          | Polarex.BenefitLicenseKeysUpdate.t()
-          | Polarex.BenefitMeterCreditUpdate.t(),
-          keyword
+          id :: String.t(),
+          body ::
+            Polarex.BenefitCustomUpdate.t()
+            | Polarex.BenefitDiscordUpdate.t()
+            | Polarex.BenefitDownloadablesUpdate.t()
+            | Polarex.BenefitFeatureFlagUpdate.t()
+            | Polarex.BenefitGitHubRepositoryUpdate.t()
+            | Polarex.BenefitLicenseKeysUpdate.t()
+            | Polarex.BenefitMeterCreditUpdate.t(),
+          opts :: keyword
         ) ::
           {:ok,
            Polarex.BenefitCustom.t()
            | Polarex.BenefitDiscord.t()
            | Polarex.BenefitDownloadables.t()
+           | Polarex.BenefitFeatureFlag.t()
            | Polarex.BenefitGitHubRepository.t()
            | Polarex.BenefitLicenseKeys.t()
            | Polarex.BenefitMeterCredit.t()}
@@ -277,6 +295,7 @@ defmodule Polarex.Benefits do
             {Polarex.BenefitCustomUpdate, :t},
             {Polarex.BenefitDiscordUpdate, :t},
             {Polarex.BenefitDownloadablesUpdate, :t},
+            {Polarex.BenefitFeatureFlagUpdate, :t},
             {Polarex.BenefitGitHubRepositoryUpdate, :t},
             {Polarex.BenefitLicenseKeysUpdate, :t},
             {Polarex.BenefitMeterCreditUpdate, :t}
@@ -289,6 +308,7 @@ defmodule Polarex.Benefits do
             {Polarex.BenefitCustom, :t},
             {Polarex.BenefitDiscord, :t},
             {Polarex.BenefitDownloadables, :t},
+            {Polarex.BenefitFeatureFlag, :t},
             {Polarex.BenefitGitHubRepository, :t},
             {Polarex.BenefitLicenseKeys, :t},
             {Polarex.BenefitMeterCredit, :t}

@@ -9,9 +9,15 @@ defmodule Polarex.Clients do
   Create Client
 
   Create an OAuth2 client.
+
+  ## Request Body
+
+  **Content Types**: `application/json`
   """
-  @spec oauth2_clients_oauth2_create_client(Polarex.OAuth2ClientConfiguration.t(), keyword) ::
-          {:ok, map} | {:error, Polarex.HTTPValidationError.t()}
+  @spec oauth2_clients_oauth2_create_client(
+          body :: Polarex.OAuth2ClientConfiguration.t(),
+          opts :: keyword
+        ) :: {:ok, map} | {:error, Polarex.HTTPValidationError.t()}
   def oauth2_clients_oauth2_create_client(body, opts \\ []) do
     client = opts[:client] || @default_client
 
@@ -32,7 +38,7 @@ defmodule Polarex.Clients do
 
   Delete an OAuth2 client.
   """
-  @spec oauth2_clients_oauth2_delete_client(String.t(), keyword) ::
+  @spec oauth2_clients_oauth2_delete_client(client_id :: String.t(), opts :: keyword) ::
           {:ok, map} | {:error, Polarex.HTTPValidationError.t()}
   def oauth2_clients_oauth2_delete_client(client_id, opts \\ []) do
     client = opts[:client] || @default_client
@@ -52,7 +58,7 @@ defmodule Polarex.Clients do
 
   Get an OAuth2 client by Client ID.
   """
-  @spec oauth2_clients_oauth2_get_client(String.t(), keyword) ::
+  @spec oauth2_clients_oauth2_get_client(client_id :: String.t(), opts :: keyword) ::
           {:ok, map} | {:error, Polarex.HTTPValidationError.t()}
   def oauth2_clients_oauth2_get_client(client_id, opts \\ []) do
     client = opts[:client] || @default_client
@@ -71,11 +77,15 @@ defmodule Polarex.Clients do
   Update Client
 
   Update an OAuth2 client.
+
+  ## Request Body
+
+  **Content Types**: `application/json`
   """
   @spec oauth2_clients_oauth2_update_client(
-          String.t(),
-          Polarex.OAuth2ClientConfigurationUpdate.t(),
-          keyword
+          client_id :: String.t(),
+          body :: Polarex.OAuth2ClientConfigurationUpdate.t(),
+          opts :: keyword
         ) :: {:ok, map} | {:error, Polarex.HTTPValidationError.t()}
   def oauth2_clients_oauth2_update_client(client_id, body, opts \\ []) do
     client = opts[:client] || @default_client

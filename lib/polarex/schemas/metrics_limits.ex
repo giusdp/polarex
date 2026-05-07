@@ -12,6 +12,6 @@ defmodule Polarex.MetricsLimits do
   def __fields__(type \\ :t)
 
   def __fields__(:t) do
-    [intervals: {Polarex.MetricsIntervalsLimits, :t}, min_date: {:string, :date}]
+    [intervals: {Polarex.MetricsIntervalsLimits, :t}, min_date: {:string, "date"}]
   end
 end

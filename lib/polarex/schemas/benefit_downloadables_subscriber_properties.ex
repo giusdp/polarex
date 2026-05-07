@@ -12,6 +12,6 @@ defmodule Polarex.BenefitDownloadablesSubscriberProperties do
   def __fields__(type \\ :t)
 
   def __fields__(:t) do
-    [active_files: [string: :generic]]
+    [active_files: [string: "uuid4"]]
   end
 end

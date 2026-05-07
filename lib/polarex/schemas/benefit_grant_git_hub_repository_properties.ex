@@ -19,11 +19,11 @@ defmodule Polarex.BenefitGrantGitHubRepositoryProperties do
 
   def __fields__(:t) do
     [
-      account_id: {:union, [{:string, :generic}, :null]},
-      granted_account_id: {:string, :generic},
+      account_id: {:union, [:string, :null]},
+      granted_account_id: :string,
       permission: {:enum, ["pull", "triage", "push", "maintain", "admin"]},
-      repository_name: {:string, :generic},
-      repository_owner: {:string, :generic}
+      repository_name: :string,
+      repository_owner: :string
     ]
   end
 end

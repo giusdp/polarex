@@ -4,7 +4,7 @@ defmodule Polarex.CustomFieldUpdateCheckbox do
   """
 
   @type t :: %__MODULE__{
-          metadata: Polarex.Metadata.t() | nil,
+          metadata: map | nil,
           name: String.t() | nil,
           properties: Polarex.CustomFieldCheckboxProperties.t() | nil,
           slug: String.t() | nil,
@@ -19,10 +19,10 @@ defmodule Polarex.CustomFieldUpdateCheckbox do
 
   def __fields__(:t) do
     [
-      metadata: {Polarex.Metadata, :t},
-      name: {:union, [{:string, :generic}, :null]},
+      metadata: :map,
+      name: {:union, [:string, :null]},
       properties: {:union, [{Polarex.CustomFieldCheckboxProperties, :t}, :null]},
-      slug: {:union, [{:string, :generic}, :null]},
+      slug: {:union, [:string, :null]},
       type: {:const, "checkbox"}
     ]
   end

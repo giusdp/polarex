@@ -11,12 +11,17 @@ defmodule Polarex.Files do
   Create a file.
 
   **Scopes**: `files:write`
+
+  ## Request Body
+
+  **Content Types**: `application/json`
   """
   @spec files_create(
-          Polarex.DownloadableFileCreate.t()
-          | Polarex.OrganizationAvatarFileCreate.t()
-          | Polarex.ProductMediaFileCreate.t(),
-          keyword
+          body ::
+            Polarex.DownloadableFileCreate.t()
+            | Polarex.OrganizationAvatarFileCreate.t()
+            | Polarex.ProductMediaFileCreate.t(),
+          opts :: keyword
         ) :: {:ok, Polarex.FileUpload.t()} | {:error, Polarex.HTTPValidationError.t()}
   def files_create(body, opts \\ []) do
     client = opts[:client] || @default_client
@@ -48,7 +53,7 @@ defmodule Polarex.Files do
 
   **Scopes**: `files:write`
   """
-  @spec files_delete(String.t(), keyword) ::
+  @spec files_delete(id :: String.t(), opts :: keyword) ::
           :ok
           | {:error,
              Polarex.HTTPValidationError.t()
@@ -87,7 +92,7 @@ defmodule Polarex.Files do
     * `limit`: Size of a page, defaults to 10. Maximum is 100.
 
   """
-  @spec files_list(keyword) ::
+  @spec files_list(opts :: keyword) ::
           {:ok, Polarex.ListResourceFileRead.t()} | {:error, Polarex.HTTPValidationError.t()}
   def files_list(opts \\ []) do
     client = opts[:client] || @default_client
@@ -113,8 +118,12 @@ defmodule Polarex.Files do
   Update a file.
 
   **Scopes**: `files:write`
+
+  ## Request Body
+
+  **Content Types**: `application/json`
   """
-  @spec files_update(String.t(), Polarex.FilePatch.t(), keyword) ::
+  @spec files_update(id :: String.t(), body :: Polarex.FilePatch.t(), opts :: keyword) ::
           {:ok,
            Polarex.DownloadableFileRead.t()
            | Polarex.OrganizationAvatarFileRead.t()
@@ -155,8 +164,12 @@ defmodule Polarex.Files do
   Complete a file upload.
 
   **Scopes**: `files:write`
+
+  ## Request Body
+
+  **Content Types**: `application/json`
   """
-  @spec files_uploaded(String.t(), Polarex.FileUploadCompleted.t(), keyword) ::
+  @spec files_uploaded(id :: String.t(), body :: Polarex.FileUploadCompleted.t(), opts :: keyword) ::
           {:ok,
            Polarex.DownloadableFileRead.t()
            | Polarex.OrganizationAvatarFileRead.t()

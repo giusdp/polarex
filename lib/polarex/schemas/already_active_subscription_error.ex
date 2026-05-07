@@ -12,6 +12,6 @@ defmodule Polarex.AlreadyActiveSubscriptionError do
   def __fields__(type \\ :t)
 
   def __fields__(:t) do
-    [detail: {:string, :generic}, error: {:const, "AlreadyActiveSubscriptionError"}]
+    [detail: :string, error: {:const, "AlreadyActiveSubscriptionError"}]
   end
 end

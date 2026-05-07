@@ -8,15 +8,17 @@ defmodule Polarex.SubscriptionCustomer do
           billing_address: Polarex.Address.t() | nil,
           created_at: DateTime.t(),
           deleted_at: DateTime.t() | nil,
-          email: String.t(),
+          email: String.t() | nil,
           email_verified: boolean,
           external_id: String.t() | nil,
           id: String.t(),
-          metadata: Polarex.MetadataOutputType.t(),
+          locale: String.t() | nil,
+          metadata: map,
           modified_at: DateTime.t() | nil,
           name: String.t() | nil,
           organization_id: String.t(),
-          tax_id: [any] | nil
+          tax_id: [any] | nil,
+          type: String.t()
         }
 
   defstruct [
@@ -28,11 +30,13 @@ defmodule Polarex.SubscriptionCustomer do
     :email_verified,
     :external_id,
     :id,
+    :locale,
     :metadata,
     :modified_at,
     :name,
     :organization_id,
-    :tax_id
+    :tax_id,
+    :type
   ]
 
   @doc false
@@ -41,19 +45,21 @@ defmodule Polarex.SubscriptionCustomer do
 
   def __fields__(:t) do
     [
-      avatar_url: {:string, :generic},
+      avatar_url: :string,
       billing_address: {:union, [{Polarex.Address, :t}, :null]},
-      created_at: {:string, :date_time},
-      deleted_at: {:union, [{:string, :date_time}, :null]},
-      email: {:string, :generic},
+      created_at: {:string, "date-time"},
+      deleted_at: {:union, [{:string, "date-time"}, :null]},
+      email: {:union, [:string, :null]},
       email_verified: :boolean,
-      external_id: {:union, [{:string, :generic}, :null]},
-      id: {:string, :generic},
-      metadata: {Polarex.MetadataOutputType, :t},
-      modified_at: {:union, [{:string, :date_time}, :null]},
-      name: {:union, [{:string, :generic}, :null]},
-      organization_id: {:string, :generic},
-      tax_id: {:union, [[:unknown], :null]}
+      external_id: {:union, [:string, :null]},
+      id: {:string, "uuid4"},
+      locale: {:union, [:string, :null]},
+      metadata: :map,
+      modified_at: {:union, [{:string, "date-time"}, :null]},
+      name: {:union, [:string, :null]},
+      organization_id: {:string, "uuid4"},
+      tax_id: {:union, [[:unknown], :null]},
+      type: {:enum, ["individual", "team"]}
     ]
   end
 end

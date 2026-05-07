@@ -8,7 +8,7 @@ defmodule Polarex.ProductUpdate do
           description: String.t() | nil,
           is_archived: boolean | nil,
           medias: [String.t()] | nil,
-          metadata: Polarex.Metadata.t() | nil,
+          metadata: map | nil,
           name: String.t() | nil,
           prices:
             [
@@ -23,7 +23,8 @@ defmodule Polarex.ProductUpdate do
           recurring_interval: String.t() | nil,
           recurring_interval_count: integer | nil,
           trial_interval: String.t() | nil,
-          trial_interval_count: integer | nil
+          trial_interval_count: integer | nil,
+          visibility: String.t() | nil
         }
 
   defstruct [
@@ -37,7 +38,8 @@ defmodule Polarex.ProductUpdate do
     :recurring_interval,
     :recurring_interval_count,
     :trial_interval,
-    :trial_interval_count
+    :trial_interval_count,
+    :visibility
   ]
 
   @doc false
@@ -47,11 +49,11 @@ defmodule Polarex.ProductUpdate do
   def __fields__(:t) do
     [
       attached_custom_fields: {:union, [[{Polarex.AttachedCustomFieldCreate, :t}], :null]},
-      description: {:union, [{:string, :generic}, :null]},
+      description: {:union, [:string, :null]},
       is_archived: {:union, [:boolean, :null]},
-      medias: {:union, [[string: :generic], :null]},
-      metadata: {Polarex.Metadata, :t},
-      name: {:union, [{:string, :generic}, :null]},
+      medias: {:union, [[string: "uuid4"], :null]},
+      metadata: :map,
+      name: {:union, [:string, :null]},
       prices:
         {:union,
          [
@@ -70,7 +72,8 @@ defmodule Polarex.ProductUpdate do
       recurring_interval: {:union, [{:enum, ["day", "week", "month", "year"]}, :null]},
       recurring_interval_count: {:union, [:integer, :null]},
       trial_interval: {:union, [{:enum, ["day", "week", "month", "year"]}, :null]},
-      trial_interval_count: {:union, [:integer, :null]}
+      trial_interval_count: {:union, [:integer, :null]},
+      visibility: {:union, [{:enum, ["draft", "private", "public"]}, :null]}
     ]
   end
 end

@@ -12,6 +12,6 @@ defmodule Polarex.RefundedAlready do
   def __fields__(type \\ :t)
 
   def __fields__(:t) do
-    [detail: {:string, :generic}, error: {:const, "RefundedAlready"}]
+    [detail: :string, error: {:const, "RefundedAlready"}]
   end
 end

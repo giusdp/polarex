@@ -31,14 +31,14 @@ defmodule Polarex.OrganizationAvatarFileCreate do
 
   def __fields__(:t) do
     [
-      checksum_sha2_56_base6_4: {:union, [{:string, :generic}, :null]},
-      mime_type: {:string, :generic},
-      name: {:string, :generic},
-      organization_id: {:union, [{:string, :generic}, :null]},
+      checksum_sha2_56_base6_4: {:union, [:string, :null]},
+      mime_type: :string,
+      name: :string,
+      organization_id: {:union, [{:string, "uuid4"}, :null]},
       service: {:const, "organization_avatar"},
       size: :integer,
       upload: {Polarex.S3FileCreateMultipart, :t},
-      version: {:union, [{:string, :generic}, :null]}
+      version: {:union, [:string, :null]}
     ]
   end
 end

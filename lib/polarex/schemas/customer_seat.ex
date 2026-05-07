@@ -8,8 +8,11 @@ defmodule Polarex.CustomerSeat do
           created_at: DateTime.t(),
           customer_email: String.t() | nil,
           customer_id: String.t() | nil,
+          email: String.t() | nil,
           id: String.t(),
           invitation_token_expires_at: DateTime.t() | nil,
+          member: Polarex.Member.t() | nil,
+          member_id: String.t() | nil,
           modified_at: DateTime.t() | nil,
           order_id: String.t() | nil,
           revoked_at: DateTime.t() | nil,
@@ -23,8 +26,11 @@ defmodule Polarex.CustomerSeat do
     :created_at,
     :customer_email,
     :customer_id,
+    :email,
     :id,
     :invitation_token_expires_at,
+    :member,
+    :member_id,
     :modified_at,
     :order_id,
     :revoked_at,
@@ -39,18 +45,21 @@ defmodule Polarex.CustomerSeat do
 
   def __fields__(:t) do
     [
-      claimed_at: {:union, [{:string, :date_time}, :null]},
-      created_at: {:string, :date_time},
-      customer_email: {:union, [{:string, :generic}, :null]},
-      customer_id: {:union, [{:string, :uuid}, :null]},
-      id: {:string, :uuid},
-      invitation_token_expires_at: {:union, [{:string, :date_time}, :null]},
-      modified_at: {:union, [{:string, :date_time}, :null]},
-      order_id: {:union, [{:string, :uuid}, :null]},
-      revoked_at: {:union, [{:string, :date_time}, :null]},
+      claimed_at: {:union, [{:string, "date-time"}, :null]},
+      created_at: {:string, "date-time"},
+      customer_email: {:union, [:string, :null]},
+      customer_id: {:union, [{:string, "uuid"}, :null]},
+      email: {:union, [:string, :null]},
+      id: {:string, "uuid"},
+      invitation_token_expires_at: {:union, [{:string, "date-time"}, :null]},
+      member: {:union, [{Polarex.Member, :t}, :null]},
+      member_id: {:union, [{:string, "uuid"}, :null]},
+      modified_at: {:union, [{:string, "date-time"}, :null]},
+      order_id: {:union, [{:string, "uuid"}, :null]},
+      revoked_at: {:union, [{:string, "date-time"}, :null]},
       seat_metadata: {:union, [:map, :null]},
       status: {:enum, ["pending", "claimed", "revoked"]},
-      subscription_id: {:union, [{:string, :uuid}, :null]}
+      subscription_id: {:union, [{:string, "uuid"}, :null]}
     ]
   end
 end

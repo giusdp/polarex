@@ -16,10 +16,6 @@ defmodule Polarex.BenefitGrantMeterCreditProperties do
   def __fields__(type \\ :t)
 
   def __fields__(:t) do
-    [
-      last_credited_at: {:string, :generic},
-      last_credited_meter_id: {:string, :generic},
-      last_credited_units: :integer
-    ]
+    [last_credited_at: :string, last_credited_meter_id: :string, last_credited_units: :integer]
   end
 end

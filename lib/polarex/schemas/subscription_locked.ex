@@ -12,6 +12,6 @@ defmodule Polarex.SubscriptionLocked do
   def __fields__(type \\ :t)
 
   def __fields__(:t) do
-    [detail: {:string, :generic}, error: {:const, "SubscriptionLocked"}]
+    [detail: :string, error: {:const, "SubscriptionLocked"}]
   end
 end

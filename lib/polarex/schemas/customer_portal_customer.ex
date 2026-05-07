@@ -8,13 +8,14 @@ defmodule Polarex.CustomerPortalCustomer do
           billing_name: String.t() | nil,
           created_at: DateTime.t(),
           default_payment_method_id: String.t() | nil,
-          email: String.t(),
+          email: String.t() | nil,
           email_verified: boolean,
           id: String.t(),
           modified_at: DateTime.t() | nil,
           name: String.t() | nil,
-          oauth_accounts: Polarex.OauthAccounts.t(),
-          tax_id: [any] | nil
+          oauth_accounts: map,
+          tax_id: [any] | nil,
+          type: String.t() | nil
         }
 
   defstruct [
@@ -28,7 +29,8 @@ defmodule Polarex.CustomerPortalCustomer do
     :modified_at,
     :name,
     :oauth_accounts,
-    :tax_id
+    :tax_id,
+    :type
   ]
 
   @doc false
@@ -38,16 +40,17 @@ defmodule Polarex.CustomerPortalCustomer do
   def __fields__(:t) do
     [
       billing_address: {:union, [{Polarex.Address, :t}, :null]},
-      billing_name: {:union, [{:string, :generic}, :null]},
-      created_at: {:string, :date_time},
-      default_payment_method_id: {:union, [{:string, :generic}, :null]},
-      email: {:string, :generic},
+      billing_name: {:union, [:string, :null]},
+      created_at: {:string, "date-time"},
+      default_payment_method_id: {:union, [{:string, "uuid4"}, :null]},
+      email: {:union, [:string, :null]},
       email_verified: :boolean,
-      id: {:string, :generic},
-      modified_at: {:union, [{:string, :date_time}, :null]},
-      name: {:union, [{:string, :generic}, :null]},
-      oauth_accounts: {Polarex.OauthAccounts, :t},
-      tax_id: {:union, [[:unknown], :null]}
+      id: {:string, "uuid4"},
+      modified_at: {:union, [{:string, "date-time"}, :null]},
+      name: {:union, [:string, :null]},
+      oauth_accounts: :map,
+      tax_id: {:union, [[:unknown], :null]},
+      type: {:union, [{:enum, ["individual", "team"]}, :null]}
     ]
   end
 end

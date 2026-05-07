@@ -17,8 +17,8 @@ defmodule Polarex.CustomerOrderConfirmPayment do
 
   def __fields__(:t) do
     [
-      confirmation_token_id: {:union, [{:string, :generic}, :null]},
-      payment_method_id: {:union, [{:string, :generic}, :null]},
+      confirmation_token_id: {:union, [:string, :null]},
+      payment_method_id: {:union, [{:string, "uuid4"}, :null]},
       payment_processor: {:const, "stripe"}
     ]
   end

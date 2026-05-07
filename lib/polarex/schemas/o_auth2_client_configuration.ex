@@ -37,17 +37,17 @@ defmodule Polarex.OAuth2ClientConfiguration do
 
   def __fields__(:t) do
     [
-      client_name: {:string, :generic},
-      client_uri: {:union, [{:string, :generic}, :null]},
+      client_name: :string,
+      client_uri: {:union, [:string, :null]},
       default_sub_type: {:enum, ["user", "organization"]},
       grant_types: [enum: ["authorization_code", "refresh_token"]],
-      logo_uri: {:union, [{:string, :uri}, :null]},
-      policy_uri: {:union, [{:string, :uri}, :null]},
-      redirect_uris: [string: :uri],
+      logo_uri: {:union, [{:string, "uri"}, :null]},
+      policy_uri: {:union, [{:string, "uri"}, :null]},
+      redirect_uris: [string: "uri"],
       response_types: [const: "code"],
-      scope: {:string, :generic},
+      scope: :string,
       token_endpoint_auth_method: {:enum, ["client_secret_basic", "client_secret_post", "none"]},
-      tos_uri: {:union, [{:string, :uri}, :null]}
+      tos_uri: {:union, [{:string, "uri"}, :null]}
     ]
   end
 end

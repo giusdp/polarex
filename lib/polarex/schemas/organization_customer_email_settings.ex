@@ -8,8 +8,11 @@ defmodule Polarex.OrganizationCustomerEmailSettings do
           subscription_cancellation: boolean,
           subscription_confirmation: boolean,
           subscription_cycled: boolean,
+          subscription_cycled_after_trial: boolean,
           subscription_past_due: boolean,
+          subscription_renewal_reminder: boolean,
           subscription_revoked: boolean,
+          subscription_trial_conversion_reminder: boolean,
           subscription_uncanceled: boolean,
           subscription_updated: boolean
         }
@@ -19,8 +22,11 @@ defmodule Polarex.OrganizationCustomerEmailSettings do
     :subscription_cancellation,
     :subscription_confirmation,
     :subscription_cycled,
+    :subscription_cycled_after_trial,
     :subscription_past_due,
+    :subscription_renewal_reminder,
     :subscription_revoked,
+    :subscription_trial_conversion_reminder,
     :subscription_uncanceled,
     :subscription_updated
   ]
@@ -35,8 +41,11 @@ defmodule Polarex.OrganizationCustomerEmailSettings do
       subscription_cancellation: :boolean,
       subscription_confirmation: :boolean,
       subscription_cycled: :boolean,
+      subscription_cycled_after_trial: :boolean,
       subscription_past_due: :boolean,
+      subscription_renewal_reminder: :boolean,
       subscription_revoked: :boolean,
+      subscription_trial_conversion_reminder: :boolean,
       subscription_uncanceled: :boolean,
       subscription_updated: :boolean
     ]

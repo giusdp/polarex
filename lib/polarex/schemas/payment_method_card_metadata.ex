@@ -19,11 +19,11 @@ defmodule Polarex.PaymentMethodCardMetadata do
 
   def __fields__(:t) do
     [
-      brand: {:string, :generic},
+      brand: :string,
       exp_month: :integer,
       exp_year: :integer,
-      last4: {:string, :generic},
-      wallet: {:union, [{:string, :generic}, :null]}
+      last4: :string,
+      wallet: {:union, [:string, :null]}
     ]
   end
 end

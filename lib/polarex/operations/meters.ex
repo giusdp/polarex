@@ -11,8 +11,12 @@ defmodule Polarex.Meters do
   Create a meter.
 
   **Scopes**: `meters:write`
+
+  ## Request Body
+
+  **Content Types**: `application/json`
   """
-  @spec meters_create(Polarex.MeterCreate.t(), keyword) ::
+  @spec meters_create(body :: Polarex.MeterCreate.t(), opts :: keyword) ::
           {:ok, Polarex.Meter.t()} | {:error, Polarex.HTTPValidationError.t()}
   def meters_create(body, opts \\ []) do
     client = opts[:client] || @default_client
@@ -36,7 +40,7 @@ defmodule Polarex.Meters do
 
   **Scopes**: `meters:read` `meters:write`
   """
-  @spec meters_get(String.t(), keyword) ::
+  @spec meters_get(id :: String.t(), opts :: keyword) ::
           {:ok, Polarex.Meter.t()}
           | {:error, Polarex.HTTPValidationError.t() | Polarex.ResourceNotFound.t()}
   def meters_get(id, opts \\ []) do
@@ -74,7 +78,7 @@ defmodule Polarex.Meters do
     * `metadata`: Filter by metadata key-value pairs. It uses the `deepObject` style, e.g. `?metadata[key]=value`.
 
   """
-  @spec meters_list(keyword) ::
+  @spec meters_list(opts :: keyword) ::
           {:ok, Polarex.ListResourceMeter.t()} | {:error, Polarex.HTTPValidationError.t()}
   def meters_list(opts \\ []) do
     client = opts[:client] || @default_client
@@ -113,13 +117,14 @@ defmodule Polarex.Meters do
     * `start_timestamp`: Start timestamp.
     * `end_timestamp`: End timestamp.
     * `interval`: Interval between two timestamps.
+    * `timezone`: Timezone to use for the timestamps. Default is UTC.
     * `customer_id`: Filter by customer ID.
     * `external_customer_id`: Filter by external customer ID.
     * `customer_aggregation_function`: If set, will first compute the quantities per customer before aggregating them using the given function. If not set, the quantities will be aggregated across all events.
     * `metadata`: Filter by metadata key-value pairs. It uses the `deepObject` style, e.g. `?metadata[key]=value`.
 
   """
-  @spec meters_quantities(String.t(), keyword) ::
+  @spec meters_quantities(id :: String.t(), opts :: keyword) ::
           {:ok, Polarex.MeterQuantities.t()}
           | {:error, Polarex.HTTPValidationError.t() | Polarex.ResourceNotFound.t()}
   def meters_quantities(id, opts \\ []) do
@@ -133,7 +138,8 @@ defmodule Polarex.Meters do
         :external_customer_id,
         :interval,
         :metadata,
-        :start_timestamp
+        :start_timestamp,
+        :timezone
       ])
 
     client.request(%{
@@ -157,8 +163,12 @@ defmodule Polarex.Meters do
   Update a meter.
 
   **Scopes**: `meters:write`
+
+  ## Request Body
+
+  **Content Types**: `application/json`
   """
-  @spec meters_update(String.t(), Polarex.MeterUpdate.t(), keyword) ::
+  @spec meters_update(id :: String.t(), body :: Polarex.MeterUpdate.t(), opts :: keyword) ::
           {:ok, Polarex.Meter.t()}
           | {:error, Polarex.HTTPValidationError.t() | Polarex.ResourceNotFound.t()}
   def meters_update(id, body, opts \\ []) do

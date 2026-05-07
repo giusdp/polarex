@@ -8,7 +8,7 @@ defmodule Polarex.Oauth2 do
   @doc """
   Authorize
   """
-  @spec oauth2_authorize(keyword) ::
+  @spec oauth2_authorize(opts :: keyword) ::
           {:ok, Polarex.AuthorizeResponseOrganization.t() | Polarex.AuthorizeResponseUser.t()}
           | :error
   def oauth2_authorize(opts \\ []) do
@@ -32,9 +32,15 @@ defmodule Polarex.Oauth2 do
   Create Client
 
   Create an OAuth2 client.
+
+  ## Request Body
+
+  **Content Types**: `application/json`
   """
-  @spec oauth2_clients_oauth2_create_client(Polarex.OAuth2ClientConfiguration.t(), keyword) ::
-          {:ok, map} | {:error, Polarex.HTTPValidationError.t()}
+  @spec oauth2_clients_oauth2_create_client(
+          body :: Polarex.OAuth2ClientConfiguration.t(),
+          opts :: keyword
+        ) :: {:ok, map} | {:error, Polarex.HTTPValidationError.t()}
   def oauth2_clients_oauth2_create_client(body, opts \\ []) do
     client = opts[:client] || @default_client
 
@@ -55,7 +61,7 @@ defmodule Polarex.Oauth2 do
 
   Delete an OAuth2 client.
   """
-  @spec oauth2_clients_oauth2_delete_client(String.t(), keyword) ::
+  @spec oauth2_clients_oauth2_delete_client(client_id :: String.t(), opts :: keyword) ::
           {:ok, map} | {:error, Polarex.HTTPValidationError.t()}
   def oauth2_clients_oauth2_delete_client(client_id, opts \\ []) do
     client = opts[:client] || @default_client
@@ -75,7 +81,7 @@ defmodule Polarex.Oauth2 do
 
   Get an OAuth2 client by Client ID.
   """
-  @spec oauth2_clients_oauth2_get_client(String.t(), keyword) ::
+  @spec oauth2_clients_oauth2_get_client(client_id :: String.t(), opts :: keyword) ::
           {:ok, map} | {:error, Polarex.HTTPValidationError.t()}
   def oauth2_clients_oauth2_get_client(client_id, opts \\ []) do
     client = opts[:client] || @default_client
@@ -94,11 +100,15 @@ defmodule Polarex.Oauth2 do
   Update Client
 
   Update an OAuth2 client.
+
+  ## Request Body
+
+  **Content Types**: `application/json`
   """
   @spec oauth2_clients_oauth2_update_client(
-          String.t(),
-          Polarex.OAuth2ClientConfigurationUpdate.t(),
-          keyword
+          client_id :: String.t(),
+          body :: Polarex.OAuth2ClientConfigurationUpdate.t(),
+          opts :: keyword
         ) :: {:ok, map} | {:error, Polarex.HTTPValidationError.t()}
   def oauth2_clients_oauth2_update_client(client_id, body, opts \\ []) do
     client = opts[:client] || @default_client
@@ -119,8 +129,12 @@ defmodule Polarex.Oauth2 do
   Introspect Token
 
   Get information about an access token.
+
+  ## Request Body
+
+  **Content Types**: `application/x-www-form-urlencoded`
   """
-  @spec oauth2_introspect_token(Polarex.IntrospectTokenRequest.t(), keyword) ::
+  @spec oauth2_introspect_token(body :: Polarex.IntrospectTokenRequest.t(), opts :: keyword) ::
           {:ok, Polarex.IntrospectTokenResponse.t()} | :error
   def oauth2_introspect_token(body, opts \\ []) do
     client = opts[:client] || @default_client
@@ -141,12 +155,17 @@ defmodule Polarex.Oauth2 do
   Request Token
 
   Request an access token using a valid grant.
+
+  ## Request Body
+
+  **Content Types**: `application/x-www-form-urlencoded`
   """
   @spec oauth2_request_token(
-          Polarex.AuthorizationCodeTokenRequest.t()
-          | Polarex.RefreshTokenRequest.t()
-          | Polarex.WebTokenRequest.t(),
-          keyword
+          body ::
+            Polarex.AuthorizationCodeTokenRequest.t()
+            | Polarex.RefreshTokenRequest.t()
+            | Polarex.WebTokenRequest.t(),
+          opts :: keyword
         ) :: {:ok, Polarex.TokenResponse.t()} | :error
   def oauth2_request_token(body, opts \\ []) do
     client = opts[:client] || @default_client
@@ -175,8 +194,13 @@ defmodule Polarex.Oauth2 do
   Revoke Token
 
   Revoke an access token or a refresh token.
+
+  ## Request Body
+
+  **Content Types**: `application/x-www-form-urlencoded`
   """
-  @spec oauth2_revoke_token(Polarex.RevokeTokenRequest.t(), keyword) :: {:ok, map} | :error
+  @spec oauth2_revoke_token(body :: Polarex.RevokeTokenRequest.t(), opts :: keyword) ::
+          {:ok, map} | :error
   def oauth2_revoke_token(body, opts \\ []) do
     client = opts[:client] || @default_client
 
@@ -197,7 +221,7 @@ defmodule Polarex.Oauth2 do
 
   Get information about the authenticated user.
   """
-  @spec oauth2_userinfo(keyword) ::
+  @spec oauth2_userinfo(opts :: keyword) ::
           {:ok, Polarex.UserInfoOrganization.t() | Polarex.UserInfoUser.t()} | :error
   def oauth2_userinfo(opts \\ []) do
     client = opts[:client] || @default_client

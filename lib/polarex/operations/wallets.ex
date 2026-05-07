@@ -9,10 +9,8 @@ defmodule Polarex.Wallets do
   Get Wallet
 
   Get a wallet by ID for the authenticated customer.
-
-  **Scopes**: `customer_portal:read` `customer_portal:write`
   """
-  @spec customer_portal_wallets_get(String.t(), keyword) ::
+  @spec customer_portal_wallets_get(id :: String.t(), opts :: keyword) ::
           {:ok, Polarex.CustomerWallet.t()}
           | {:error, Polarex.HTTPValidationError.t() | Polarex.ResourceNotFound.t()}
   def customer_portal_wallets_get(id, opts \\ []) do
@@ -37,8 +35,6 @@ defmodule Polarex.Wallets do
 
   List wallets of the authenticated customer.
 
-  **Scopes**: `customer_portal:read` `customer_portal:write`
-
   ## Options
 
     * `page`: Page number, defaults to 1.
@@ -46,7 +42,7 @@ defmodule Polarex.Wallets do
     * `sorting`: Sorting criterion. Several criteria can be used simultaneously and will be applied in order. Add a minus sign `-` before the criteria name to sort by descending order.
 
   """
-  @spec customer_portal_wallets_list(keyword) ::
+  @spec customer_portal_wallets_list(opts :: keyword) ::
           {:ok, Polarex.ListResourceCustomerWallet.t()}
           | {:error, Polarex.HTTPValidationError.t()}
   def customer_portal_wallets_list(opts \\ []) do

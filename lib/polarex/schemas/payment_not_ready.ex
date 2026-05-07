@@ -12,6 +12,6 @@ defmodule Polarex.PaymentNotReady do
   def __fields__(type \\ :t)
 
   def __fields__(:t) do
-    [detail: {:string, :generic}, error: {:const, "PaymentNotReady"}]
+    [detail: :string, error: {:const, "PaymentNotReady"}]
   end
 end

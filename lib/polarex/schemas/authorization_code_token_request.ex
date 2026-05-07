@@ -19,11 +19,11 @@ defmodule Polarex.AuthorizationCodeTokenRequest do
 
   def __fields__(:t) do
     [
-      client_id: {:string, :generic},
-      client_secret: {:string, :generic},
-      code: {:string, :generic},
+      client_id: :string,
+      client_secret: :string,
+      code: :string,
       grant_type: {:const, "authorization_code"},
-      redirect_uri: {:string, :uri}
+      redirect_uri: {:string, "uri"}
     ]
   end
 end

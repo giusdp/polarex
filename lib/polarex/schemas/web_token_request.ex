@@ -21,12 +21,12 @@ defmodule Polarex.WebTokenRequest do
 
   def __fields__(:t) do
     [
-      client_id: {:string, :generic},
-      client_secret: {:string, :generic},
+      client_id: :string,
+      client_secret: :string,
       grant_type: {:const, "web"},
-      scope: {:union, [{:string, :generic}, :null]},
-      session_token: {:string, :generic},
-      sub: {:union, [{:string, :generic}, :null]},
+      scope: {:union, [:string, :null]},
+      session_token: :string,
+      sub: {:union, [{:string, "uuid4"}, :null]},
       sub_type: {:enum, ["user", "organization"]}
     ]
   end

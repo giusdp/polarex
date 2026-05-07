@@ -12,6 +12,6 @@ defmodule Polarex.BenefitGitHubRepositorySubscriberProperties do
   def __fields__(type \\ :t)
 
   def __fields__(:t) do
-    [repository_name: {:string, :generic}, repository_owner: {:string, :generic}]
+    [repository_name: :string, repository_owner: :string]
   end
 end

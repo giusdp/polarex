@@ -12,7 +12,7 @@ defmodule Polarex.DiscountPercentageRepeatDuration do
           ends_at: DateTime.t() | nil,
           id: String.t(),
           max_redemptions: integer | nil,
-          metadata: Polarex.MetadataOutputType.t(),
+          metadata: map,
           modified_at: DateTime.t() | nil,
           name: String.t(),
           organization_id: String.t(),
@@ -48,20 +48,20 @@ defmodule Polarex.DiscountPercentageRepeatDuration do
   def __fields__(:t) do
     [
       basis_points: :integer,
-      code: {:union, [{:string, :generic}, :null]},
-      created_at: {:string, :date_time},
+      code: {:union, [:string, :null]},
+      created_at: {:string, "date-time"},
       duration: {:enum, ["once", "forever", "repeating"]},
       duration_in_months: :integer,
-      ends_at: {:union, [{:string, :date_time}, :null]},
-      id: {:string, :generic},
+      ends_at: {:union, [{:string, "date-time"}, :null]},
+      id: {:string, "uuid4"},
       max_redemptions: {:union, [:integer, :null]},
-      metadata: {Polarex.MetadataOutputType, :t},
-      modified_at: {:union, [{:string, :date_time}, :null]},
-      name: {:string, :generic},
-      organization_id: {:string, :generic},
+      metadata: :map,
+      modified_at: {:union, [{:string, "date-time"}, :null]},
+      name: :string,
+      organization_id: {:string, "uuid4"},
       products: [{Polarex.DiscountProduct, :t}],
       redemptions_count: :integer,
-      starts_at: {:union, [{:string, :date_time}, :null]},
+      starts_at: {:union, [{:string, "date-time"}, :null]},
       type: {:enum, ["fixed", "percentage"]}
     ]
   end

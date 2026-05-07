@@ -6,7 +6,7 @@ defmodule Polarex.RefundCreate do
   @type t :: %__MODULE__{
           amount: integer,
           comment: String.t() | nil,
-          metadata: Polarex.Metadata.t() | nil,
+          metadata: map | nil,
           order_id: String.t(),
           reason: String.t(),
           revoke_benefits: boolean | nil
@@ -21,9 +21,9 @@ defmodule Polarex.RefundCreate do
   def __fields__(:t) do
     [
       amount: :integer,
-      comment: {:union, [{:string, :generic}, :null]},
-      metadata: {Polarex.Metadata, :t},
-      order_id: {:string, :generic},
+      comment: {:union, [:string, :null]},
+      metadata: :map,
+      order_id: {:string, "uuid4"},
       reason:
         {:enum,
          [

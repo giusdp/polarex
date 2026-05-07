@@ -39,12 +39,12 @@ defmodule Polarex.Dispute do
     [
       amount: :integer,
       closed: :boolean,
-      created_at: {:string, :date_time},
-      currency: {:string, :generic},
-      id: {:string, :generic},
-      modified_at: {:union, [{:string, :date_time}, :null]},
-      order_id: {:string, :generic},
-      payment_id: {:string, :generic},
+      created_at: {:string, "date-time"},
+      currency: :string,
+      id: {:string, "uuid4"},
+      modified_at: {:union, [{:string, "date-time"}, :null]},
+      order_id: {:string, "uuid4"},
+      payment_id: {:string, "uuid4"},
       resolved: :boolean,
       status:
         {:enum, ["prevented", "early_warning", "needs_response", "under_review", "lost", "won"]},

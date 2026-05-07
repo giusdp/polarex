@@ -18,10 +18,10 @@ defmodule Polarex.RefreshTokenRequest do
 
   def __fields__(:t) do
     [
-      client_id: {:string, :generic},
-      client_secret: {:string, :generic},
+      client_id: :string,
+      client_secret: :string,
       grant_type: {:const, "refresh_token"},
-      refresh_token: {:string, :generic}
+      refresh_token: :string
     ]
   end
 end

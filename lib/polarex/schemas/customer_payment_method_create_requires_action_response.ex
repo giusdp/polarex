@@ -12,6 +12,6 @@ defmodule Polarex.CustomerPaymentMethodCreateRequiresActionResponse do
   def __fields__(type \\ :t)
 
   def __fields__(:t) do
-    [client_secret: {:string, :generic}, status: {:const, "requires_action"}]
+    [client_secret: :string, status: {:const, "requires_action"}]
   end
 end

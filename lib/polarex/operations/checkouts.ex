@@ -11,8 +11,16 @@ defmodule Polarex.Checkouts do
   Confirm a checkout session by client secret.
 
   Orders and subscriptions will be processed.
+
+  ## Request Body
+
+  **Content Types**: `application/json`
   """
-  @spec checkouts_client_confirm(String.t(), Polarex.CheckoutConfirmStripe.t(), keyword) ::
+  @spec checkouts_client_confirm(
+          client_secret :: String.t(),
+          body :: Polarex.CheckoutConfirmStripe.t(),
+          opts :: keyword
+        ) ::
           {:ok, Polarex.CheckoutPublicConfirmed.t()}
           | {:error,
              Polarex.AlreadyActiveSubscriptionError.t()
@@ -57,7 +65,7 @@ defmodule Polarex.Checkouts do
 
   Get a checkout session by client secret.
   """
-  @spec checkouts_client_get(String.t(), keyword) ::
+  @spec checkouts_client_get(client_secret :: String.t(), opts :: keyword) ::
           {:ok, Polarex.CheckoutPublic.t()}
           | {:error,
              Polarex.ExpiredCheckoutError.t()
@@ -85,8 +93,16 @@ defmodule Polarex.Checkouts do
   Update Checkout Session from Client
 
   Update a checkout session by client secret.
+
+  ## Request Body
+
+  **Content Types**: `application/json`
   """
-  @spec checkouts_client_update(String.t(), Polarex.CheckoutUpdatePublic.t(), keyword) ::
+  @spec checkouts_client_update(
+          client_secret :: String.t(),
+          body :: Polarex.CheckoutUpdatePublic.t(),
+          opts :: keyword
+        ) ::
           {:ok, Polarex.CheckoutPublic.t()}
           | {:error,
              Polarex.AlreadyActiveSubscriptionError.t()
@@ -130,8 +146,12 @@ defmodule Polarex.Checkouts do
   Create a checkout session.
 
   **Scopes**: `checkouts:write`
+
+  ## Request Body
+
+  **Content Types**: `application/json`
   """
-  @spec checkouts_create(Polarex.CheckoutProductsCreate.t(), keyword) ::
+  @spec checkouts_create(body :: Polarex.CheckoutProductsCreate.t(), opts :: keyword) ::
           {:ok, Polarex.Checkout.t()} | {:error, Polarex.HTTPValidationError.t()}
   def checkouts_create(body, opts \\ []) do
     client = opts[:client] || @default_client
@@ -155,7 +175,7 @@ defmodule Polarex.Checkouts do
 
   **Scopes**: `checkouts:read` `checkouts:write`
   """
-  @spec checkouts_get(String.t(), keyword) ::
+  @spec checkouts_get(id :: String.t(), opts :: keyword) ::
           {:ok, Polarex.Checkout.t()}
           | {:error, Polarex.HTTPValidationError.t() | Polarex.ResourceNotFound.t()}
   def checkouts_get(id, opts \\ []) do
@@ -187,6 +207,7 @@ defmodule Polarex.Checkouts do
     * `organization_id`: Filter by organization ID.
     * `product_id`: Filter by product ID.
     * `customer_id`: Filter by customer ID.
+    * `external_customer_id`: Filter by customer external ID.
     * `status`: Filter by checkout session status.
     * `query`: Filter by customer email.
     * `page`: Page number, defaults to 1.
@@ -194,7 +215,7 @@ defmodule Polarex.Checkouts do
     * `sorting`: Sorting criterion. Several criteria can be used simultaneously and will be applied in order. Add a minus sign `-` before the criteria name to sort by descending order.
 
   """
-  @spec checkouts_list(keyword) ::
+  @spec checkouts_list(opts :: keyword) ::
           {:ok, Polarex.ListResourceCheckout.t()} | {:error, Polarex.HTTPValidationError.t()}
   def checkouts_list(opts \\ []) do
     client = opts[:client] || @default_client
@@ -202,6 +223,7 @@ defmodule Polarex.Checkouts do
     query =
       Keyword.take(opts, [
         :customer_id,
+        :external_customer_id,
         :limit,
         :organization_id,
         :page,
@@ -231,8 +253,12 @@ defmodule Polarex.Checkouts do
   Update a checkout session.
 
   **Scopes**: `checkouts:write`
+
+  ## Request Body
+
+  **Content Types**: `application/json`
   """
-  @spec checkouts_update(String.t(), Polarex.CheckoutUpdate.t(), keyword) ::
+  @spec checkouts_update(id :: String.t(), body :: Polarex.CheckoutUpdate.t(), opts :: keyword) ::
           {:ok, Polarex.Checkout.t()}
           | {:error,
              Polarex.AlreadyActiveSubscriptionError.t()

@@ -4,7 +4,7 @@ defmodule Polarex.CustomFieldCreateDate do
   """
 
   @type t :: %__MODULE__{
-          metadata: Polarex.Metadata.t() | nil,
+          metadata: map | nil,
           name: String.t(),
           organization_id: String.t() | nil,
           properties: Polarex.CustomFieldDateProperties.t(),
@@ -20,11 +20,11 @@ defmodule Polarex.CustomFieldCreateDate do
 
   def __fields__(:t) do
     [
-      metadata: {Polarex.Metadata, :t},
-      name: {:string, :generic},
-      organization_id: {:union, [{:string, :generic}, :null]},
+      metadata: :map,
+      name: :string,
+      organization_id: {:union, [{:string, "uuid4"}, :null]},
       properties: {Polarex.CustomFieldDateProperties, :t},
-      slug: {:string, :generic},
+      slug: :string,
       type: {:const, "date"}
     ]
   end

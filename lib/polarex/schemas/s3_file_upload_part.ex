@@ -8,7 +8,7 @@ defmodule Polarex.S3FileUploadPart do
           chunk_end: integer,
           chunk_start: integer,
           expires_at: DateTime.t(),
-          headers: Polarex.Headers.t() | nil,
+          headers: map | nil,
           number: integer,
           url: String.t()
         }
@@ -29,13 +29,13 @@ defmodule Polarex.S3FileUploadPart do
 
   def __fields__(:t) do
     [
-      checksum_sha2_56_base6_4: {:union, [{:string, :generic}, :null]},
+      checksum_sha2_56_base6_4: {:union, [:string, :null]},
       chunk_end: :integer,
       chunk_start: :integer,
-      expires_at: {:string, :date_time},
-      headers: {Polarex.Headers, :t},
+      expires_at: {:string, "date-time"},
+      headers: :map,
       number: :integer,
-      url: {:string, :generic}
+      url: :string
     ]
   end
 end

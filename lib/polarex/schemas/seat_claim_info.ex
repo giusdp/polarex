@@ -28,11 +28,11 @@ defmodule Polarex.SeatClaimInfo do
   def __fields__(:t) do
     [
       can_claim: :boolean,
-      customer_email: {:string, :generic},
-      organization_name: {:string, :generic},
-      organization_slug: {:string, :generic},
-      product_id: {:string, :uuid},
-      product_name: {:string, :generic}
+      customer_email: :string,
+      organization_name: :string,
+      organization_slug: :string,
+      product_id: {:string, "uuid"},
+      product_name: :string
     ]
   end
 end

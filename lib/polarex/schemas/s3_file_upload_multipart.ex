@@ -12,6 +12,6 @@ defmodule Polarex.S3FileUploadMultipart do
   def __fields__(type \\ :t)
 
   def __fields__(:t) do
-    [id: {:string, :generic}, parts: [{Polarex.S3FileUploadPart, :t}], path: {:string, :generic}]
+    [id: :string, parts: [{Polarex.S3FileUploadPart, :t}], path: :string]
   end
 end

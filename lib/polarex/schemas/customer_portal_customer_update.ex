@@ -18,8 +18,8 @@ defmodule Polarex.CustomerPortalCustomerUpdate do
   def __fields__(:t) do
     [
       billing_address: {:union, [{Polarex.AddressInput, :t}, :null]},
-      billing_name: {:union, [{:string, :generic}, :null]},
-      tax_id: {:union, [{:string, :generic}, :null]}
+      billing_name: {:union, [:string, :null]},
+      tax_id: {:union, [:string, :null]}
     ]
   end
 end

@@ -20,12 +20,12 @@ defmodule Polarex.PaymentMethodGeneric do
 
   def __fields__(:t) do
     [
-      created_at: {:string, :date_time},
-      customer_id: {:string, :generic},
-      id: {:string, :generic},
-      modified_at: {:union, [{:string, :date_time}, :null]},
+      created_at: {:string, "date-time"},
+      customer_id: {:string, "uuid4"},
+      id: {:string, "uuid4"},
+      modified_at: {:union, [{:string, "date-time"}, :null]},
       processor: {:const, "stripe"},
-      type: {:string, :generic}
+      type: :string
     ]
   end
 end

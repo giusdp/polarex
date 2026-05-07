@@ -4,11 +4,12 @@ defmodule Polarex.OrganizationCustomerPortalSettings do
   """
 
   @type t :: %__MODULE__{
+          customer: Polarex.CustomerPortalCustomerSettings.t() | nil,
           subscription: Polarex.CustomerPortalSubscriptionSettings.t(),
           usage: Polarex.CustomerPortalUsageSettings.t()
         }
 
-  defstruct [:subscription, :usage]
+  defstruct [:customer, :subscription, :usage]
 
   @doc false
   @spec __fields__(atom) :: keyword
@@ -16,6 +17,7 @@ defmodule Polarex.OrganizationCustomerPortalSettings do
 
   def __fields__(:t) do
     [
+      customer: {Polarex.CustomerPortalCustomerSettings, :t},
       subscription: {Polarex.CustomerPortalSubscriptionSettings, :t},
       usage: {Polarex.CustomerPortalUsageSettings, :t}
     ]

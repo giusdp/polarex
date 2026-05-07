@@ -7,11 +7,11 @@ defmodule Polarex.WebhookEndpointUpdate do
           enabled: boolean | nil,
           events: [String.t()] | nil,
           format: String.t() | nil,
-          secret: String.t() | nil,
+          name: String.t() | nil,
           url: String.t() | nil
         }
 
-  defstruct [:enabled, :events, :format, :secret, :url]
+  defstruct [:enabled, :events, :format, :name, :url]
 
   @doc false
   @spec __fields__(atom) :: keyword
@@ -27,6 +27,7 @@ defmodule Polarex.WebhookEndpointUpdate do
              enum: [
                "checkout.created",
                "checkout.updated",
+               "checkout.expired",
                "customer.created",
                "customer.updated",
                "customer.deleted",
@@ -34,6 +35,9 @@ defmodule Polarex.WebhookEndpointUpdate do
                "customer_seat.assigned",
                "customer_seat.claimed",
                "customer_seat.revoked",
+               "member.created",
+               "member.updated",
+               "member.deleted",
                "order.created",
                "order.updated",
                "order.paid",
@@ -61,8 +65,8 @@ defmodule Polarex.WebhookEndpointUpdate do
            :null
          ]},
       format: {:union, [{:enum, ["raw", "discord", "slack"]}, :null]},
-      secret: {:union, [{:string, :generic}, :null]},
-      url: {:union, [{:string, :uri}, :null]}
+      name: {:union, [:string, :null]},
+      url: {:union, [{:string, "uri"}, :null]}
     ]
   end
 end

@@ -7,7 +7,7 @@ defmodule Polarex.ProductCreateRecurring do
           attached_custom_fields: [Polarex.AttachedCustomFieldCreate.t()] | nil,
           description: String.t() | nil,
           medias: [String.t()] | nil,
-          metadata: Polarex.Metadata.t() | nil,
+          metadata: map | nil,
           name: String.t(),
           organization_id: String.t() | nil,
           prices: [
@@ -20,7 +20,8 @@ defmodule Polarex.ProductCreateRecurring do
           recurring_interval: String.t(),
           recurring_interval_count: integer | nil,
           trial_interval: String.t() | nil,
-          trial_interval_count: integer | nil
+          trial_interval_count: integer | nil,
+          visibility: String.t() | nil
         }
 
   defstruct [
@@ -34,7 +35,8 @@ defmodule Polarex.ProductCreateRecurring do
     :recurring_interval,
     :recurring_interval_count,
     :trial_interval,
-    :trial_interval_count
+    :trial_interval_count,
+    :visibility
   ]
 
   @doc false
@@ -44,11 +46,11 @@ defmodule Polarex.ProductCreateRecurring do
   def __fields__(:t) do
     [
       attached_custom_fields: [{Polarex.AttachedCustomFieldCreate, :t}],
-      description: {:union, [{:string, :generic}, :null]},
-      medias: {:union, [[string: :generic], :null]},
-      metadata: {Polarex.Metadata, :t},
-      name: {:string, :generic},
-      organization_id: {:union, [{:string, :generic}, :null]},
+      description: {:union, [:string, :null]},
+      medias: {:union, [[string: "uuid4"], :null]},
+      metadata: :map,
+      name: :string,
+      organization_id: {:union, [{:string, "uuid4"}, :null]},
       prices: [
         union: [
           {Polarex.ProductPriceCustomCreate, :t},
@@ -61,7 +63,8 @@ defmodule Polarex.ProductCreateRecurring do
       recurring_interval: {:enum, ["day", "week", "month", "year"]},
       recurring_interval_count: :integer,
       trial_interval: {:union, [{:enum, ["day", "week", "month", "year"]}, :null]},
-      trial_interval_count: {:union, [:integer, :null]}
+      trial_interval_count: {:union, [:integer, :null]},
+      visibility: {:enum, ["draft", "private", "public"]}
     ]
   end
 end

@@ -25,13 +25,13 @@ defmodule Polarex.IntrospectTokenResponse do
   def __fields__(:t) do
     [
       active: :boolean,
-      aud: {:string, :generic},
-      client_id: {:string, :generic},
+      aud: :string,
+      client_id: :string,
       exp: :integer,
       iat: :integer,
-      iss: {:string, :generic},
-      scope: {:string, :generic},
-      sub: {:string, :generic},
+      iss: :string,
+      scope: :string,
+      sub: :string,
       sub_type: {:enum, ["user", "organization"]},
       token_type: {:enum, ["access_token", "refresh_token"]}
     ]

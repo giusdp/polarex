@@ -29,13 +29,13 @@ defmodule Polarex.EventType do
 
   def __fields__(:t) do
     [
-      created_at: {:string, :date_time},
-      id: {:string, :generic},
-      label: {:string, :generic},
-      label_property_selector: {:union, [{:string, :generic}, :null]},
-      modified_at: {:union, [{:string, :date_time}, :null]},
-      name: {:string, :generic},
-      organization_id: {:string, :generic}
+      created_at: {:string, "date-time"},
+      id: {:string, "uuid4"},
+      label: :string,
+      label_property_selector: {:union, [:string, :null]},
+      modified_at: {:union, [{:string, "date-time"}, :null]},
+      name: :string,
+      organization_id: {:string, "uuid4"}
     ]
   end
 end

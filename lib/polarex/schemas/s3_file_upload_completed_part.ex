@@ -17,8 +17,8 @@ defmodule Polarex.S3FileUploadCompletedPart do
 
   def __fields__(:t) do
     [
-      checksum_etag: {:string, :generic},
-      checksum_sha2_56_base6_4: {:union, [{:string, :generic}, :null]},
+      checksum_etag: :string,
+      checksum_sha2_56_base6_4: {:union, [:string, :null]},
       number: :integer
     ]
   end

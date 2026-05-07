@@ -18,8 +18,8 @@ defmodule Polarex.FilterClause do
   def __fields__(:t) do
     [
       operator: {:enum, ["eq", "ne", "gt", "gte", "lt", "lte", "like", "not_like"]},
-      property: {:string, :generic},
-      value: {:union, [:boolean, :integer, string: :generic]}
+      property: :string,
+      value: {:union, [:boolean, :integer, :string]}
     ]
   end
 end

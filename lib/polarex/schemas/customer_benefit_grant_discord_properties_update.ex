@@ -12,6 +12,6 @@ defmodule Polarex.CustomerBenefitGrantDiscordPropertiesUpdate do
   def __fields__(type \\ :t)
 
   def __fields__(:t) do
-    [account_id: {:union, [{:string, :generic}, :null]}]
+    [account_id: {:union, [:string, :null]}]
   end
 end

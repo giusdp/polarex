@@ -10,6 +10,7 @@ defmodule Polarex.WebhookEndpoint do
           format: String.t(),
           id: String.t(),
           modified_at: DateTime.t() | nil,
+          name: String.t() | nil,
           organization_id: String.t(),
           secret: String.t(),
           url: String.t()
@@ -22,6 +23,7 @@ defmodule Polarex.WebhookEndpoint do
     :format,
     :id,
     :modified_at,
+    :name,
     :organization_id,
     :secret,
     :url
@@ -33,12 +35,13 @@ defmodule Polarex.WebhookEndpoint do
 
   def __fields__(:t) do
     [
-      created_at: {:string, :date_time},
+      created_at: {:string, "date-time"},
       enabled: :boolean,
       events: [
         enum: [
           "checkout.created",
           "checkout.updated",
+          "checkout.expired",
           "customer.created",
           "customer.updated",
           "customer.deleted",
@@ -46,6 +49,9 @@ defmodule Polarex.WebhookEndpoint do
           "customer_seat.assigned",
           "customer_seat.claimed",
           "customer_seat.revoked",
+          "member.created",
+          "member.updated",
+          "member.deleted",
           "order.created",
           "order.updated",
           "order.paid",
@@ -71,11 +77,12 @@ defmodule Polarex.WebhookEndpoint do
         ]
       ],
       format: {:enum, ["raw", "discord", "slack"]},
-      id: {:string, :generic},
-      modified_at: {:union, [{:string, :date_time}, :null]},
-      organization_id: {:string, :generic},
-      secret: {:string, :generic},
-      url: {:string, :uri}
+      id: {:string, "uuid4"},
+      modified_at: {:union, [{:string, "date-time"}, :null]},
+      name: {:union, [:string, :null]},
+      organization_id: {:string, "uuid4"},
+      secret: :string,
+      url: {:string, "uri"}
     ]
   end
 end

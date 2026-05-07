@@ -12,7 +12,7 @@ defmodule Polarex.Disputes do
 
   **Scopes**: `disputes:read`
   """
-  @spec disputes_get(String.t(), keyword) ::
+  @spec disputes_get(id :: String.t(), opts :: keyword) ::
           {:ok, Polarex.Dispute.t()}
           | {:error, Polarex.HTTPValidationError.t() | Polarex.ResourceNotFound.t()}
   def disputes_get(id, opts \\ []) do
@@ -49,7 +49,7 @@ defmodule Polarex.Disputes do
     * `sorting`: Sorting criterion. Several criteria can be used simultaneously and will be applied in order. Add a minus sign `-` before the criteria name to sort by descending order.
 
   """
-  @spec disputes_list(keyword) ::
+  @spec disputes_list(opts :: keyword) ::
           {:ok, Polarex.ListResourceDispute.t()} | {:error, Polarex.HTTPValidationError.t()}
   def disputes_list(opts \\ []) do
     client = opts[:client] || @default_client

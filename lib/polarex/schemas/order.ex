@@ -11,7 +11,7 @@ defmodule Polarex.Order do
           checkout_id: String.t() | nil,
           created_at: DateTime.t(),
           currency: String.t(),
-          custom_field_data: Polarex.CustomFieldData.t() | nil,
+          custom_field_data: map | nil,
           customer: Polarex.OrderCustomer.t(),
           customer_id: String.t(),
           description: String.t(),
@@ -23,7 +23,7 @@ defmodule Polarex.Order do
           invoice_number: String.t(),
           is_invoice_generated: boolean,
           items: [Polarex.OrderItemSchema.t()],
-          metadata: Polarex.MetadataOutputType.t(),
+          metadata: map,
           modified_at: DateTime.t() | nil,
           net_amount: integer,
           paid: boolean,
@@ -31,6 +31,9 @@ defmodule Polarex.Order do
           platform_fee_currency: String.t() | nil,
           product: Polarex.OrderProduct.t() | nil,
           product_id: String.t() | nil,
+          receipt_number: String.t() | nil,
+          refundable_amount: integer,
+          refundable_tax_amount: integer,
           refunded_amount: integer,
           refunded_tax_amount: integer,
           seats: integer | nil,
@@ -39,8 +42,7 @@ defmodule Polarex.Order do
           subscription_id: String.t() | nil,
           subtotal_amount: integer,
           tax_amount: integer,
-          total_amount: integer,
-          user_id: String.t()
+          total_amount: integer
         }
 
   defstruct [
@@ -71,6 +73,9 @@ defmodule Polarex.Order do
     :platform_fee_currency,
     :product,
     :product_id,
+    :receipt_number,
+    :refundable_amount,
+    :refundable_tax_amount,
     :refunded_amount,
     :refunded_tax_amount,
     :seats,
@@ -79,8 +84,7 @@ defmodule Polarex.Order do
     :subscription_id,
     :subtotal_amount,
     :tax_amount,
-    :total_amount,
-    :user_id
+    :total_amount
   ]
 
   @doc false
@@ -91,42 +95,44 @@ defmodule Polarex.Order do
     [
       applied_balance_amount: :integer,
       billing_address: {:union, [{Polarex.Address, :t}, :null]},
-      billing_name: {:union, [{:string, :generic}, :null]},
+      billing_name: {:union, [:string, :null]},
       billing_reason:
         {:enum, ["purchase", "subscription_create", "subscription_cycle", "subscription_update"]},
-      checkout_id: {:union, [{:string, :generic}, :null]},
-      created_at: {:string, :date_time},
-      currency: {:string, :generic},
-      custom_field_data: {Polarex.CustomFieldData, :t},
+      checkout_id: {:union, [{:string, "uuid4"}, :null]},
+      created_at: {:string, "date-time"},
+      currency: :string,
+      custom_field_data: :map,
       customer: {Polarex.OrderCustomer, :t},
-      customer_id: {:string, :generic},
-      description: {:string, :generic},
+      customer_id: {:string, "uuid4"},
+      description: :string,
       discount: {:union, [:map, :null]},
       discount_amount: :integer,
-      discount_id: {:union, [{:string, :generic}, :null]},
+      discount_id: {:union, [{:string, "uuid4"}, :null]},
       due_amount: :integer,
-      id: {:string, :generic},
-      invoice_number: {:string, :generic},
+      id: {:string, "uuid4"},
+      invoice_number: :string,
       is_invoice_generated: :boolean,
       items: [{Polarex.OrderItemSchema, :t}],
-      metadata: {Polarex.MetadataOutputType, :t},
-      modified_at: {:union, [{:string, :date_time}, :null]},
+      metadata: :map,
+      modified_at: {:union, [{:string, "date-time"}, :null]},
       net_amount: :integer,
       paid: :boolean,
       platform_fee_amount: :integer,
-      platform_fee_currency: {:union, [{:string, :generic}, :null]},
+      platform_fee_currency: {:union, [:string, :null]},
       product: {:union, [{Polarex.OrderProduct, :t}, :null]},
-      product_id: {:union, [{:string, :generic}, :null]},
+      product_id: {:union, [{:string, "uuid4"}, :null]},
+      receipt_number: {:union, [:string, :null]},
+      refundable_amount: :integer,
+      refundable_tax_amount: :integer,
       refunded_amount: :integer,
       refunded_tax_amount: :integer,
       seats: {:union, [:integer, :null]},
-      status: {:enum, ["pending", "paid", "refunded", "partially_refunded"]},
+      status: {:enum, ["pending", "paid", "refunded", "partially_refunded", "void"]},
       subscription: {:union, [{Polarex.OrderSubscription, :t}, :null]},
-      subscription_id: {:union, [{:string, :generic}, :null]},
+      subscription_id: {:union, [{:string, "uuid4"}, :null]},
       subtotal_amount: :integer,
       tax_amount: :integer,
-      total_amount: :integer,
-      user_id: {:string, :generic}
+      total_amount: :integer
     ]
   end
 end

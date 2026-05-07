@@ -10,7 +10,7 @@ defmodule Polarex.Refund do
           customer_id: String.t(),
           dispute: Polarex.RefundDispute.t() | nil,
           id: String.t(),
-          metadata: Polarex.MetadataOutputType.t(),
+          metadata: map,
           modified_at: DateTime.t() | nil,
           order_id: String.t(),
           organization_id: String.t(),
@@ -46,15 +46,15 @@ defmodule Polarex.Refund do
   def __fields__(:t) do
     [
       amount: :integer,
-      created_at: {:string, :date_time},
-      currency: {:string, :generic},
-      customer_id: {:string, :generic},
+      created_at: {:string, "date-time"},
+      currency: :string,
+      customer_id: {:string, "uuid4"},
       dispute: {:union, [{Polarex.RefundDispute, :t}, :null]},
-      id: {:string, :generic},
-      metadata: {Polarex.MetadataOutputType, :t},
-      modified_at: {:union, [{:string, :date_time}, :null]},
-      order_id: {:string, :generic},
-      organization_id: {:string, :generic},
+      id: {:string, "uuid4"},
+      metadata: :map,
+      modified_at: {:union, [{:string, "date-time"}, :null]},
+      order_id: {:string, "uuid4"},
+      organization_id: {:string, "uuid4"},
       reason:
         {:enum,
          [
@@ -68,7 +68,7 @@ defmodule Polarex.Refund do
          ]},
       revoke_benefits: :boolean,
       status: {:enum, ["pending", "succeeded", "failed", "canceled"]},
-      subscription_id: {:union, [{:string, :generic}, :null]},
+      subscription_id: {:union, [{:string, "uuid4"}, :null]},
       tax_amount: :integer
     ]
   end

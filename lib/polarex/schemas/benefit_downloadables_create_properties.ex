@@ -3,7 +3,7 @@ defmodule Polarex.BenefitDownloadablesCreateProperties do
   Provides struct and type for a BenefitDownloadablesCreateProperties
   """
 
-  @type t :: %__MODULE__{archived: Polarex.Archived.t() | nil, files: [String.t()]}
+  @type t :: %__MODULE__{archived: map | nil, files: [String.t()]}
 
   defstruct [:archived, :files]
 
@@ -12,6 +12,6 @@ defmodule Polarex.BenefitDownloadablesCreateProperties do
   def __fields__(type \\ :t)
 
   def __fields__(:t) do
-    [archived: {Polarex.Archived, :t}, files: [string: :generic]]
+    [archived: :map, files: [string: "uuid4"]]
   end
 end

@@ -12,6 +12,6 @@ defmodule Polarex.PaymentMethodInUseByActiveSubscription do
   def __fields__(type \\ :t)
 
   def __fields__(:t) do
-    [detail: {:string, :generic}, error: {:const, "PaymentMethodInUseByActiveSubscription"}]
+    [detail: :string, error: {:const, "PaymentMethodInUseByActiveSubscription"}]
   end
 end

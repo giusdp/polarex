@@ -9,6 +9,7 @@ defmodule Polarex.CustomerBenefitGrantGitHubRepository do
           created_at: DateTime.t(),
           customer: Polarex.CustomerPortalCustomer.t(),
           customer_id: String.t(),
+          error: Polarex.BenefitGrantError.t() | nil,
           granted_at: DateTime.t() | nil,
           id: String.t(),
           is_granted: boolean,
@@ -27,6 +28,7 @@ defmodule Polarex.CustomerBenefitGrantGitHubRepository do
     :created_at,
     :customer,
     :customer_id,
+    :error,
     :granted_at,
     :id,
     :is_granted,
@@ -46,20 +48,21 @@ defmodule Polarex.CustomerBenefitGrantGitHubRepository do
   def __fields__(:t) do
     [
       benefit: {Polarex.BenefitGitHubRepositorySubscriber, :t},
-      benefit_id: {:string, :generic},
-      created_at: {:string, :date_time},
+      benefit_id: {:string, "uuid4"},
+      created_at: {:string, "date-time"},
       customer: {Polarex.CustomerPortalCustomer, :t},
-      customer_id: {:string, :generic},
-      granted_at: {:union, [{:string, :date_time}, :null]},
-      id: {:string, :generic},
+      customer_id: {:string, "uuid4"},
+      error: {:union, [{Polarex.BenefitGrantError, :t}, :null]},
+      granted_at: {:union, [{:string, "date-time"}, :null]},
+      id: {:string, "uuid4"},
       is_granted: :boolean,
       is_revoked: :boolean,
-      member_id: {:union, [{:string, :generic}, :null]},
-      modified_at: {:union, [{:string, :date_time}, :null]},
-      order_id: {:union, [{:string, :generic}, :null]},
+      member_id: {:union, [{:string, "uuid4"}, :null]},
+      modified_at: {:union, [{:string, "date-time"}, :null]},
+      order_id: {:union, [{:string, "uuid4"}, :null]},
       properties: {Polarex.BenefitGrantGitHubRepositoryProperties, :t},
-      revoked_at: {:union, [{:string, :date_time}, :null]},
-      subscription_id: {:union, [{:string, :generic}, :null]}
+      revoked_at: {:union, [{:string, "date-time"}, :null]},
+      subscription_id: {:union, [{:string, "uuid4"}, :null]}
     ]
   end
 end

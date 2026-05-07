@@ -12,6 +12,6 @@ defmodule Polarex.SubscriptionUpdateTrial do
   def __fields__(type \\ :t)
 
   def __fields__(:t) do
-    [trial_end: {:union, const: "now", string: :date_time}]
+    [trial_end: {:union, const: "now", string: "date-time"}]
   end
 end

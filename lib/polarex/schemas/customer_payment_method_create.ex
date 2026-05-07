@@ -16,10 +16,6 @@ defmodule Polarex.CustomerPaymentMethodCreate do
   def __fields__(type \\ :t)
 
   def __fields__(:t) do
-    [
-      confirmation_token_id: {:string, :generic},
-      return_url: {:string, :generic},
-      set_default: :boolean
-    ]
+    [confirmation_token_id: :string, return_url: :string, set_default: :boolean]
   end
 end

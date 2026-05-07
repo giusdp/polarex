@@ -9,8 +9,12 @@ defmodule Polarex.CustomerSeats do
   Assign Seat
 
   **Scopes**: `customer_seats:write`
+
+  ## Request Body
+
+  **Content Types**: `application/json`
   """
-  @spec customer_seats_assign_seat(Polarex.SeatAssign.t(), keyword) ::
+  @spec customer_seats_assign_seat(body :: Polarex.SeatAssign.t(), opts :: keyword) ::
           {:ok, Polarex.CustomerSeat.t()} | {:error, Polarex.HTTPValidationError.t()}
   def customer_seats_assign_seat(body, opts \\ []) do
     client = opts[:client] || @default_client
@@ -36,8 +40,12 @@ defmodule Polarex.CustomerSeats do
 
   @doc """
   Claim Seat
+
+  ## Request Body
+
+  **Content Types**: `application/json`
   """
-  @spec customer_seats_claim_seat(Polarex.SeatClaim.t(), keyword) ::
+  @spec customer_seats_claim_seat(body :: Polarex.SeatClaim.t(), opts :: keyword) ::
           {:ok, Polarex.CustomerSeatClaimResponse.t()} | {:error, Polarex.HTTPValidationError.t()}
   def customer_seats_claim_seat(body, opts \\ []) do
     client = opts[:client] || @default_client
@@ -62,7 +70,7 @@ defmodule Polarex.CustomerSeats do
   @doc """
   Get Claim Info
   """
-  @spec customer_seats_get_claim_info(String.t(), keyword) ::
+  @spec customer_seats_get_claim_info(invitation_token :: String.t(), opts :: keyword) ::
           {:ok, Polarex.SeatClaimInfo.t()} | {:error, Polarex.HTTPValidationError.t()}
   def customer_seats_get_claim_info(invitation_token, opts \\ []) do
     client = opts[:client] || @default_client
@@ -94,7 +102,7 @@ defmodule Polarex.CustomerSeats do
     * `order_id`
 
   """
-  @spec customer_seats_list_seats(keyword) ::
+  @spec customer_seats_list_seats(opts :: keyword) ::
           {:ok, Polarex.SeatsList.t()} | {:error, Polarex.HTTPValidationError.t()}
   def customer_seats_list_seats(opts \\ []) do
     client = opts[:client] || @default_client
@@ -122,7 +130,7 @@ defmodule Polarex.CustomerSeats do
 
   **Scopes**: `customer_seats:write`
   """
-  @spec customer_seats_resend_invitation(String.t(), keyword) ::
+  @spec customer_seats_resend_invitation(seat_id :: String.t(), opts :: keyword) ::
           {:ok, Polarex.CustomerSeat.t()} | {:error, Polarex.HTTPValidationError.t()}
   def customer_seats_resend_invitation(seat_id, opts \\ []) do
     client = opts[:client] || @default_client
@@ -149,7 +157,7 @@ defmodule Polarex.CustomerSeats do
 
   **Scopes**: `customer_seats:write`
   """
-  @spec customer_seats_revoke_seat(String.t(), keyword) ::
+  @spec customer_seats_revoke_seat(seat_id :: String.t(), opts :: keyword) ::
           {:ok, Polarex.CustomerSeat.t()} | {:error, Polarex.HTTPValidationError.t()}
   def customer_seats_revoke_seat(seat_id, opts \\ []) do
     client = opts[:client] || @default_client

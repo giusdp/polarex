@@ -6,7 +6,7 @@ defmodule Polarex.TokenResponse do
   @type t :: %__MODULE__{
           access_token: String.t(),
           expires_in: integer,
-          id_token: String.t(),
+          id_token: String.t() | nil,
           refresh_token: String.t() | nil,
           scope: String.t(),
           token_type: String.t()
@@ -20,11 +20,11 @@ defmodule Polarex.TokenResponse do
 
   def __fields__(:t) do
     [
-      access_token: {:string, :generic},
+      access_token: :string,
       expires_in: :integer,
-      id_token: {:string, :generic},
-      refresh_token: {:union, [{:string, :generic}, :null]},
-      scope: {:string, :generic},
+      id_token: {:union, [:string, :null]},
+      refresh_token: {:union, [:string, :null]},
+      scope: :string,
       token_type: {:const, "Bearer"}
     ]
   end

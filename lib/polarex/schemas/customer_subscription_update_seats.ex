@@ -12,6 +12,10 @@ defmodule Polarex.CustomerSubscriptionUpdateSeats do
   def __fields__(type \\ :t)
 
   def __fields__(:t) do
-    [proration_behavior: {:union, [{:enum, ["invoice", "prorate"]}, :null]}, seats: :integer]
+    [
+      proration_behavior:
+        {:union, [{:enum, ["invoice", "prorate", "next_period", "reset"]}, :null]},
+      seats: :integer
+    ]
   end
 end

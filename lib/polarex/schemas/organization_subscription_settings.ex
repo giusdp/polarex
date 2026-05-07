@@ -29,7 +29,7 @@ defmodule Polarex.OrganizationSubscriptionSettings do
       allow_multiple_subscriptions: :boolean,
       benefit_revocation_grace_period: :integer,
       prevent_trial_abuse: :boolean,
-      proration_behavior: {:enum, ["invoice", "prorate"]}
+      proration_behavior: {:enum, ["invoice", "prorate", "next_period"]}
     ]
   end
 end

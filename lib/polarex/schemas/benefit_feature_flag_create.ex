@@ -1,0 +1,29 @@
+defmodule Polarex.BenefitFeatureFlagCreate do
+  @moduledoc """
+  Provides struct and type for a BenefitFeatureFlagCreate
+  """
+
+  @type t :: %__MODULE__{
+          description: String.t(),
+          metadata: map | nil,
+          organization_id: String.t() | nil,
+          properties: map,
+          type: String.t()
+        }
+
+  defstruct [:description, :metadata, :organization_id, :properties, :type]
+
+  @doc false
+  @spec __fields__(atom) :: keyword
+  def __fields__(type \\ :t)
+
+  def __fields__(:t) do
+    [
+      description: :string,
+      metadata: :map,
+      organization_id: {:union, [{:string, "uuid4"}, :null]},
+      properties: :map,
+      type: {:const, "feature_flag"}
+    ]
+  end
+end

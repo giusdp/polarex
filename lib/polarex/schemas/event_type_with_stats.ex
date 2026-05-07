@@ -4,9 +4,9 @@ defmodule Polarex.EventTypeWithStats do
   """
 
   @type t :: %__MODULE__{
-          created_at: DateTime.t(),
+          created_at: DateTime.t() | nil,
           first_seen: DateTime.t(),
-          id: String.t(),
+          id: String.t() | nil,
           label: String.t(),
           label_property_selector: String.t() | nil,
           last_seen: DateTime.t(),
@@ -37,16 +37,16 @@ defmodule Polarex.EventTypeWithStats do
 
   def __fields__(:t) do
     [
-      created_at: {:string, :date_time},
-      first_seen: {:string, :date_time},
-      id: {:string, :generic},
-      label: {:string, :generic},
-      label_property_selector: {:union, [{:string, :generic}, :null]},
-      last_seen: {:string, :date_time},
-      modified_at: {:union, [{:string, :date_time}, :null]},
-      name: {:string, :generic},
+      created_at: {:union, [{:string, "date-time"}, :null]},
+      first_seen: {:string, "date-time"},
+      id: {:union, [{:string, "uuid4"}, :null]},
+      label: :string,
+      label_property_selector: {:union, [:string, :null]},
+      last_seen: {:string, "date-time"},
+      modified_at: {:union, [{:string, "date-time"}, :null]},
+      name: :string,
       occurrences: :integer,
-      organization_id: {:string, :generic},
+      organization_id: {:string, "uuid4"},
       source: {:enum, ["system", "user"]}
     ]
   end

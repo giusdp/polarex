@@ -21,11 +21,11 @@ defmodule Polarex.WebhookDelivery do
 
   def __fields__(:t) do
     [
-      created_at: {:string, :date_time},
+      created_at: {:string, "date-time"},
       http_code: {:union, [:integer, :null]},
-      id: {:string, :generic},
-      modified_at: {:union, [{:string, :date_time}, :null]},
-      response: {:union, [{:string, :generic}, :null]},
+      id: {:string, "uuid4"},
+      modified_at: {:union, [{:string, "date-time"}, :null]},
+      response: {:union, [:string, :null]},
       succeeded: :boolean,
       webhook_event: {Polarex.WebhookEvent, :t}
     ]

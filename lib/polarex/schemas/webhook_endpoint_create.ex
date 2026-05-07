@@ -6,12 +6,12 @@ defmodule Polarex.WebhookEndpointCreate do
   @type t :: %__MODULE__{
           events: [String.t()],
           format: String.t(),
+          name: String.t() | nil,
           organization_id: String.t() | nil,
-          secret: String.t() | nil,
           url: String.t()
         }
 
-  defstruct [:events, :format, :organization_id, :secret, :url]
+  defstruct [:events, :format, :name, :organization_id, :url]
 
   @doc false
   @spec __fields__(atom) :: keyword
@@ -23,6 +23,7 @@ defmodule Polarex.WebhookEndpointCreate do
         enum: [
           "checkout.created",
           "checkout.updated",
+          "checkout.expired",
           "customer.created",
           "customer.updated",
           "customer.deleted",
@@ -30,6 +31,9 @@ defmodule Polarex.WebhookEndpointCreate do
           "customer_seat.assigned",
           "customer_seat.claimed",
           "customer_seat.revoked",
+          "member.created",
+          "member.updated",
+          "member.deleted",
           "order.created",
           "order.updated",
           "order.paid",
@@ -55,9 +59,9 @@ defmodule Polarex.WebhookEndpointCreate do
         ]
       ],
       format: {:enum, ["raw", "discord", "slack"]},
-      organization_id: {:union, [{:string, :generic}, :null]},
-      secret: {:union, [{:string, :generic}, :null]},
-      url: {:string, :uri}
+      name: {:union, [:string, :null]},
+      organization_id: {:union, [{:string, "uuid4"}, :null]},
+      url: {:string, "uri"}
     ]
   end
 end

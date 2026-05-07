@@ -4,17 +4,25 @@ defmodule Polarex.OrganizationFeatureSettings do
   """
 
   @type t :: %__MODULE__{
+          account_review_v2_enabled: boolean | nil,
+          billing_enabled: boolean | nil,
+          checkout_localization_enabled: boolean | nil,
           issue_funding_enabled: boolean | nil,
           member_model_enabled: boolean | nil,
-          revops_enabled: boolean | nil,
+          overview_metrics: [String.t()] | nil,
+          reset_proration_behavior_enabled: boolean | nil,
           seat_based_pricing_enabled: boolean | nil,
           wallets_enabled: boolean | nil
         }
 
   defstruct [
+    :account_review_v2_enabled,
+    :billing_enabled,
+    :checkout_localization_enabled,
     :issue_funding_enabled,
     :member_model_enabled,
-    :revops_enabled,
+    :overview_metrics,
+    :reset_proration_behavior_enabled,
     :seat_based_pricing_enabled,
     :wallets_enabled
   ]
@@ -25,9 +33,13 @@ defmodule Polarex.OrganizationFeatureSettings do
 
   def __fields__(:t) do
     [
+      account_review_v2_enabled: :boolean,
+      billing_enabled: :boolean,
+      checkout_localization_enabled: :boolean,
       issue_funding_enabled: :boolean,
       member_model_enabled: :boolean,
-      revops_enabled: :boolean,
+      overview_metrics: {:union, [[:string], :null]},
+      reset_proration_behavior_enabled: :boolean,
       seat_based_pricing_enabled: :boolean,
       wallets_enabled: :boolean
     ]

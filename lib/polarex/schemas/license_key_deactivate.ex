@@ -12,10 +12,6 @@ defmodule Polarex.LicenseKeyDeactivate do
   def __fields__(type \\ :t)
 
   def __fields__(:t) do
-    [
-      activation_id: {:string, :generic},
-      key: {:string, :generic},
-      organization_id: {:string, :generic}
-    ]
+    [activation_id: {:string, "uuid4"}, key: :string, organization_id: {:string, "uuid4"}]
   end
 end

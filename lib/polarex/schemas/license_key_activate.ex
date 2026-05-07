@@ -4,10 +4,10 @@ defmodule Polarex.LicenseKeyActivate do
   """
 
   @type t :: %__MODULE__{
-          conditions: Polarex.Conditions.t() | nil,
+          conditions: map | nil,
           key: String.t(),
           label: String.t(),
-          meta: Polarex.Meta.t() | nil,
+          meta: map | nil,
           organization_id: String.t()
         }
 
@@ -19,11 +19,11 @@ defmodule Polarex.LicenseKeyActivate do
 
   def __fields__(:t) do
     [
-      conditions: {Polarex.Conditions, :t},
-      key: {:string, :generic},
-      label: {:string, :generic},
-      meta: {Polarex.Meta, :t},
-      organization_id: {:string, :generic}
+      conditions: :map,
+      key: :string,
+      label: :string,
+      meta: :map,
+      organization_id: {:string, "uuid4"}
     ]
   end
 end

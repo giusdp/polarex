@@ -21,7 +21,7 @@ defmodule Polarex.BenefitLicenseKeysSubscriberProperties do
       activations: {:union, [{Polarex.BenefitLicenseKeyActivationProperties, :t}, :null]},
       expires: {:union, [{Polarex.BenefitLicenseKeyExpirationProperties, :t}, :null]},
       limit_usage: {:union, [:integer, :null]},
-      prefix: {:union, [{:string, :generic}, :null]}
+      prefix: {:union, [:string, :null]}
     ]
   end
 end

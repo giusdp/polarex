@@ -12,9 +12,6 @@ defmodule Polarex.FilePatch do
   def __fields__(type \\ :t)
 
   def __fields__(:t) do
-    [
-      name: {:union, [{:string, :generic}, :null]},
-      version: {:union, [{:string, :generic}, :null]}
-    ]
+    [name: {:union, [:string, :null]}, version: {:union, [:string, :null]}]
   end
 end

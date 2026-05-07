@@ -12,6 +12,6 @@ defmodule Polarex.BenefitDiscordSubscriberProperties do
   def __fields__(type \\ :t)
 
   def __fields__(:t) do
-    [guild_id: {:string, :generic}]
+    [guild_id: :string]
   end
 end

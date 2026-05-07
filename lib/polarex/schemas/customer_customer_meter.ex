@@ -35,13 +35,13 @@ defmodule Polarex.CustomerCustomerMeter do
     [
       balance: :number,
       consumed_units: :number,
-      created_at: {:string, :date_time},
+      created_at: {:string, "date-time"},
       credited_units: :integer,
-      customer_id: {:string, :generic},
-      id: {:string, :generic},
+      customer_id: {:string, "uuid4"},
+      id: {:string, "uuid4"},
       meter: {Polarex.CustomerCustomerMeterMeter, :t},
-      meter_id: {:string, :generic},
-      modified_at: {:union, [{:string, :date_time}, :null]}
+      meter_id: {:string, "uuid4"},
+      modified_at: {:union, [{:string, "date-time"}, :null]}
     ]
   end
 end

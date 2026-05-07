@@ -12,6 +12,6 @@ defmodule Polarex.ExpiredCheckoutError do
   def __fields__(type \\ :t)
 
   def __fields__(:t) do
-    [detail: {:string, :generic}, error: {:const, "ExpiredCheckoutError"}]
+    [detail: :string, error: {:const, "ExpiredCheckoutError"}]
   end
 end

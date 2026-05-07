@@ -4,7 +4,7 @@ defmodule Polarex.CustomFieldUpdateNumber do
   """
 
   @type t :: %__MODULE__{
-          metadata: Polarex.Metadata.t() | nil,
+          metadata: map | nil,
           name: String.t() | nil,
           properties: Polarex.CustomFieldNumberProperties.t() | nil,
           slug: String.t() | nil,
@@ -19,10 +19,10 @@ defmodule Polarex.CustomFieldUpdateNumber do
 
   def __fields__(:t) do
     [
-      metadata: {Polarex.Metadata, :t},
-      name: {:union, [{:string, :generic}, :null]},
+      metadata: :map,
+      name: {:union, [:string, :null]},
       properties: {:union, [{Polarex.CustomFieldNumberProperties, :t}, :null]},
-      slug: {:union, [{:string, :generic}, :null]},
+      slug: {:union, [:string, :null]},
       type: {:const, "number"}
     ]
   end

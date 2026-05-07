@@ -12,6 +12,6 @@ defmodule Polarex.NotOpenCheckout do
   def __fields__(type \\ :t)
 
   def __fields__(:t) do
-    [detail: {:string, :generic}, error: {:const, "NotOpenCheckout"}]
+    [detail: :string, error: {:const, "NotOpenCheckout"}]
   end
 end

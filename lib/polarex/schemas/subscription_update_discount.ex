@@ -12,6 +12,6 @@ defmodule Polarex.SubscriptionUpdateDiscount do
   def __fields__(type \\ :t)
 
   def __fields__(:t) do
-    [discount_id: {:union, [{:string, :generic}, :null]}]
+    [discount_id: {:union, [{:string, "uuid4"}, :null]}]
   end
 end

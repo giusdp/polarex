@@ -12,6 +12,6 @@ defmodule Polarex.DownloadableRead do
   def __fields__(type \\ :t)
 
   def __fields__(:t) do
-    [benefit_id: {:string, :generic}, file: {Polarex.FileDownload, :t}, id: {:string, :generic}]
+    [benefit_id: {:string, "uuid4"}, file: {Polarex.FileDownload, :t}, id: {:string, "uuid4"}]
   end
 end

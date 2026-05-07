@@ -12,6 +12,6 @@ defmodule Polarex.AttachedCustomFieldCreate do
   def __fields__(type \\ :t)
 
   def __fields__(:t) do
-    [custom_field_id: {:string, :generic}, required: :boolean]
+    [custom_field_id: {:string, "uuid4"}, required: :boolean]
   end
 end

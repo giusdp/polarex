@@ -6,12 +6,13 @@ defmodule Polarex.AuthorizeResponseOrganization do
   @type t :: %__MODULE__{
           client: Polarex.OAuth2ClientPublic.t(),
           organizations: [Polarex.AuthorizeOrganization.t()],
+          scope_display_names: map | nil,
           scopes: [String.t()],
           sub: Polarex.AuthorizeOrganization.t() | nil,
           sub_type: String.t()
         }
 
-  defstruct [:client, :organizations, :scopes, :sub, :sub_type]
+  defstruct [:client, :organizations, :scope_display_names, :scopes, :sub, :sub_type]
 
   @doc false
   @spec __fields__(atom) :: keyword
@@ -21,6 +22,7 @@ defmodule Polarex.AuthorizeResponseOrganization do
     [
       client: {Polarex.OAuth2ClientPublic, :t},
       organizations: [{Polarex.AuthorizeOrganization, :t}],
+      scope_display_names: :map,
       scopes: [
         enum: [
           "openid",
@@ -65,6 +67,7 @@ defmodule Polarex.AuthorizeResponseOrganization do
           "disputes:read",
           "customer_meters:read",
           "customer_sessions:write",
+          "member_sessions:write",
           "customer_seats:read",
           "customer_seats:write",
           "orders:read",
@@ -73,21 +76,19 @@ defmodule Polarex.AuthorizeResponseOrganization do
           "refunds:write",
           "payments:read",
           "metrics:read",
+          "metrics:write",
           "webhooks:read",
           "webhooks:write",
-          "external_organizations:read",
           "license_keys:read",
           "license_keys:write",
-          "repositories:read",
-          "repositories:write",
-          "issues:read",
-          "issues:write",
           "customer_portal:read",
           "customer_portal:write",
           "notifications:read",
           "notifications:write",
           "notification_recipients:read",
-          "notification_recipients:write"
+          "notification_recipients:write",
+          "organization_access_tokens:read",
+          "organization_access_tokens:write"
         ]
       ],
       sub: {:union, [{Polarex.AuthorizeOrganization, :t}, :null]},

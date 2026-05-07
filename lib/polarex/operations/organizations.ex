@@ -10,7 +10,7 @@ defmodule Polarex.Organizations do
 
   Get a customer portal's organization by slug.
   """
-  @spec customer_portal_organizations_get(String.t(), keyword) ::
+  @spec customer_portal_organizations_get(slug :: String.t(), opts :: keyword) ::
           {:ok, Polarex.CustomerOrganizationData.t()}
           | {:error, Polarex.HTTPValidationError.t() | Polarex.ResourceNotFound.t()}
   def customer_portal_organizations_get(slug, opts \\ []) do
@@ -36,8 +36,12 @@ defmodule Polarex.Organizations do
   Create an organization.
 
   **Scopes**: `organizations:write`
+
+  ## Request Body
+
+  **Content Types**: `application/json`
   """
-  @spec organizations_create(Polarex.OrganizationCreate.t(), keyword) ::
+  @spec organizations_create(body :: Polarex.OrganizationCreate.t(), opts :: keyword) ::
           {:ok, Polarex.Organization.t()} | {:error, Polarex.HTTPValidationError.t()}
   def organizations_create(body, opts \\ []) do
     client = opts[:client] || @default_client
@@ -58,10 +62,8 @@ defmodule Polarex.Organizations do
   Get Organization
 
   Get an organization by ID.
-
-  **Scopes**: `organizations:read` `organizations:write`
   """
-  @spec organizations_get(String.t(), keyword) ::
+  @spec organizations_get(id :: String.t(), opts :: keyword) ::
           {:ok, Polarex.Organization.t()}
           | {:error, Polarex.HTTPValidationError.t() | Polarex.ResourceNotFound.t()}
   def organizations_get(id, opts \\ []) do
@@ -96,7 +98,7 @@ defmodule Polarex.Organizations do
     * `sorting`: Sorting criterion. Several criteria can be used simultaneously and will be applied in order. Add a minus sign `-` before the criteria name to sort by descending order.
 
   """
-  @spec organizations_list(keyword) ::
+  @spec organizations_list(opts :: keyword) ::
           {:ok, Polarex.ListResourceOrganization.t()} | {:error, Polarex.HTTPValidationError.t()}
   def organizations_list(opts \\ []) do
     client = opts[:client] || @default_client
@@ -121,9 +123,15 @@ defmodule Polarex.Organizations do
 
   Update an organization.
 
-  **Scopes**: `organizations:write`
+  ## Request Body
+
+  **Content Types**: `application/json`
   """
-  @spec organizations_update(String.t(), Polarex.OrganizationUpdate.t(), keyword) ::
+  @spec organizations_update(
+          id :: String.t(),
+          body :: Polarex.OrganizationUpdate.t(),
+          opts :: keyword
+        ) ::
           {:ok, Polarex.Organization.t()}
           | {:error,
              Polarex.HTTPValidationError.t()
