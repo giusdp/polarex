@@ -28,7 +28,7 @@ jobs:
         run: cp openapi.json /tmp/openapi.previous.json
 
       - name: Install mise
-        uses: jdx/mise-action@v2
+        uses: jdx/mise-action@v4
         with:
           experimental: true
 
