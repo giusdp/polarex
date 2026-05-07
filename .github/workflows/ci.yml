@@ -29,7 +29,7 @@ jobs:
           experimental: true
 
       - name: Cache mise tools
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: |
             ~/.local/share/mise
@@ -38,7 +38,7 @@ jobs:
           restore-keys: ${{ runner.os }}-mise-
 
       - name: Cache mix deps
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: |
             deps
