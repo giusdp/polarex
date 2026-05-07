@@ -1,0 +1,150 @@
+name: Sync OpenAPI Spec
+
+on:
+  schedule:
+    - cron: "0 6 * * 1"
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GH_PAT }}
+          fetch-depth: 0
+
+      - name: Configure git author
+        run: |
+          git config user.name "polarex-bot"
+          git config user.email "polarex-bot@users.noreply.github.com"
+
+      - name: Snapshot previous spec
+        run: cp openapi.json /tmp/openapi.previous.json
+
+      - name: Install mise
+        uses: jdx/mise-action@v2
+        with:
+          experimental: true
+
+      - name: Cache mix deps
+        uses: actions/cache@v4
+        with:
+          path: |
+            deps
+            _build
+          key: ${{ runner.os }}-mix-${{ hashFiles('**/mix.lock') }}
+          restore-keys: ${{ runner.os }}-mix-
+
+      - name: Get deps
+        run: mix deps.get
+
+      - name: Regenerate SDK
+        run: mix sdk.build
+
+      - name: Detect change
+        id: diff
+        run: |
+          if git diff --quiet openapi.json; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+            echo "No spec change."
+          else
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Classify with oasdiff
+        if: steps.diff.outputs.changed == 'true'
+        id: classify
+        run: |
+          set -euo pipefail
+          docker run --rm \
+            -v /tmp/openapi.previous.json:/specs/previous.json:ro \
+            -v "${{ github.workspace }}/openapi.json:/specs/current.json:ro" \
+            tufin/oasdiff:latest \
+            changelog /specs/previous.json /specs/current.json --format text > /tmp/changelog.txt || true
+
+          docker run --rm \
+            -v /tmp/openapi.previous.json:/specs/previous.json:ro \
+            -v "${{ github.workspace }}/openapi.json:/specs/current.json:ro" \
+            tufin/oasdiff:latest \
+            breaking /specs/previous.json /specs/current.json --format text > /tmp/breaking.txt || true
+
+          if [ -s /tmp/breaking.txt ]; then
+            echo "kind=breaking" >> "$GITHUB_OUTPUT"
+            echo "subject=feat(spec)!: sync OpenAPI spec" >> "$GITHUB_OUTPUT"
+          elif [ -s /tmp/changelog.txt ] && grep -Eqv '^\s*(description|summary|tags)' /tmp/changelog.txt; then
+            echo "kind=feat" >> "$GITHUB_OUTPUT"
+            echo "subject=feat(spec): sync OpenAPI spec" >> "$GITHUB_OUTPUT"
+          else
+            echo "kind=chore" >> "$GITHUB_OUTPUT"
+            echo "subject=chore(spec): sync OpenAPI spec" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Build PR body
+        if: steps.diff.outputs.changed == 'true'
+        id: body
+        run: |
+          {
+            echo "Automated weekly OpenAPI spec sync."
+            echo
+            echo "## Classification"
+            echo
+            echo "- Kind: \`${{ steps.classify.outputs.kind }}\`"
+            echo "- Commit subject: \`${{ steps.classify.outputs.subject }}\`"
+            echo
+            echo "Review the diff and merge when ready."
+            echo
+            echo "## oasdiff changelog"
+            echo
+            echo '```'
+            cat /tmp/changelog.txt 2>/dev/null || echo "(no semantic changes detected)"
+            echo '```'
+            if [ -s /tmp/breaking.txt ]; then
+              echo
+              echo "## Breaking changes"
+              echo
+              echo '```'
+              cat /tmp/breaking.txt
+              echo '```'
+            fi
+          } > /tmp/pr-body.md
+
+      - name: Build commit message
+        if: steps.diff.outputs.changed == 'true'
+        run: |
+          {
+            echo "${{ steps.classify.outputs.subject }}"
+            echo
+            echo "Automated spec sync — see PR description for oasdiff output."
+            if [ "${{ steps.classify.outputs.kind }}" = "breaking" ]; then
+              echo
+              echo "BREAKING CHANGE: see oasdiff breaking output in the PR."
+            fi
+          } > /tmp/commit-msg.txt
+
+      - name: Create branch and commit
+        if: steps.diff.outputs.changed == 'true'
+        id: branch
+        run: |
+          BRANCH="chore/spec-sync-${{ github.run_id }}"
+          git checkout -b "$BRANCH"
+          git add openapi.json lib/polarex
+          git commit -F /tmp/commit-msg.txt
+          git push -u origin "$BRANCH"
+          echo "name=$BRANCH" >> "$GITHUB_OUTPUT"
+
+      - name: Open PR
+        if: steps.diff.outputs.changed == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GH_PAT }}
+        run: |
+          gh pr create \
+            --title "${{ steps.classify.outputs.subject }}" \
+            --body-file /tmp/pr-body.md \
+            --base main \
+            --head "${{ steps.branch.outputs.name }}"
