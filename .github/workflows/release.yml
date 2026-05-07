@@ -21,6 +21,22 @@ jobs:
           fetch-depth: 0
           fetch-tags: true
 
+      - name: Force-sync tags
+        run: git fetch --tags --force --prune-tags origin
+
+      - name: Debug — what tags does the workflow see
+        run: |
+          echo "All v* tags:"
+          git tag --list 'v*'
+          echo
+          echo "v0.3.0 → $(git rev-parse refs/tags/v0.3.0 2>/dev/null || echo 'absent')"
+          echo "HEAD   → $(git rev-parse HEAD)"
+          if git merge-base --is-ancestor refs/tags/v0.3.0 HEAD 2>/dev/null; then
+            echo "v0.3.0 IS in HEAD ancestry"
+          else
+            echo "v0.3.0 NOT in HEAD ancestry"
+          fi
+
       - name: Determine next version (dry run)
         id: dryrun
         uses: cycjimmy/semantic-release-action@v6.0.0
@@ -41,7 +57,7 @@ jobs:
         run: |
           NEXT="${{ steps.dryrun.outputs.new_release_version }}"
           if git ls-remote --tags origin "v$NEXT" | grep -q "refs/tags/v$NEXT$"; then
-            echo "::error::Tag v$NEXT already exists on origin. Refusing to release to avoid pushing a rogue commit."
+            echo "::error::Tag v$NEXT already exists on origin.
             echo "::error::This usually means the tag is orphaned (not in main's ancestry)."
             echo "::error::To fix: move the tag to an in-ancestry commit, then re-run."
             exit 1
