@@ -20,30 +20,12 @@
           {
             "files": ["README.md"],
             "from": "{:polarex, \"~> .*\"}",
-            "to": "{:polarex, \"~> ${nextRelease.version}\"}",
-            "results": [
-              {
-                "file": "README.md",
-                "hasChanged": true,
-                "numMatches": 1,
-                "numReplacements": 1
-              }
-            ],
-            "countMatches": true
+            "to": "{:polarex, \"~> ${nextRelease.version}\"}"
           },
           {
             "files": ["mix.exs"],
             "from": "version: \".*\"",
-            "to": "version: \"${nextRelease.version}\"",
-            "results": [
-              {
-                "file": "mix.exs",
-                "hasChanged": true,
-                "numMatches": 1,
-                "numReplacements": 1
-              }
-            ],
-            "countMatches": true
+            "to": "version: \"${nextRelease.version}\""
           }
         ]
       }
