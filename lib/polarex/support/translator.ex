@@ -8,11 +8,16 @@ defmodule Polarex.Support.Translator do
   def translate(nil, body), do: body
   def translate(:map, body), do: body
   def translate([:map], body), do: body
+  def translate(:string, body), do: body
   def translate({:string, :generic}, body), do: body
+  def translate({:string, :date_time}, body), do: parse_datetime!(body)
+  def translate({:string, "date-time"}, body), do: parse_datetime!(body)
+  def translate({:string, "date"}, body), do: Date.from_iso8601!(body)
+  def translate({:string, _format}, body), do: body
   def translate(:boolean, body), do: body
   def translate(:integer, body) when is_binary(body), do: String.to_integer(body)
   def translate(:integer, body), do: body
-  def translate({:string, :date_time}, body), do: NaiveDateTime.from_iso8601!(body)
+  def translate(:number, body), do: body
   def translate({:const, value}, _body), do: value
 
   def translate({:enum, _values}, body), do: body
@@ -69,6 +74,13 @@ defmodule Polarex.Support.Translator do
 
   def translate(type, _body) do
     raise("Response translation not implemented: #{inspect(type)}")
+  end
+
+  defp parse_datetime!(body) do
+    case DateTime.from_iso8601(body) do
+      {:ok, datetime, _offset} -> datetime
+      {:error, _reason} -> NaiveDateTime.from_iso8601!(body)
+    end
   end
 
   # Get the camel-case version of the field from the API payload
