@@ -18,7 +18,11 @@ defmodule Polarex.Support.Translator do
   def translate(:integer, body) when is_binary(body), do: String.to_integer(body)
   def translate(:integer, body), do: body
   def translate(:number, body), do: body
+  def translate(:unknown, body), do: body
   def translate({:const, value}, _body), do: value
+  def translate([const: value], body), do: translate({:const, value}, body)
+  def translate([string: format], body), do: translate({:string, format}, body)
+  def translate([union: types], body), do: translate({:union, types}, body)
 
   def translate({:enum, _values}, body), do: body
 
@@ -77,8 +81,12 @@ defmodule Polarex.Support.Translator do
   defp matches_type?(:boolean, body), do: is_boolean(body)
   defp matches_type?(:integer, body), do: is_integer(body)
   defp matches_type?(:number, body), do: is_number(body)
+  defp matches_type?(:unknown, _body), do: true
   defp matches_type?({:enum, values}, body), do: body in values
   defp matches_type?({:const, value}, body), do: body == value
+  defp matches_type?([const: value], body), do: matches_type?({:const, value}, body)
+  defp matches_type?([string: format], body), do: matches_type?({:string, format}, body)
+  defp matches_type?([union: types], body), do: matches_type?({:union, types}, body)
 
   defp matches_type?([type], body),
     do: is_list(body) and Enum.all?(body, &matches_type?(type, &1))

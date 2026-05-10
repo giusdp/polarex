@@ -49,6 +49,12 @@ defmodule Polarex.Support.TranslatorTest do
     assert session.modified_at == nil
   end
 
+  test "translates keyword encoded array types" do
+    assert Translator.translate([string: "uuid4"], ["id-1", "id-2"]) == ["id-1", "id-2"]
+    assert Translator.translate([union: [:integer, :string]], [1, "two"]) == [1, "two"]
+    assert Translator.translate([:unknown], [%{"vat" => "IT123"}]) == [%{"vat" => "IT123"}]
+  end
+
   test "translates unions containing primitive map types" do
     body = %{
       "active_meters" => [],
