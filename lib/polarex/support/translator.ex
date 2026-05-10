@@ -25,15 +25,9 @@ defmodule Polarex.Support.Translator do
   def translate({:union, [type, :null]}, body), do: translate(type, body)
 
   def translate({:union, types}, body) do
-    actual_module =
-      types
-      |> Enum.find(fn {module, :t} ->
-        {:const, custom_name} = module.__fields__(:t)[:type]
-        %{"type" => actual_type} = body
-        custom_name == actual_type
-      end)
+    type = Enum.find(types, &matches_type?(&1, body)) || List.first(types)
 
-    translate(actual_module, body)
+    translate(type, body)
   end
 
   def translate({_module, :t}, body) when map_size(body) == 0, do: %{}
@@ -66,15 +60,39 @@ defmodule Polarex.Support.Translator do
     struct!(module, translated)
   end
 
-  def translate([{module, type}], body) when is_list(body) do
-    Enum.map(body, &translate({module, type}, &1))
+  def translate([type], body) when is_list(body) do
+    Enum.map(body, &translate(type, &1))
   end
 
-  def translate([{_module, _type}], nil), do: nil
+  def translate([_type], nil), do: nil
 
   def translate(type, _body) do
     raise("Response translation not implemented: #{inspect(type)}")
   end
+
+  defp matches_type?(:null, body), do: is_nil(body)
+  defp matches_type?(:map, body), do: is_map(body)
+  defp matches_type?(:string, body), do: is_binary(body)
+  defp matches_type?({:string, _format}, body), do: is_binary(body)
+  defp matches_type?(:boolean, body), do: is_boolean(body)
+  defp matches_type?(:integer, body), do: is_integer(body)
+  defp matches_type?(:number, body), do: is_number(body)
+  defp matches_type?({:enum, values}, body), do: body in values
+  defp matches_type?({:const, value}, body), do: body == value
+
+  defp matches_type?([type], body),
+    do: is_list(body) and Enum.all?(body, &matches_type?(type, &1))
+
+  defp matches_type?({:union, types}, body), do: Enum.any?(types, &matches_type?(&1, body))
+
+  defp matches_type?({module, :t}, body) when is_atom(module) and is_map(body) do
+    case module.__fields__(:t)[:type] do
+      {:const, type} -> body["type"] == type
+      _other -> true
+    end
+  end
+
+  defp matches_type?(_type, _body), do: false
 
   defp parse_datetime!(body) do
     case DateTime.from_iso8601(body) do
