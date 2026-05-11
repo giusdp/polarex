@@ -62,22 +62,29 @@ jobs:
         id: classify
         run: |
           set -euo pipefail
-          docker run --rm \
-            -v /tmp/openapi.previous.json:/specs/previous.json:ro \
-            -v "${{ github.workspace }}/openapi.json:/specs/current.json:ro" \
-            tufin/oasdiff:latest \
-            changelog /specs/previous.json /specs/current.json --format text > /tmp/changelog.txt || true
 
-          docker run --rm \
-            -v /tmp/openapi.previous.json:/specs/previous.json:ro \
-            -v "${{ github.workspace }}/openapi.json:/specs/current.json:ro" \
-            tufin/oasdiff:latest \
-            breaking /specs/previous.json /specs/current.json --format text > /tmp/breaking.txt || true
+          run_oasdiff() {
+            docker run --rm \
+              -v /tmp/openapi.previous.json:/specs/previous.json:ro \
+              -v "${{ github.workspace }}/openapi.json:/specs/current.json:ro" \
+              tufin/oasdiff:latest "$@"
+          }
 
-          if [ -s /tmp/breaking.txt ]; then
+          run_oasdiff changelog /specs/previous.json /specs/current.json --format json > /tmp/changelog.json
+          run_oasdiff breaking  /specs/previous.json /specs/current.json --format json > /tmp/breaking.json
+          run_oasdiff changelog /specs/previous.json /specs/current.json --format text > /tmp/changelog.txt || true
+          run_oasdiff breaking  /specs/previous.json /specs/current.json --format text > /tmp/breaking.txt || true
+
+          BREAKING_COUNT=$(jq 'length' /tmp/breaking.json)
+          ENDPOINT_ADDED_COUNT=$(jq '[.[] | select(.id == "endpoint-added")] | length' /tmp/changelog.json)
+
+          echo "breaking_count=$BREAKING_COUNT" >> "$GITHUB_OUTPUT"
+          echo "endpoint_added_count=$ENDPOINT_ADDED_COUNT" >> "$GITHUB_OUTPUT"
+
+          if [ "$BREAKING_COUNT" -gt 0 ]; then
             echo "kind=breaking" >> "$GITHUB_OUTPUT"
             echo "subject=feat(spec)!: sync OpenAPI spec" >> "$GITHUB_OUTPUT"
-          elif [ -s /tmp/changelog.txt ] && grep -Eqv '^\s*(description|summary|tags)' /tmp/changelog.txt; then
+          elif [ "$ENDPOINT_ADDED_COUNT" -gt 0 ]; then
             echo "kind=feat" >> "$GITHUB_OUTPUT"
             echo "subject=feat(spec): sync OpenAPI spec" >> "$GITHUB_OUTPUT"
           else
@@ -104,7 +111,7 @@ jobs:
             echo '```'
             cat /tmp/changelog.txt 2>/dev/null || echo "(no semantic changes detected)"
             echo '```'
-            if [ -s /tmp/breaking.txt ]; then
+            if [ "${{ steps.classify.outputs.breaking_count }}" -gt 0 ]; then
               echo
               echo "## Breaking changes"
               echo
