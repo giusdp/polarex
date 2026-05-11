@@ -1,3 +1,9 @@
+## [0.3.2](https://github.com/giusdp/polarex/compare/v0.3.1...v0.3.2) (2026-05-11)
+
+### Bug Fixes
+
+* translation issues ([#9](https://github.com/giusdp/polarex/issues/9)) ([0bc39bf](https://github.com/giusdp/polarex/commit/0bc39bfd629e6cb97cce634cc5fc27177f9c03dc))
+
 ## [0.3.1](https://github.com/giusdp/polarex/compare/v0.3.0...v0.3.1) (2026-05-07)
 
 ### Bug Fixes
