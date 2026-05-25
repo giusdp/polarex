@@ -21,7 +21,7 @@ defmodule Polarex.Customers do
           {:ok,
            Polarex.CustomerPaymentMethodCreateRequiresActionResponse.t()
            | Polarex.CustomerPaymentMethodCreateSucceededResponse.t()}
-          | {:error, Polarex.HTTPValidationError.t()}
+          | {:error, Polarex.HTTPValidationError.t() | Polarex.PaymentMethodSetupFailed.t()}
   def customer_portal_customers_add_payment_method(body, opts \\ []) do
     client = opts[:client] || @default_client
 
@@ -39,6 +39,7 @@ defmodule Polarex.Customers do
             {Polarex.CustomerPaymentMethodCreateRequiresActionResponse, :t},
             {Polarex.CustomerPaymentMethodCreateSucceededResponse, :t}
           ]}},
+        {400, {Polarex.PaymentMethodSetupFailed, :t}},
         {422, {Polarex.HTTPValidationError, :t}}
       ],
       opts: opts
