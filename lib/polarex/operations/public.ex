@@ -1430,7 +1430,7 @@ defmodule Polarex.Public do
           {:ok,
            Polarex.CustomerPaymentMethodCreateRequiresActionResponse.t()
            | Polarex.CustomerPaymentMethodCreateSucceededResponse.t()}
-          | {:error, Polarex.HTTPValidationError.t()}
+          | {:error, Polarex.HTTPValidationError.t() | Polarex.PaymentMethodSetupFailed.t()}
   def customer_portal_customers_add_payment_method(body, opts \\ []) do
     client = opts[:client] || @default_client
 
@@ -1448,6 +1448,7 @@ defmodule Polarex.Public do
             {Polarex.CustomerPaymentMethodCreateRequiresActionResponse, :t},
             {Polarex.CustomerPaymentMethodCreateSucceededResponse, :t}
           ]}},
+        {400, {Polarex.PaymentMethodSetupFailed, :t}},
         {422, {Polarex.HTTPValidationError, :t}}
       ],
       opts: opts
@@ -2343,7 +2344,7 @@ defmodule Polarex.Public do
 
   **Content Types**: `application/json`
   """
-  @spec customer_portal_seats_assign_seat(body :: Polarex.SeatAssign.t(), opts :: keyword) ::
+  @spec customer_portal_seats_assign_seat(body :: Polarex.CustomerSeatAssign.t(), opts :: keyword) ::
           {:ok, Polarex.CustomerSeat.t()} | {:error, Polarex.HTTPValidationError.t()}
   def customer_portal_seats_assign_seat(body, opts \\ []) do
     client = opts[:client] || @default_client
@@ -2354,7 +2355,7 @@ defmodule Polarex.Public do
       url: "/v1/customer-portal/seats",
       body: body,
       method: :post,
-      request: [{"application/json", {Polarex.SeatAssign, :t}}],
+      request: [{"application/json", {Polarex.CustomerSeatAssign, :t}}],
       response: [
         {200, {Polarex.CustomerSeat, :t}},
         {400, :null},
@@ -3189,6 +3190,7 @@ defmodule Polarex.Public do
     * `organization_id`: Filter by organization ID.
     * `email`: Filter by exact email.
     * `query`: Filter by name, email, or external ID.
+    * `active`: Filter by active customers, i.e. customers with at least one trialing, active or past_due subscription.
     * `page`: Page number, defaults to 1.
     * `limit`: Size of a page, defaults to 10. Maximum is 100.
     * `sorting`: Sorting criterion. Several criteria can be used simultaneously and will be applied in order. Add a minus sign `-` before the criteria name to sort by descending order.
@@ -3201,7 +3203,16 @@ defmodule Polarex.Public do
     client = opts[:client] || @default_client
 
     query =
-      Keyword.take(opts, [:email, :limit, :metadata, :organization_id, :page, :query, :sorting])
+      Keyword.take(opts, [
+        :active,
+        :email,
+        :limit,
+        :metadata,
+        :organization_id,
+        :page,
+        :query,
+        :sorting
+      ])
 
     client.request(%{
       args: [],
@@ -5603,6 +5614,8 @@ defmodule Polarex.Public do
   Get Organization
 
   Get an organization by ID.
+
+  **Scopes**: `organizations:read` `organizations:write`
   """
   @spec organizations_get(id :: String.t(), opts :: keyword) ::
           {:ok, Polarex.Organization.t()}
@@ -5663,6 +5676,8 @@ defmodule Polarex.Public do
   Update Organization
 
   Update an organization.
+
+  **Scopes**: `organizations:write`
 
   ## Request Body
 
@@ -5737,6 +5752,7 @@ defmodule Polarex.Public do
     * `organization_id`: Filter by organization ID.
     * `checkout_id`: Filter by checkout ID.
     * `order_id`: Filter by order ID.
+    * `customer_id`: Filter by customer ID.
     * `status`: Filter by payment status.
     * `method`: Filter by payment method.
     * `customer_email`: Filter by customer email.
@@ -5754,6 +5770,7 @@ defmodule Polarex.Public do
       Keyword.take(opts, [
         :checkout_id,
         :customer_email,
+        :customer_id,
         :limit,
         :method,
         :order_id,

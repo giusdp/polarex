@@ -28,8 +28,6 @@ defmodule Polarex.AuthorizeResponseUser do
           "email",
           "user:read",
           "user:write",
-          "web:read",
-          "web:write",
           "organizations:read",
           "organizations:write",
           "custom_fields:read",

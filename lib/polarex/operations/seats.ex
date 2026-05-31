@@ -12,7 +12,7 @@ defmodule Polarex.Seats do
 
   **Content Types**: `application/json`
   """
-  @spec customer_portal_seats_assign_seat(body :: Polarex.SeatAssign.t(), opts :: keyword) ::
+  @spec customer_portal_seats_assign_seat(body :: Polarex.CustomerSeatAssign.t(), opts :: keyword) ::
           {:ok, Polarex.CustomerSeat.t()} | {:error, Polarex.HTTPValidationError.t()}
   def customer_portal_seats_assign_seat(body, opts \\ []) do
     client = opts[:client] || @default_client
@@ -23,7 +23,7 @@ defmodule Polarex.Seats do
       url: "/v1/customer-portal/seats",
       body: body,
       method: :post,
-      request: [{"application/json", {Polarex.SeatAssign, :t}}],
+      request: [{"application/json", {Polarex.CustomerSeatAssign, :t}}],
       response: [
         {200, {Polarex.CustomerSeat, :t}},
         {400, :null},

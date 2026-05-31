@@ -363,6 +363,7 @@ defmodule Polarex.Mcp do
     * `organization_id`: Filter by organization ID.
     * `email`: Filter by exact email.
     * `query`: Filter by name, email, or external ID.
+    * `active`: Filter by active customers, i.e. customers with at least one trialing, active or past_due subscription.
     * `page`: Page number, defaults to 1.
     * `limit`: Size of a page, defaults to 10. Maximum is 100.
     * `sorting`: Sorting criterion. Several criteria can be used simultaneously and will be applied in order. Add a minus sign `-` before the criteria name to sort by descending order.
@@ -375,7 +376,16 @@ defmodule Polarex.Mcp do
     client = opts[:client] || @default_client
 
     query =
-      Keyword.take(opts, [:email, :limit, :metadata, :organization_id, :page, :query, :sorting])
+      Keyword.take(opts, [
+        :active,
+        :email,
+        :limit,
+        :metadata,
+        :organization_id,
+        :page,
+        :query,
+        :sorting
+      ])
 
     client.request(%{
       args: [],
@@ -1395,6 +1405,7 @@ defmodule Polarex.Mcp do
     * `organization_id`: Filter by organization ID.
     * `checkout_id`: Filter by checkout ID.
     * `order_id`: Filter by order ID.
+    * `customer_id`: Filter by customer ID.
     * `status`: Filter by payment status.
     * `method`: Filter by payment method.
     * `customer_email`: Filter by customer email.
@@ -1412,6 +1423,7 @@ defmodule Polarex.Mcp do
       Keyword.take(opts, [
         :checkout_id,
         :customer_email,
+        :customer_id,
         :limit,
         :method,
         :order_id,

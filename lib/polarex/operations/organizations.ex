@@ -62,6 +62,8 @@ defmodule Polarex.Organizations do
   Get Organization
 
   Get an organization by ID.
+
+  **Scopes**: `organizations:read` `organizations:write`
   """
   @spec organizations_get(id :: String.t(), opts :: keyword) ::
           {:ok, Polarex.Organization.t()}
@@ -122,6 +124,8 @@ defmodule Polarex.Organizations do
   Update Organization
 
   Update an organization.
+
+  **Scopes**: `organizations:write`
 
   ## Request Body
 
