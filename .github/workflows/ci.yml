@@ -37,7 +37,7 @@ jobs:
           path: |
             ~/.local/share/mise
             ~/.cache/mise
-          key: ${{ runner.os }}-mise-${{ hashFiles('.mise.toml') }}
+          key: ${{ runner.os }}-mise-${{ hashFiles('mise.toml') }}
           restore-keys: ${{ runner.os }}-mise-
 
       - name: Cache mix deps
@@ -73,19 +73,6 @@ jobs:
 
       - name: Force-sync tags
         run: git fetch --tags --force --prune-tags origin
-
-      - name: Debug — what tags does the workflow see
-        run: |
-          echo "All v* tags:"
-          git tag --list 'v*'
-          echo
-          echo "v0.3.0 → $(git rev-parse refs/tags/v0.3.0 2>/dev/null || echo 'absent')"
-          echo "HEAD   → $(git rev-parse HEAD)"
-          if git merge-base --is-ancestor refs/tags/v0.3.0 HEAD 2>/dev/null; then
-            echo "v0.3.0 IS in HEAD ancestry"
-          else
-            echo "v0.3.0 NOT in HEAD ancestry"
-          fi
 
       - name: Determine next version (dry run)
         id: dryrun

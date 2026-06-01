@@ -83,7 +83,7 @@ jobs:
 
           if [ "$BREAKING_COUNT" -gt 0 ]; then
             echo "kind=breaking" >> "$GITHUB_OUTPUT"
-            echo "subject=feat(spec)!: sync OpenAPI spec" >> "$GITHUB_OUTPUT"
+            echo "subject=feat(spec): sync OpenAPI spec" >> "$GITHUB_OUTPUT"
           elif [ "$ENDPOINT_ADDED_COUNT" -gt 0 ]; then
             echo "kind=feat" >> "$GITHUB_OUTPUT"
             echo "subject=feat(spec): sync OpenAPI spec" >> "$GITHUB_OUTPUT"
@@ -127,10 +127,10 @@ jobs:
           {
             echo "${{ steps.classify.outputs.subject }}"
             echo
-            echo "Automated spec sync — see PR description for oasdiff output."
+            echo "Weekly spec sync. See PR for oasdiff output."
             if [ "${{ steps.classify.outputs.kind }}" = "breaking" ]; then
               echo
-              echo "BREAKING CHANGE: see oasdiff breaking output in the PR."
+              echo "Breaking API changes. Review before merge."
             fi
           } > /tmp/commit-msg.txt
 
@@ -150,8 +150,14 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GH_PAT }}
         run: |
+          LABELS=()
+          if [ "${{ steps.classify.outputs.kind }}" = "breaking" ]; then
+            gh label create breaking-review --color FBCA04 --description "Spec sync flagged breaking API changes" --force
+            LABELS=(--label breaking-review)
+          fi
           gh pr create \
             --title "${{ steps.classify.outputs.subject }}" \
             --body-file /tmp/pr-body.md \
             --base main \
-            --head "${{ steps.branch.outputs.name }}"
+            --head "${{ steps.branch.outputs.name }}" \
+            "${LABELS[@]}"
