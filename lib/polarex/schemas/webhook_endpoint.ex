@@ -82,7 +82,7 @@ defmodule Polarex.WebhookEndpoint do
       name: {:union, [:string, :null]},
       organization_id: {:string, "uuid4"},
       secret: :string,
-      url: {:string, "uri"}
+      url: :string
     ]
   end
 end
