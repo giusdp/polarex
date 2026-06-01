@@ -2,7 +2,7 @@ name: Sync OpenAPI Spec
 
 on:
   schedule:
-    - cron: "0 6 * * 1"
+    - cron: "0 6 1,15 * *"
   workflow_dispatch: {}
 
 permissions:
@@ -97,14 +97,14 @@ jobs:
         id: body
         run: |
           {
-            echo "Automated weekly OpenAPI spec sync."
+            echo "Automated OpenAPI spec sync."
             echo
             echo "## Classification"
             echo
             echo "- Kind: \`${{ steps.classify.outputs.kind }}\`"
             echo "- Commit subject: \`${{ steps.classify.outputs.subject }}\`"
             echo
-            echo "Review the diff and merge when ready."
+            echo "Auto-merges when CI passes."
             echo
             echo "## oasdiff changelog"
             echo
@@ -121,19 +121,6 @@ jobs:
             fi
           } > /tmp/pr-body.md
 
-      - name: Build commit message
-        if: steps.diff.outputs.changed == 'true'
-        run: |
-          {
-            echo "${{ steps.classify.outputs.subject }}"
-            echo
-            echo "Weekly spec sync. See PR for oasdiff output."
-            if [ "${{ steps.classify.outputs.kind }}" = "breaking" ]; then
-              echo
-              echo "Breaking API changes. Review before merge."
-            fi
-          } > /tmp/commit-msg.txt
-
       - name: Create branch and commit
         if: steps.diff.outputs.changed == 'true'
         id: branch
@@ -141,23 +128,18 @@ jobs:
           BRANCH="chore/spec-sync-${{ github.run_id }}"
           git checkout -b "$BRANCH"
           git add openapi.json lib/polarex
-          git commit -F /tmp/commit-msg.txt
+          git commit -m "${{ steps.classify.outputs.subject }}"
           git push -u origin "$BRANCH"
           echo "name=$BRANCH" >> "$GITHUB_OUTPUT"
 
-      - name: Open PR
+      - name: Open PR and enable auto-merge
         if: steps.diff.outputs.changed == 'true'
         env:
           GH_TOKEN: ${{ secrets.GH_PAT }}
         run: |
-          LABELS=()
-          if [ "${{ steps.classify.outputs.kind }}" = "breaking" ]; then
-            gh label create breaking-review --color FBCA04 --description "Spec sync flagged breaking API changes" --force
-            LABELS=(--label breaking-review)
-          fi
           gh pr create \
             --title "${{ steps.classify.outputs.subject }}" \
             --body-file /tmp/pr-body.md \
             --base main \
-            --head "${{ steps.branch.outputs.name }}" \
-            "${LABELS[@]}"
+            --head "${{ steps.branch.outputs.name }}"
+          gh pr merge "${{ steps.branch.outputs.name }}" --auto --squash
