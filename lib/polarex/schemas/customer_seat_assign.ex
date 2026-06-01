@@ -1,9 +1,10 @@
-defmodule Polarex.SeatAssign do
+defmodule Polarex.CustomerSeatAssign do
   @moduledoc """
-  Provides struct and type for a SeatAssign
+  Provides struct and type for a CustomerSeatAssign
   """
 
   @type t :: %__MODULE__{
+          checkout_id: String.t() | nil,
           customer_id: String.t() | nil,
           email: String.t() | nil,
           external_customer_id: String.t() | nil,
@@ -16,6 +17,7 @@ defmodule Polarex.SeatAssign do
         }
 
   defstruct [
+    :checkout_id,
     :customer_id,
     :email,
     :external_customer_id,
@@ -33,6 +35,7 @@ defmodule Polarex.SeatAssign do
 
   def __fields__(:t) do
     [
+      checkout_id: {:union, [{:string, "uuid"}, :null]},
       customer_id: {:union, [{:string, "uuid"}, :null]},
       email: {:union, [{:string, "email"}, :null]},
       external_customer_id: {:union, [:string, :null]},

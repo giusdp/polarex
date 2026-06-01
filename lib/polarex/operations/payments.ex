@@ -44,6 +44,7 @@ defmodule Polarex.Payments do
     * `organization_id`: Filter by organization ID.
     * `checkout_id`: Filter by checkout ID.
     * `order_id`: Filter by order ID.
+    * `customer_id`: Filter by customer ID.
     * `status`: Filter by payment status.
     * `method`: Filter by payment method.
     * `customer_email`: Filter by customer email.
@@ -61,6 +62,7 @@ defmodule Polarex.Payments do
       Keyword.take(opts, [
         :checkout_id,
         :customer_email,
+        :customer_id,
         :limit,
         :method,
         :order_id,

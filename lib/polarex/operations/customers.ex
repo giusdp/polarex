@@ -21,7 +21,7 @@ defmodule Polarex.Customers do
           {:ok,
            Polarex.CustomerPaymentMethodCreateRequiresActionResponse.t()
            | Polarex.CustomerPaymentMethodCreateSucceededResponse.t()}
-          | {:error, Polarex.HTTPValidationError.t()}
+          | {:error, Polarex.HTTPValidationError.t() | Polarex.PaymentMethodSetupFailed.t()}
   def customer_portal_customers_add_payment_method(body, opts \\ []) do
     client = opts[:client] || @default_client
 
@@ -39,6 +39,7 @@ defmodule Polarex.Customers do
             {Polarex.CustomerPaymentMethodCreateRequiresActionResponse, :t},
             {Polarex.CustomerPaymentMethodCreateSucceededResponse, :t}
           ]}},
+        {400, {Polarex.PaymentMethodSetupFailed, :t}},
         {422, {Polarex.HTTPValidationError, :t}}
       ],
       opts: opts
@@ -570,6 +571,7 @@ defmodule Polarex.Customers do
     * `organization_id`: Filter by organization ID.
     * `email`: Filter by exact email.
     * `query`: Filter by name, email, or external ID.
+    * `active`: Filter by active customers, i.e. customers with at least one trialing, active or past_due subscription.
     * `page`: Page number, defaults to 1.
     * `limit`: Size of a page, defaults to 10. Maximum is 100.
     * `sorting`: Sorting criterion. Several criteria can be used simultaneously and will be applied in order. Add a minus sign `-` before the criteria name to sort by descending order.
@@ -582,7 +584,16 @@ defmodule Polarex.Customers do
     client = opts[:client] || @default_client
 
     query =
-      Keyword.take(opts, [:email, :limit, :metadata, :organization_id, :page, :query, :sorting])
+      Keyword.take(opts, [
+        :active,
+        :email,
+        :limit,
+        :metadata,
+        :organization_id,
+        :page,
+        :query,
+        :sorting
+      ])
 
     client.request(%{
       args: [],
