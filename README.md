@@ -1,8 +1,7 @@
 # Polarex: Polar.sh Elixir Client — Nightly Track
 
-> This is the **nightly** track of Polarex.
 > The SDK is regenerated daily from the latest Polar.sh OpenAPI spec.
-> For the stable (Hex) release, see the [`main`](https://github.com/spapiernik/polarex-nightly/tree/main) branch.
+> For the stable release, see the upstream [Polarex](https://github.com/giusdp/polarex) on [Hex](https://hex.pm/packages/polarex).
 
 ---
 
@@ -10,7 +9,7 @@ This library uses the Elixir [OpenAPI Code Generator](https://github.com/aj-fost
 
 ## Installation
 
-### Nightly (GitHub)
+### From GitHub
 
 To track the latest daily build:
 
@@ -27,19 +26,7 @@ To pin to a specific nightly release:
 ```elixir
 def deps do
   [
-    {:polarex, github: "spapiernik/polarex-nightly", tag: "v2026.06.01"}
-  ]
-end
-```
-
-### Stable (Hex)
-
-For the stable release aligned with the upstream Polarex:
-
-```elixir
-def deps do
-  [
-    {:polarex, "~> 0.4.0"}
+    {:polarex, github: "spapiernik/polarex-nightly", tag: "v2026.06.04"}
   ]
 end
 ```

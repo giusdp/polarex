@@ -44,6 +44,12 @@ jobs:
       - name: Get deps
         run: mix deps.get
 
+      - name: Format check
+        run: mix format --check-formatted
+
+      - name: Compile (warnings as errors)
+        run: mix compile --warnings-as-errors
+
       - name: Regenerate SDK
         run: mix sdk.build
 
@@ -56,10 +62,6 @@ jobs:
           else
             echo "changed=true" >> "$GITHUB_OUTPUT"
           fi
-
-      - name: Compile validation
-        if: steps.diff.outputs.changed == 'true'
-        run: mix compile --warnings-as-errors
 
       - name: Classify with oasdiff
         if: steps.diff.outputs.changed == 'true'
@@ -122,7 +124,7 @@ jobs:
             TAG="${BASE_TAG}.${COUNTER}"
           done
           git add openapi.json lib/polarex
-          git commit -m "nightly(spec): sync OpenAPI spec [skip ci]"
+          git commit -m "nightly(spec): sync OpenAPI spec"
           git tag "$TAG"
           git push origin "refs/heads/nightly" --tags
           echo "tag=$TAG" >> "$GITHUB_OUTPUT"
