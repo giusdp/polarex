@@ -2,7 +2,7 @@
 
 > This is the **nightly** track of Polarex.
 > The SDK is regenerated daily from the latest Polar.sh OpenAPI spec.
-> For the stable (Hex) release, see the [`main`](https://github.com/spapiernik/polarex/tree/main) branch.
+> For the stable (Hex) release, see the [`main`](https://github.com/spapiernik/polarex-nightly/tree/main) branch.
 
 ---
 
@@ -17,7 +17,7 @@ To track the latest daily build:
 ```elixir
 def deps do
   [
-    {:polarex, github: "spapiernik/polarex", branch: "nightly"}
+    {:polarex, github: "spapiernik/polarex-nightly", branch: "nightly"}
   ]
 end
 ```
@@ -27,7 +27,7 @@ To pin to a specific nightly release:
 ```elixir
 def deps do
   [
-    {:polarex, github: "spapiernik/polarex", tag: "v2026.06.01"}
+    {:polarex, github: "spapiernik/polarex-nightly", tag: "v2026.06.01"}
   ]
 end
 ```
