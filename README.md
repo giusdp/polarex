@@ -63,13 +63,3 @@ So to list all checkouts, you would use:
 ```elixir
 Polarex.Checkouts.checkouts_list([])
 ```
-
-## Contributing
-
-Because this library uses a code generator for the majority of its mass, there are two modes of contribution.
-Please consider these when creating issues or opening pull requests:
-
-* If the generated code is out of date, there is a mix task `mix sdk.build` that will pull the latest spec and generate the code.
-* In the the support folder there is a [req](https://github.com/wojtekmach/req) client that does the actual HTTP requests. If you find a bug or want to improve it (e.g. adding telemetry), you can add to `Polarex.Support.Client` and open a pull request.
-
-
