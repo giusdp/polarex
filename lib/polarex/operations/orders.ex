@@ -253,6 +253,38 @@ defmodule Polarex.Orders do
   end
 
   @doc """
+  Create Order
+
+  Create a draft order for an off-session charge against a saved payment
+  method. The order is created with `status=draft` and no invoice number;
+  call `POST /v1/orders/{id}/finalize` to attempt the charge.
+
+  The organization must have the `off_session_charges_enabled` feature flag.
+
+  **Scopes**: `orders:write`
+
+  ## Request Body
+
+  **Content Types**: `application/json`
+  """
+  @spec orders_create(body :: Polarex.OrderCreate.t(), opts :: keyword) ::
+          {:ok, Polarex.Order.t()} | {:error, Polarex.HTTPValidationError.t()}
+  def orders_create(body, opts \\ []) do
+    client = opts[:client] || @default_client
+
+    client.request(%{
+      args: [body: body],
+      call: {Polarex.Orders, :orders_create},
+      url: "/v1/orders/",
+      body: body,
+      method: :post,
+      request: [{"application/json", {Polarex.OrderCreate, :t}}],
+      response: [{201, {Polarex.Order, :t}}, {422, {Polarex.HTTPValidationError, :t}}],
+      opts: opts
+    })
+  end
+
+  @doc """
   Export Orders
 
   Export orders as a CSV file.
@@ -278,6 +310,60 @@ defmodule Polarex.Orders do
       method: :get,
       query: query,
       response: [{200, {:union, [:map, :string]}}, {422, {Polarex.HTTPValidationError, :t}}],
+      opts: opts
+    })
+  end
+
+  @doc """
+  Finalize Order
+
+  Finalize a draft order and synchronously attempt an off-session charge.
+
+  On success, the order transitions to `paid` and benefit grants fire
+  before the response returns. On failure (decline, missing payment method,
+  SCA challenge), the order stays in `draft` and a 4xx error is returned.
+
+  The request fails with 412 if the order is not in `draft` status.
+
+  **Scopes**: `orders:write`
+
+  ## Request Body
+
+  **Content Types**: `application/json`
+  """
+  @spec orders_finalize(id :: String.t(), body :: Polarex.OrderFinalize.t(), opts :: keyword) ::
+          {:ok, Polarex.Order.t()}
+          | {:error,
+             Polarex.HTTPValidationError.t()
+             | Polarex.OffSessionChargesNotEnabled.t()
+             | Polarex.OrderNotDraft.t()
+             | Polarex.OrganizationNotReadyForPayments.t()
+             | Polarex.PaymentActionRequired.t()
+             | Polarex.PaymentFailed.t()
+             | Polarex.ResourceNotFound.t()}
+  def orders_finalize(id, body, opts \\ []) do
+    client = opts[:client] || @default_client
+
+    client.request(%{
+      args: [id: id, body: body],
+      call: {Polarex.Orders, :orders_finalize},
+      url: "/v1/orders/#{id}/finalize",
+      body: body,
+      method: :post,
+      request: [{"application/json", {Polarex.OrderFinalize, :t}}],
+      response: [
+        {200, {Polarex.Order, :t}},
+        {402, {:union, [{Polarex.PaymentActionRequired, :t}, {Polarex.PaymentFailed, :t}]}},
+        {403,
+         {:union,
+          [
+            {Polarex.OffSessionChargesNotEnabled, :t},
+            {Polarex.OrganizationNotReadyForPayments, :t}
+          ]}},
+        {404, {Polarex.ResourceNotFound, :t}},
+        {412, {Polarex.OrderNotDraft, :t}},
+        {422, {Polarex.HTTPValidationError, :t}}
+      ],
       opts: opts
     })
   end
