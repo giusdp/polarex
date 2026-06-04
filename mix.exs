@@ -4,7 +4,7 @@ defmodule Polarex.MixProject do
   def project do
     [
       app: :polarex,
-      version: "0.4.0",
+      version: "0.0.0",
       elixir: "~> 1.15",
       start_permanent: Mix.env() == :prod,
       deps: deps(),
@@ -12,10 +12,10 @@ defmodule Polarex.MixProject do
       package: package(),
       docs: docs(),
       name: "Polarex",
-      source_url: "https://github.com/giusdp/polarex",
-      homepage_url: "https://github.com/giusdp/polarex",
+      source_url: "https://github.com/spapiernik/polarex",
+      homepage_url: "https://github.com/spapiernik/polarex",
       description: """
-      Elixir SDK for Polar.sh.
+      Elixir SDK for Polar.sh — nightly track.
       """
     ]
   end
@@ -28,10 +28,10 @@ defmodule Polarex.MixProject do
 
   defp package do
     [
-      maintainers: ["Giuseppe De Palma"],
+      maintainers: ["spapiernik"],
       licenses: ["MIT"],
       links: %{
-        GitHub: "https://github.com/giusdp/polarex"
+        GitHub: "https://github.com/spapiernik/polarex"
       },
       files: files()
     ]
@@ -45,8 +45,8 @@ defmodule Polarex.MixProject do
     [
       main: "readme",
       extras: ["README.md"],
-      source_ref: "main",
-      source_url: "https://github.com/giusdp/polarex"
+      source_ref: "nightly",
+      source_url: "https://github.com/spapiernik/polarex"
     ]
   end
 

@@ -1,0 +1,138 @@
+name: Nightly
+
+on:
+  schedule:
+    - cron: "0 6 * * *"
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+jobs:
+  nightly:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout nightly branch
+        uses: actions/checkout@v6
+        with:
+          ref: nightly
+          token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 0
+
+      - name: Configure git author
+        run: |
+          git config user.name "polarex-nightly-bot"
+          git config user.email "polarex-nightly-bot@users.noreply.github.com"
+
+      - name: Snapshot previous spec
+        run: cp openapi.json /tmp/openapi.previous.json
+
+      - name: Install mise
+        uses: jdx/mise-action@v4
+        with:
+          experimental: true
+
+      - name: Cache mix deps
+        uses: actions/cache@v5
+        with:
+          path: |
+            deps
+            _build
+          key: ${{ runner.os }}-mix-${{ hashFiles('**/mix.lock') }}
+          restore-keys: ${{ runner.os }}-mix-
+
+      - name: Get deps
+        run: mix deps.get
+
+      - name: Regenerate SDK
+        run: mix sdk.build
+
+      - name: Detect change
+        id: diff
+        run: |
+          if git diff --quiet openapi.json; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+            echo "No spec change."
+          else
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Compile validation
+        if: steps.diff.outputs.changed == 'true'
+        run: mix compile --warnings-as-errors
+
+      - name: Classify with oasdiff
+        if: steps.diff.outputs.changed == 'true'
+        id: classify
+        run: |
+          set -euo pipefail
+
+          run_oasdiff() {
+            docker run --rm \
+              -v /tmp/openapi.previous.json:/specs/previous.json:ro \
+              -v "${{ github.workspace }}/openapi.json:/specs/current.json:ro" \
+              tufin/oasdiff:latest "$@"
+          }
+
+          run_oasdiff changelog /specs/previous.json /specs/current.json --format json > /tmp/changelog.json
+          run_oasdiff breaking  /specs/previous.json /specs/current.json --format json > /tmp/breaking.json
+          run_oasdiff changelog /specs/previous.json /specs/current.json --format text > /tmp/changelog.txt || true
+          run_oasdiff breaking  /specs/previous.json /specs/current.json --format text > /tmp/breaking.txt || true
+
+          BREAKING_COUNT=$(jq 'length' /tmp/breaking.json)
+          echo "breaking_count=$BREAKING_COUNT" >> "$GITHUB_OUTPUT"
+
+      - name: Build release body
+        if: steps.diff.outputs.changed == 'true'
+        id: body
+        run: |
+          {
+            echo "Nightly SDK regeneration from Polar.sh OpenAPI spec."
+            echo
+            echo "Date: $(date +'%Y-%m-%d')"
+            echo
+            if [ "${{ steps.classify.outputs.breaking_count }}" -gt 0 ]; then
+              echo "> **Warning:** ${{ steps.classify.outputs.breaking_count }} breaking change(s) detected."
+              echo
+            fi
+            echo "## oasdiff changelog"
+            echo
+            echo '```'
+            cat /tmp/changelog.txt 2>/dev/null || echo "(no semantic changes detected)"
+            echo '```'
+            if [ "${{ steps.classify.outputs.breaking_count }}" -gt 0 ]; then
+              echo
+              echo "## Breaking changes"
+              echo
+              echo '```'
+              cat /tmp/breaking.txt
+              echo '```'
+            fi
+          } > /tmp/release-body.md
+
+      - name: Commit and tag
+        if: steps.diff.outputs.changed == 'true'
+        id: tag
+        run: |
+          BASE_TAG="v$(date +'%Y.%m.%d')"
+          TAG="$BASE_TAG"
+          COUNTER=0
+          while git rev-parse "$TAG" >/dev/null 2>&1; do
+            COUNTER=$((COUNTER + 1))
+            TAG="${BASE_TAG}.${COUNTER}"
+          done
+          git add openapi.json lib/polarex
+          git commit -m "nightly(spec): sync OpenAPI spec [skip ci]"
+          git tag "$TAG"
+          git push origin "refs/heads/nightly" --tags
+          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
+
+      - name: Create GitHub Release
+        if: steps.diff.outputs.changed == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release create "${{ steps.tag.outputs.tag }}" \
+            --title "${{ steps.tag.outputs.tag }}" \
+            --notes-file /tmp/release-body.md \
+            --target nightly
