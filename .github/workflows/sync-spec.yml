@@ -96,6 +96,21 @@ jobs:
         if: steps.diff.outputs.changed == 'true'
         id: body
         run: |
+          # GitHub caps PR bodies at 65536 characters; cap each section so the
+          # combined body stays well under it.
+          print_capped() {
+            local file=$1 max=$2
+            if [ ! -s "$file" ]; then
+              echo "(no semantic changes detected)"
+            elif [ "$(wc -c < "$file")" -gt "$max" ]; then
+              head -c "$max" "$file"
+              echo
+              echo "... (truncated — full report in the workflow run linked above)"
+            else
+              cat "$file"
+            fi
+          }
+
           {
             echo "Automated OpenAPI spec sync."
             echo
@@ -106,20 +121,33 @@ jobs:
             echo
             echo "Auto-merges when CI passes."
             echo
+            echo "Full oasdiff output: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+            echo
             echo "## oasdiff changelog"
             echo
             echo '```'
-            cat /tmp/changelog.txt 2>/dev/null || echo "(no semantic changes detected)"
+            print_capped /tmp/changelog.txt 30000
             echo '```'
             if [ "${{ steps.classify.outputs.breaking_count }}" -gt 0 ]; then
               echo
               echo "## Breaking changes"
               echo
               echo '```'
-              cat /tmp/breaking.txt
+              print_capped /tmp/breaking.txt 25000
               echo '```'
             fi
           } > /tmp/pr-body.md
+
+      - name: Upload full oasdiff reports
+        if: steps.diff.outputs.changed == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: oasdiff-reports
+          path: |
+            /tmp/changelog.json
+            /tmp/changelog.txt
+            /tmp/breaking.json
+            /tmp/breaking.txt
 
       - name: Create branch and commit
         if: steps.diff.outputs.changed == 'true'
