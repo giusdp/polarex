@@ -94,7 +94,7 @@ defmodule Polarex.CustomerSeats do
   @doc """
   List Seats
 
-  **Scopes**: `customer_seats:write`
+  **Scopes**: `customer_seats:read`
 
   ## Options
 

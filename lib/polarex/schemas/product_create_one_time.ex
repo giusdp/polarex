@@ -13,7 +13,6 @@ defmodule Polarex.ProductCreateOneTime do
           prices: [
             Polarex.ProductPriceCustomCreate.t()
             | Polarex.ProductPriceFixedCreate.t()
-            | Polarex.ProductPriceFreeCreate.t()
             | Polarex.ProductPriceMeteredUnitCreate.t()
             | Polarex.ProductPriceSeatBasedCreate.t()
           ],
@@ -51,7 +50,6 @@ defmodule Polarex.ProductCreateOneTime do
         union: [
           {Polarex.ProductPriceCustomCreate, :t},
           {Polarex.ProductPriceFixedCreate, :t},
-          {Polarex.ProductPriceFreeCreate, :t},
           {Polarex.ProductPriceMeteredUnitCreate, :t},
           {Polarex.ProductPriceSeatBasedCreate, :t}
         ]

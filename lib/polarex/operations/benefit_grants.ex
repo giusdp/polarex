@@ -68,7 +68,8 @@ defmodule Polarex.BenefitGrants do
            | Polarex.CustomerBenefitGrantFeatureFlag.t()
            | Polarex.CustomerBenefitGrantGitHubRepository.t()
            | Polarex.CustomerBenefitGrantLicenseKeys.t()
-           | Polarex.CustomerBenefitGrantMeterCredit.t()}
+           | Polarex.CustomerBenefitGrantMeterCredit.t()
+           | Polarex.CustomerBenefitGrantSlackSharedChannel.t()}
           | {:error, Polarex.HTTPValidationError.t() | Polarex.ResourceNotFound.t()}
   def customer_portal_benefit_grants_get(id, opts \\ []) do
     client = opts[:client] || @default_client
@@ -88,7 +89,8 @@ defmodule Polarex.BenefitGrants do
             {Polarex.CustomerBenefitGrantFeatureFlag, :t},
             {Polarex.CustomerBenefitGrantGitHubRepository, :t},
             {Polarex.CustomerBenefitGrantLicenseKeys, :t},
-            {Polarex.CustomerBenefitGrantMeterCredit, :t}
+            {Polarex.CustomerBenefitGrantMeterCredit, :t},
+            {Polarex.CustomerBenefitGrantSlackSharedChannel, :t}
           ]}},
         {404, {Polarex.ResourceNotFound, :t}},
         {422, {Polarex.HTTPValidationError, :t}}
@@ -172,7 +174,8 @@ defmodule Polarex.BenefitGrants do
             | Polarex.CustomerBenefitGrantFeatureFlagUpdate.t()
             | Polarex.CustomerBenefitGrantGitHubRepositoryUpdate.t()
             | Polarex.CustomerBenefitGrantLicenseKeysUpdate.t()
-            | Polarex.CustomerBenefitGrantMeterCreditUpdate.t(),
+            | Polarex.CustomerBenefitGrantMeterCreditUpdate.t()
+            | Polarex.CustomerBenefitGrantSlackSharedChannelUpdate.t(),
           opts :: keyword
         ) ::
           {:ok,
@@ -182,7 +185,8 @@ defmodule Polarex.BenefitGrants do
            | Polarex.CustomerBenefitGrantFeatureFlag.t()
            | Polarex.CustomerBenefitGrantGitHubRepository.t()
            | Polarex.CustomerBenefitGrantLicenseKeys.t()
-           | Polarex.CustomerBenefitGrantMeterCredit.t()}
+           | Polarex.CustomerBenefitGrantMeterCredit.t()
+           | Polarex.CustomerBenefitGrantSlackSharedChannel.t()}
           | {:error,
              Polarex.HTTPValidationError.t()
              | Polarex.NotPermitted.t()
@@ -206,7 +210,8 @@ defmodule Polarex.BenefitGrants do
             {Polarex.CustomerBenefitGrantFeatureFlagUpdate, :t},
             {Polarex.CustomerBenefitGrantGitHubRepositoryUpdate, :t},
             {Polarex.CustomerBenefitGrantLicenseKeysUpdate, :t},
-            {Polarex.CustomerBenefitGrantMeterCreditUpdate, :t}
+            {Polarex.CustomerBenefitGrantMeterCreditUpdate, :t},
+            {Polarex.CustomerBenefitGrantSlackSharedChannelUpdate, :t}
           ]}}
       ],
       response: [
@@ -219,7 +224,8 @@ defmodule Polarex.BenefitGrants do
             {Polarex.CustomerBenefitGrantFeatureFlag, :t},
             {Polarex.CustomerBenefitGrantGitHubRepository, :t},
             {Polarex.CustomerBenefitGrantLicenseKeys, :t},
-            {Polarex.CustomerBenefitGrantMeterCredit, :t}
+            {Polarex.CustomerBenefitGrantMeterCredit, :t},
+            {Polarex.CustomerBenefitGrantSlackSharedChannel, :t}
           ]}},
         {403, {Polarex.NotPermitted, :t}},
         {404, {Polarex.ResourceNotFound, :t}},

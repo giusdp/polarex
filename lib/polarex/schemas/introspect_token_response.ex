@@ -10,13 +10,26 @@ defmodule Polarex.IntrospectTokenResponse do
           exp: integer,
           iat: integer,
           iss: String.t(),
+          organizations: [String.t()],
           scope: String.t(),
           sub: String.t(),
           sub_type: String.t(),
           token_type: String.t()
         }
 
-  defstruct [:active, :aud, :client_id, :exp, :iat, :iss, :scope, :sub, :sub_type, :token_type]
+  defstruct [
+    :active,
+    :aud,
+    :client_id,
+    :exp,
+    :iat,
+    :iss,
+    :organizations,
+    :scope,
+    :sub,
+    :sub_type,
+    :token_type
+  ]
 
   @doc false
   @spec __fields__(atom) :: keyword
@@ -30,6 +43,7 @@ defmodule Polarex.IntrospectTokenResponse do
       exp: :integer,
       iat: :integer,
       iss: :string,
+      organizations: [:string],
       scope: :string,
       sub: :string,
       sub_type: {:enum, ["user", "organization"]},

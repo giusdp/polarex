@@ -8,6 +8,7 @@ defmodule Polarex.ListResourceFileRead do
             Polarex.DownloadableFileRead.t()
             | Polarex.OrganizationAvatarFileRead.t()
             | Polarex.ProductMediaFileRead.t()
+            | Polarex.SupportCaseAttachmentFileRead.t()
           ],
           pagination: Polarex.Pagination.t()
         }
@@ -24,7 +25,8 @@ defmodule Polarex.ListResourceFileRead do
         union: [
           {Polarex.DownloadableFileRead, :t},
           {Polarex.OrganizationAvatarFileRead, :t},
-          {Polarex.ProductMediaFileRead, :t}
+          {Polarex.ProductMediaFileRead, :t},
+          {Polarex.SupportCaseAttachmentFileRead, :t}
         ]
       ],
       pagination: {Polarex.Pagination, :t}

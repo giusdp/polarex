@@ -17,7 +17,8 @@ defmodule Polarex.GenericPayment do
           organization_id: String.t(),
           processor: String.t(),
           processor_metadata: map | nil,
-          status: String.t()
+          status: String.t(),
+          trigger: String.t() | nil
         }
 
   defstruct [
@@ -34,7 +35,8 @@ defmodule Polarex.GenericPayment do
     :organization_id,
     :processor,
     :processor_metadata,
-    :status
+    :status,
+    :trigger
   ]
 
   @doc false
@@ -56,7 +58,21 @@ defmodule Polarex.GenericPayment do
       organization_id: {:string, "uuid4"},
       processor: {:const, "stripe"},
       processor_metadata: :map,
-      status: {:enum, ["pending", "succeeded", "failed"]}
+      status: {:enum, ["pending", "succeeded", "failed"]},
+      trigger:
+        {:union,
+         [
+           {:enum,
+            [
+              "purchase",
+              "subscription_cycle",
+              "retry_dunning",
+              "retry_customer",
+              "retry_payment_method_update",
+              "retry_admin"
+            ]},
+           :null
+         ]}
     ]
   end
 end

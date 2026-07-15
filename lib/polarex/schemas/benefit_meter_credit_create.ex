@@ -8,10 +8,11 @@ defmodule Polarex.BenefitMeterCreditCreate do
           metadata: map | nil,
           organization_id: String.t() | nil,
           properties: Polarex.BenefitMeterCreditCreateProperties.t(),
-          type: String.t()
+          type: String.t(),
+          visibility: String.t() | nil
         }
 
-  defstruct [:description, :metadata, :organization_id, :properties, :type]
+  defstruct [:description, :metadata, :organization_id, :properties, :type, :visibility]
 
   @doc false
   @spec __fields__(atom) :: keyword
@@ -23,7 +24,8 @@ defmodule Polarex.BenefitMeterCreditCreate do
       metadata: :map,
       organization_id: {:union, [{:string, "uuid4"}, :null]},
       properties: {Polarex.BenefitMeterCreditCreateProperties, :t},
-      type: {:const, "meter_credit"}
+      type: {:const, "meter_credit"},
+      visibility: {:union, [{:enum, ["draft", "private", "public"]}, :null]}
     ]
   end
 end

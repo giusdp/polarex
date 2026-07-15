@@ -6,11 +6,45 @@ defmodule Polarex.Disputes do
   @default_client Polarex.Support.Client
 
   @doc """
+  Accept Dispute
+
+  Accept a dispute, conceding the chargeback.
+
+  Closes the dispute with the processor (settling it as `lost`) and records
+  the merchant's decision on the dispute's support case.
+
+  **Scopes**: `disputes:write`
+  """
+  @spec disputes_accept(id :: String.t(), opts :: keyword) ::
+          {:ok, Polarex.Dispute.t()}
+          | {:error,
+             Polarex.DisputeNotOpenError.t()
+             | Polarex.HTTPValidationError.t()
+             | Polarex.ResourceNotFound.t()}
+  def disputes_accept(id, opts \\ []) do
+    client = opts[:client] || @default_client
+
+    client.request(%{
+      args: [id: id],
+      call: {Polarex.Disputes, :disputes_accept},
+      url: "/v1/disputes/#{id}/accept",
+      method: :post,
+      response: [
+        {200, {Polarex.Dispute, :t}},
+        {404, {Polarex.ResourceNotFound, :t}},
+        {409, {Polarex.DisputeNotOpenError, :t}},
+        {422, {Polarex.HTTPValidationError, :t}}
+      ],
+      opts: opts
+    })
+  end
+
+  @doc """
   Get Dispute
 
   Get a dispute by ID.
 
-  **Scopes**: `disputes:read`
+  **Scopes**: `disputes:read` `disputes:write`
   """
   @spec disputes_get(id :: String.t(), opts :: keyword) ::
           {:ok, Polarex.Dispute.t()}
@@ -37,7 +71,7 @@ defmodule Polarex.Disputes do
 
   List disputes.
 
-  **Scopes**: `disputes:read`
+  **Scopes**: `disputes:read` `disputes:write`
 
   ## Options
 

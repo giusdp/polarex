@@ -11,7 +11,8 @@ defmodule Polarex.BenefitGrant do
             | Polarex.BenefitFeatureFlag.t()
             | Polarex.BenefitGitHubRepository.t()
             | Polarex.BenefitLicenseKeys.t()
-            | Polarex.BenefitMeterCredit.t(),
+            | Polarex.BenefitMeterCredit.t()
+            | Polarex.BenefitSlackSharedChannel.t(),
           benefit_id: String.t(),
           created_at: DateTime.t(),
           customer: Polarex.CustomerIndividual.t() | Polarex.CustomerTeam.t(),
@@ -30,7 +31,8 @@ defmodule Polarex.BenefitGrant do
             | Polarex.BenefitGrantDiscordProperties.t()
             | Polarex.BenefitGrantDownloadablesProperties.t()
             | Polarex.BenefitGrantGitHubRepositoryProperties.t()
-            | Polarex.BenefitGrantLicenseKeysProperties.t(),
+            | Polarex.BenefitGrantLicenseKeysProperties.t()
+            | Polarex.BenefitGrantSlackSharedChannelProperties.t(),
           revoked_at: DateTime.t() | nil,
           subscription_id: String.t() | nil
         }
@@ -70,7 +72,8 @@ defmodule Polarex.BenefitGrant do
            {Polarex.BenefitFeatureFlag, :t},
            {Polarex.BenefitGitHubRepository, :t},
            {Polarex.BenefitLicenseKeys, :t},
-           {Polarex.BenefitMeterCredit, :t}
+           {Polarex.BenefitMeterCredit, :t},
+           {Polarex.BenefitSlackSharedChannel, :t}
          ]},
       benefit_id: {:string, "uuid4"},
       created_at: {:string, "date-time"},
@@ -92,7 +95,8 @@ defmodule Polarex.BenefitGrant do
            {Polarex.BenefitGrantDiscordProperties, :t},
            {Polarex.BenefitGrantDownloadablesProperties, :t},
            {Polarex.BenefitGrantGitHubRepositoryProperties, :t},
-           {Polarex.BenefitGrantLicenseKeysProperties, :t}
+           {Polarex.BenefitGrantLicenseKeysProperties, :t},
+           {Polarex.BenefitGrantSlackSharedChannelProperties, :t}
          ]},
       revoked_at: {:union, [{:string, "date-time"}, :null]},
       subscription_id: {:union, [{:string, "uuid4"}, :null]}

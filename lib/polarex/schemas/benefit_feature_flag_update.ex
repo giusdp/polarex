@@ -7,10 +7,11 @@ defmodule Polarex.BenefitFeatureFlagUpdate do
           description: String.t() | nil,
           metadata: map | nil,
           properties: map | nil,
-          type: String.t()
+          type: String.t(),
+          visibility: String.t() | nil
         }
 
-  defstruct [:description, :metadata, :properties, :type]
+  defstruct [:description, :metadata, :properties, :type, :visibility]
 
   @doc false
   @spec __fields__(atom) :: keyword
@@ -21,7 +22,8 @@ defmodule Polarex.BenefitFeatureFlagUpdate do
       description: {:union, [:string, :null]},
       metadata: :map,
       properties: {:union, [:map, :null]},
-      type: {:const, "feature_flag"}
+      type: {:const, "feature_flag"},
+      visibility: {:union, [{:enum, ["draft", "private", "public"]}, :null]}
     ]
   end
 end

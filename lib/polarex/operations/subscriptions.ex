@@ -112,6 +112,8 @@ defmodule Polarex.Subscriptions do
           id :: String.t(),
           body ::
             Polarex.CustomerSubscriptionCancel.t()
+            | Polarex.CustomerSubscriptionPause.t()
+            | Polarex.CustomerSubscriptionResume.t()
             | Polarex.CustomerSubscriptionUpdateClear.t()
             | Polarex.CustomerSubscriptionUpdateProduct.t()
             | Polarex.CustomerSubscriptionUpdateSeats.t(),
@@ -121,6 +123,7 @@ defmodule Polarex.Subscriptions do
           | {:error,
              Polarex.AlreadyCanceledSubscription.t()
              | Polarex.HTTPValidationError.t()
+             | Polarex.PauseResumeNotAllowed.t()
              | Polarex.PaymentFailed.t()
              | Polarex.ResourceNotFound.t()}
   def customer_portal_subscriptions_update(id, body, opts \\ []) do
@@ -137,6 +140,8 @@ defmodule Polarex.Subscriptions do
          {:union,
           [
             {Polarex.CustomerSubscriptionCancel, :t},
+            {Polarex.CustomerSubscriptionPause, :t},
+            {Polarex.CustomerSubscriptionResume, :t},
             {Polarex.CustomerSubscriptionUpdateClear, :t},
             {Polarex.CustomerSubscriptionUpdateProduct, :t},
             {Polarex.CustomerSubscriptionUpdateSeats, :t}
@@ -145,7 +150,9 @@ defmodule Polarex.Subscriptions do
       response: [
         {200, {Polarex.CustomerSubscription, :t}},
         {402, {Polarex.PaymentFailed, :t}},
-        {403, {Polarex.AlreadyCanceledSubscription, :t}},
+        {403,
+         {:union,
+          [{Polarex.AlreadyCanceledSubscription, :t}, {Polarex.PauseResumeNotAllowed, :t}]}},
         {404, {Polarex.ResourceNotFound, :t}},
         {422, {Polarex.HTTPValidationError, :t}}
       ],
@@ -210,7 +217,7 @@ defmodule Polarex.Subscriptions do
 
   """
   @spec subscriptions_export(opts :: keyword) ::
-          {:ok, map | String.t()} | {:error, Polarex.HTTPValidationError.t()}
+          {:ok, String.t()} | {:error, Polarex.HTTPValidationError.t()}
   def subscriptions_export(opts \\ []) do
     client = opts[:client] || @default_client
     query = Keyword.take(opts, [:organization_id])
@@ -221,7 +228,7 @@ defmodule Polarex.Subscriptions do
       url: "/v1/subscriptions/export",
       method: :get,
       query: query,
-      response: [{200, {:union, [:map, :string]}}, {422, {Polarex.HTTPValidationError, :t}}],
+      response: [{200, :string}, {422, {Polarex.HTTPValidationError, :t}}],
       opts: opts
     })
   end
@@ -268,6 +275,7 @@ defmodule Polarex.Subscriptions do
     * `external_customer_id`: Filter by customer external ID.
     * `discount_id`: Filter by discount ID.
     * `active`: Filter by active or inactive subscription.
+    * `status`: Filter by subscription status.
     * `cancel_at_period_end`: Filter by subscriptions that are set to cancel at period end.
     * `customer_cancellation_reason`: Filter by customer cancellation reason.
     * `canceled_at_after`: Filter by cancellation date (after or equal to).
@@ -298,7 +306,8 @@ defmodule Polarex.Subscriptions do
         :organization_id,
         :page,
         :product_id,
-        :sorting
+        :sorting,
+        :status
       ])
 
     client.request(%{
@@ -363,13 +372,13 @@ defmodule Polarex.Subscriptions do
           id :: String.t(),
           body ::
             Polarex.SubscriptionCancel.t()
+            | Polarex.SubscriptionPause.t()
+            | Polarex.SubscriptionResume.t()
             | Polarex.SubscriptionRevoke.t()
+            | Polarex.SubscriptionUpdateBase.t()
             | Polarex.SubscriptionUpdateBillingPeriod.t()
             | Polarex.SubscriptionUpdateClear.t()
-            | Polarex.SubscriptionUpdateDiscount.t()
-            | Polarex.SubscriptionUpdateProduct.t()
-            | Polarex.SubscriptionUpdateSeats.t()
-            | Polarex.SubscriptionUpdateTrial.t(),
+            | Polarex.SubscriptionUpdateSeats.t(),
           opts :: keyword
         ) ::
           {:ok, Polarex.Subscription.t()}
@@ -393,13 +402,13 @@ defmodule Polarex.Subscriptions do
          {:union,
           [
             {Polarex.SubscriptionCancel, :t},
+            {Polarex.SubscriptionPause, :t},
+            {Polarex.SubscriptionResume, :t},
             {Polarex.SubscriptionRevoke, :t},
+            {Polarex.SubscriptionUpdateBase, :t},
             {Polarex.SubscriptionUpdateBillingPeriod, :t},
             {Polarex.SubscriptionUpdateClear, :t},
-            {Polarex.SubscriptionUpdateDiscount, :t},
-            {Polarex.SubscriptionUpdateProduct, :t},
-            {Polarex.SubscriptionUpdateSeats, :t},
-            {Polarex.SubscriptionUpdateTrial, :t}
+            {Polarex.SubscriptionUpdateSeats, :t}
           ]}}
       ],
       response: [

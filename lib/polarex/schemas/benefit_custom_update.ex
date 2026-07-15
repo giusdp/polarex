@@ -7,10 +7,11 @@ defmodule Polarex.BenefitCustomUpdate do
           description: String.t() | nil,
           metadata: map | nil,
           properties: Polarex.BenefitCustomProperties.t() | nil,
-          type: String.t()
+          type: String.t(),
+          visibility: String.t() | nil
         }
 
-  defstruct [:description, :metadata, :properties, :type]
+  defstruct [:description, :metadata, :properties, :type, :visibility]
 
   @doc false
   @spec __fields__(atom) :: keyword
@@ -21,7 +22,8 @@ defmodule Polarex.BenefitCustomUpdate do
       description: {:union, [:string, :null]},
       metadata: :map,
       properties: {:union, [{Polarex.BenefitCustomProperties, :t}, :null]},
-      type: {:const, "custom"}
+      type: {:const, "custom"},
+      visibility: {:union, [{:enum, ["draft", "private", "public"]}, :null]}
     ]
   end
 end

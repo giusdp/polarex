@@ -12,6 +12,7 @@ defmodule Polarex.ListResourceCustomerBenefitGrant do
             | Polarex.CustomerBenefitGrantGitHubRepository.t()
             | Polarex.CustomerBenefitGrantLicenseKeys.t()
             | Polarex.CustomerBenefitGrantMeterCredit.t()
+            | Polarex.CustomerBenefitGrantSlackSharedChannel.t()
           ],
           pagination: Polarex.Pagination.t()
         }
@@ -32,7 +33,8 @@ defmodule Polarex.ListResourceCustomerBenefitGrant do
           {Polarex.CustomerBenefitGrantFeatureFlag, :t},
           {Polarex.CustomerBenefitGrantGitHubRepository, :t},
           {Polarex.CustomerBenefitGrantLicenseKeys, :t},
-          {Polarex.CustomerBenefitGrantMeterCredit, :t}
+          {Polarex.CustomerBenefitGrantMeterCredit, :t},
+          {Polarex.CustomerBenefitGrantSlackSharedChannel, :t}
         ]
       ],
       pagination: {Polarex.Pagination, :t}

@@ -14,7 +14,9 @@ defmodule Polarex.BenefitDiscord do
           organization_id: String.t(),
           properties: Polarex.BenefitDiscordProperties.t(),
           selectable: boolean,
-          type: String.t()
+          type: String.t(),
+          visibility: String.t(),
+          visibility_configurable: boolean
         }
 
   defstruct [
@@ -28,7 +30,9 @@ defmodule Polarex.BenefitDiscord do
     :organization_id,
     :properties,
     :selectable,
-    :type
+    :type,
+    :visibility,
+    :visibility_configurable
   ]
 
   @doc false
@@ -47,7 +51,9 @@ defmodule Polarex.BenefitDiscord do
       organization_id: {:string, "uuid4"},
       properties: {Polarex.BenefitDiscordProperties, :t},
       selectable: :boolean,
-      type: {:const, "discord"}
+      type: {:const, "discord"},
+      visibility: {:enum, ["draft", "private", "public"]},
+      visibility_configurable: :boolean
     ]
   end
 end

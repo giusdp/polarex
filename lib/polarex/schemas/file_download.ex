@@ -58,7 +58,9 @@ defmodule Polarex.FileDownload do
       name: :string,
       organization_id: {:string, "uuid4"},
       path: :string,
-      service: {:enum, ["downloadable", "product_media", "organization_avatar"]},
+      service:
+        {:enum,
+         ["downloadable", "product_media", "organization_avatar", "support_case_attachment"]},
       size: :integer,
       size_readable: :string,
       storage_version: {:union, [:string, :null]},

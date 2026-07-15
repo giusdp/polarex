@@ -12,10 +12,10 @@ defmodule Polarex.OrganizationUpdate do
           default_tax_behavior: String.t() | nil,
           details: Polarex.OrganizationDetails.t() | nil,
           email: String.t() | nil,
-          feature_settings: Polarex.OrganizationFeatureSettings.t() | nil,
+          feature_settings: Polarex.OrganizationFeatureSettingsUpdate.t() | nil,
           name: String.t() | nil,
-          notification_settings: Polarex.OrganizationNotificationSettings.t() | nil,
           socials: [Polarex.OrganizationSocialLink.t()] | nil,
+          sso_enforced: boolean | nil,
           subscription_settings: Polarex.OrganizationSubscriptionSettings.t() | nil,
           website: String.t() | nil
         }
@@ -31,8 +31,8 @@ defmodule Polarex.OrganizationUpdate do
     :email,
     :feature_settings,
     :name,
-    :notification_settings,
     :socials,
+    :sso_enforced,
     :subscription_settings,
     :website
   ]
@@ -436,10 +436,10 @@ defmodule Polarex.OrganizationUpdate do
       default_tax_behavior: {:union, [{:enum, ["location", "inclusive", "exclusive"]}, :null]},
       details: {:union, [{Polarex.OrganizationDetails, :t}, :null]},
       email: {:union, [{:string, "email"}, :null]},
-      feature_settings: {:union, [{Polarex.OrganizationFeatureSettings, :t}, :null]},
+      feature_settings: {:union, [{Polarex.OrganizationFeatureSettingsUpdate, :t}, :null]},
       name: {:union, [:string, :null]},
-      notification_settings: {:union, [{Polarex.OrganizationNotificationSettings, :t}, :null]},
       socials: {:union, [[{Polarex.OrganizationSocialLink, :t}], :null]},
+      sso_enforced: {:union, [:boolean, :null]},
       subscription_settings: {:union, [{Polarex.OrganizationSubscriptionSettings, :t}, :null]},
       website: {:union, [{:string, "uri"}, :null]}
     ]
