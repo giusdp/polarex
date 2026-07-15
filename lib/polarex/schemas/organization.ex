@@ -20,11 +20,11 @@ defmodule Polarex.Organization do
           id: String.t(),
           modified_at: DateTime.t() | nil,
           name: String.t(),
-          notification_settings: Polarex.OrganizationNotificationSettings.t(),
           payout_account_id: String.t() | nil,
           proration_behavior: String.t(),
           slug: String.t(),
           socials: [Polarex.OrganizationSocialLink.t()],
+          sso_enforced: boolean,
           status: String.t(),
           subscription_settings: Polarex.OrganizationSubscriptionSettings.t(),
           website: String.t() | nil
@@ -47,11 +47,11 @@ defmodule Polarex.Organization do
     :id,
     :modified_at,
     :name,
-    :notification_settings,
     :payout_account_id,
     :proration_behavior,
     :slug,
     :socials,
+    :sso_enforced,
     :status,
     :subscription_settings,
     :website
@@ -335,13 +335,23 @@ defmodule Polarex.Organization do
       id: {:string, "uuid4"},
       modified_at: {:union, [{:string, "date-time"}, :null]},
       name: :string,
-      notification_settings: {Polarex.OrganizationNotificationSettings, :t},
       payout_account_id: {:union, [{:string, "uuid4"}, :null]},
       proration_behavior: {:enum, ["invoice", "prorate", "next_period", "reset"]},
       slug: :string,
       socials: [{Polarex.OrganizationSocialLink, :t}],
+      sso_enforced: :boolean,
       status:
-        {:enum, ["created", "review", "snoozed", "denied", "active", "blocked", "offboarding"]},
+        {:enum,
+         [
+           "created",
+           "review",
+           "snoozed",
+           "denied",
+           "active",
+           "blocked",
+           "offboarding",
+           "offboarded"
+         ]},
       subscription_settings: {Polarex.OrganizationSubscriptionSettings, :t},
       website: {:union, [:string, :null]}
     ]

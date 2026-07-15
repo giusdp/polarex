@@ -4,9 +4,11 @@ defmodule Polarex.CustomerTeam do
   """
 
   @type t :: %__MODULE__{
-          avatar_url: String.t(),
+          avatar_url: String.t() | nil,
           billing_address: Polarex.Address.t() | nil,
+          billing_name: String.t() | nil,
           created_at: DateTime.t(),
+          default_payment_method_id: String.t() | nil,
           deleted_at: DateTime.t() | nil,
           email: String.t() | nil,
           email_verified: boolean,
@@ -24,7 +26,9 @@ defmodule Polarex.CustomerTeam do
   defstruct [
     :avatar_url,
     :billing_address,
+    :billing_name,
     :created_at,
+    :default_payment_method_id,
     :deleted_at,
     :email,
     :email_verified,
@@ -45,9 +49,11 @@ defmodule Polarex.CustomerTeam do
 
   def __fields__(:t) do
     [
-      avatar_url: :string,
+      avatar_url: {:union, [:string, :null]},
       billing_address: {:union, [{Polarex.Address, :t}, :null]},
+      billing_name: {:union, [:string, :null]},
       created_at: {:string, "date-time"},
+      default_payment_method_id: {:union, [{:string, "uuid4"}, :null]},
       deleted_at: {:union, [{:string, "date-time"}, :null]},
       email: {:union, [:string, :null]},
       email_verified: :boolean,

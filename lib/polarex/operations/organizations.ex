@@ -42,7 +42,8 @@ defmodule Polarex.Organizations do
   **Content Types**: `application/json`
   """
   @spec organizations_create(body :: Polarex.OrganizationCreate.t(), opts :: keyword) ::
-          {:ok, Polarex.Organization.t()} | {:error, Polarex.HTTPValidationError.t()}
+          {:ok, Polarex.Organization.t()}
+          | {:error, Polarex.CannotCreateOrganizationError.t() | Polarex.HTTPValidationError.t()}
   def organizations_create(body, opts \\ []) do
     client = opts[:client] || @default_client
 
@@ -53,7 +54,11 @@ defmodule Polarex.Organizations do
       body: body,
       method: :post,
       request: [{"application/json", {Polarex.OrganizationCreate, :t}}],
-      response: [{201, {Polarex.Organization, :t}}, {422, {Polarex.HTTPValidationError, :t}}],
+      response: [
+        {201, {Polarex.Organization, :t}},
+        {403, {Polarex.CannotCreateOrganizationError, :t}},
+        {422, {Polarex.HTTPValidationError, :t}}
+      ],
       opts: opts
     })
   end
@@ -140,7 +145,8 @@ defmodule Polarex.Organizations do
           | {:error,
              Polarex.HTTPValidationError.t()
              | Polarex.NotPermitted.t()
-             | Polarex.ResourceNotFound.t()}
+             | Polarex.ResourceNotFound.t()
+             | Polarex.SSOEnforcementRequiresConnection.t()}
   def organizations_update(id, body, opts \\ []) do
     client = opts[:client] || @default_client
 
@@ -155,6 +161,7 @@ defmodule Polarex.Organizations do
         {200, {Polarex.Organization, :t}},
         {403, {Polarex.NotPermitted, :t}},
         {404, {Polarex.ResourceNotFound, :t}},
+        {409, {Polarex.SSOEnforcementRequiresConnection, :t}},
         {422, {Polarex.HTTPValidationError, :t}}
       ],
       opts: opts

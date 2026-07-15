@@ -8,10 +8,11 @@ defmodule Polarex.BenefitDiscordCreate do
           metadata: map | nil,
           organization_id: String.t() | nil,
           properties: Polarex.BenefitDiscordCreateProperties.t(),
-          type: String.t()
+          type: String.t(),
+          visibility: String.t() | nil
         }
 
-  defstruct [:description, :metadata, :organization_id, :properties, :type]
+  defstruct [:description, :metadata, :organization_id, :properties, :type, :visibility]
 
   @doc false
   @spec __fields__(atom) :: keyword
@@ -23,7 +24,8 @@ defmodule Polarex.BenefitDiscordCreate do
       metadata: :map,
       organization_id: {:union, [{:string, "uuid4"}, :null]},
       properties: {Polarex.BenefitDiscordCreateProperties, :t},
-      type: {:const, "discord"}
+      type: {:const, "discord"},
+      visibility: {:union, [{:enum, ["draft", "private", "public"]}, :null]}
     ]
   end
 end

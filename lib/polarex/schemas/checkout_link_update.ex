@@ -11,6 +11,7 @@ defmodule Polarex.CheckoutLinkUpdate do
           products: [String.t()] | nil,
           require_billing_address: boolean | nil,
           return_url: String.t() | nil,
+          seats: integer | nil,
           success_url: String.t() | nil,
           trial_interval: String.t() | nil,
           trial_interval_count: integer | nil
@@ -24,6 +25,7 @@ defmodule Polarex.CheckoutLinkUpdate do
     :products,
     :require_billing_address,
     :return_url,
+    :seats,
     :success_url,
     :trial_interval,
     :trial_interval_count
@@ -42,6 +44,7 @@ defmodule Polarex.CheckoutLinkUpdate do
       products: {:union, [[string: "uuid4"], :null]},
       require_billing_address: {:union, [:boolean, :null]},
       return_url: {:union, [{:string, "uri"}, :null]},
+      seats: {:union, [:integer, :null]},
       success_url: {:union, [{:string, "uri"}, :null]},
       trial_interval: {:union, [{:enum, ["day", "week", "month", "year"]}, :null]},
       trial_interval_count: {:union, [:integer, :null]}

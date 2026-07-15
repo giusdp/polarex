@@ -8,12 +8,13 @@ defmodule Polarex.ProductCreateRecurring do
           description: String.t() | nil,
           medias: [String.t()] | nil,
           metadata: map | nil,
+          meter_interval: String.t() | nil,
+          meter_interval_count: integer | nil,
           name: String.t(),
           organization_id: String.t() | nil,
           prices: [
             Polarex.ProductPriceCustomCreate.t()
             | Polarex.ProductPriceFixedCreate.t()
-            | Polarex.ProductPriceFreeCreate.t()
             | Polarex.ProductPriceMeteredUnitCreate.t()
             | Polarex.ProductPriceSeatBasedCreate.t()
           ],
@@ -29,6 +30,8 @@ defmodule Polarex.ProductCreateRecurring do
     :description,
     :medias,
     :metadata,
+    :meter_interval,
+    :meter_interval_count,
     :name,
     :organization_id,
     :prices,
@@ -49,13 +52,14 @@ defmodule Polarex.ProductCreateRecurring do
       description: {:union, [:string, :null]},
       medias: {:union, [[string: "uuid4"], :null]},
       metadata: :map,
+      meter_interval: {:union, [{:enum, ["day", "week", "month", "year"]}, :null]},
+      meter_interval_count: {:union, [:integer, :null]},
       name: :string,
       organization_id: {:union, [{:string, "uuid4"}, :null]},
       prices: [
         union: [
           {Polarex.ProductPriceCustomCreate, :t},
           {Polarex.ProductPriceFixedCreate, :t},
-          {Polarex.ProductPriceFreeCreate, :t},
           {Polarex.ProductPriceMeteredUnitCreate, :t},
           {Polarex.ProductPriceSeatBasedCreate, :t}
         ]

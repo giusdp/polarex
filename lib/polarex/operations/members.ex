@@ -117,7 +117,7 @@ defmodule Polarex.Members do
   @doc """
   Update Member
 
-  Update a member's role.
+  Update a member's name or role.
 
   Only available to owners and billing managers of team customers.
 
@@ -170,23 +170,73 @@ defmodule Polarex.Members do
 
   **Content Types**: `application/json`
   """
-  @spec members_create_member(body :: Polarex.MemberCreate.t(), opts :: keyword) ::
+  @spec customers_members_create(
+          id :: String.t(),
+          body :: Polarex.MemberCreateFromCustomer.t(),
+          opts :: keyword
+        ) ::
           {:ok, Polarex.Member.t()}
-          | {:error, Polarex.HTTPValidationError.t() | Polarex.ResourceNotFound.t()}
-  def members_create_member(body, opts \\ []) do
+          | {:error,
+             Polarex.HTTPValidationError.t()
+             | Polarex.NotPermitted.t()
+             | Polarex.ResourceNotFound.t()}
+  def customers_members_create(id, body, opts \\ []) do
     client = opts[:client] || @default_client
 
     client.request(%{
-      args: [body: body],
-      call: {Polarex.Members, :members_create_member},
-      url: "/v1/members/",
+      args: [id: id, body: body],
+      call: {Polarex.Members, :customers_members_create},
+      url: "/v1/customers/#{id}/members",
       body: body,
       method: :post,
-      request: [{"application/json", {Polarex.MemberCreate, :t}}],
+      request: [{"application/json", {Polarex.MemberCreateFromCustomer, :t}}],
       response: [
         {201, {Polarex.Member, :t}},
-        {403, :null},
+        {403, {Polarex.NotPermitted, :t}},
         {404, {Polarex.ResourceNotFound, :t}},
+        {422, {Polarex.HTTPValidationError, :t}}
+      ],
+      opts: opts
+    })
+  end
+
+  @doc """
+  Create Member by Customer External ID
+
+  Create a new member for a customer identified by its external ID.
+
+  **Scopes**: `members:write`
+
+  ## Request Body
+
+  **Content Types**: `application/json`
+  """
+  @spec customers_members_create_external(
+          external_id :: String.t(),
+          body :: Polarex.MemberCreateFromCustomer.t(),
+          opts :: keyword
+        ) ::
+          {:ok, Polarex.Member.t()}
+          | {:error,
+             Polarex.AmbiguousExternalCustomerID.t()
+             | Polarex.HTTPValidationError.t()
+             | Polarex.NotPermitted.t()
+             | Polarex.ResourceNotFound.t()}
+  def customers_members_create_external(external_id, body, opts \\ []) do
+    client = opts[:client] || @default_client
+
+    client.request(%{
+      args: [external_id: external_id, body: body],
+      call: {Polarex.Members, :customers_members_create_external},
+      url: "/v1/customers/external/#{external_id}/members",
+      body: body,
+      method: :post,
+      request: [{"application/json", {Polarex.MemberCreateFromCustomer, :t}}],
+      response: [
+        {201, {Polarex.Member, :t}},
+        {403, {Polarex.NotPermitted, :t}},
+        {404, {Polarex.ResourceNotFound, :t}},
+        {409, {Polarex.AmbiguousExternalCustomerID, :t}},
         {422, {Polarex.HTTPValidationError, :t}}
       ],
       opts: opts
@@ -196,21 +246,19 @@ defmodule Polarex.Members do
   @doc """
   Delete Member
 
-  Delete a member.
-
-  The authenticated user or organization must have access to the member's organization.
+  Delete a member of a customer.
 
   **Scopes**: `members:write`
   """
-  @spec members_delete_member(id :: String.t(), opts :: keyword) ::
+  @spec customers_members_delete(id :: String.t(), member_id :: String.t(), opts :: keyword) ::
           :ok | {:error, Polarex.HTTPValidationError.t() | Polarex.ResourceNotFound.t()}
-  def members_delete_member(id, opts \\ []) do
+  def customers_members_delete(id, member_id, opts \\ []) do
     client = opts[:client] || @default_client
 
     client.request(%{
-      args: [id: id],
-      call: {Polarex.Members, :members_delete_member},
-      url: "/v1/members/#{id}",
+      args: [id: id, member_id: member_id],
+      call: {Polarex.Members, :customers_members_delete},
+      url: "/v1/customers/#{id}/members/#{member_id}",
       method: :delete,
       response: [
         {204, :null},
@@ -224,31 +272,32 @@ defmodule Polarex.Members do
   @doc """
   Delete Member by External ID
 
-  Delete a member by external ID. One of customer_id or external_customer_id must be specified.
+  Delete a member by external ID for a customer identified by its external ID.
 
   **Scopes**: `members:write`
-
-  ## Options
-
-    * `customer_id`: The customer ID.
-    * `external_customer_id`: The customer external ID.
-
   """
-  @spec members_delete_member_by_external_id(external_id :: String.t(), opts :: keyword) ::
-          :ok | {:error, Polarex.HTTPValidationError.t() | Polarex.ResourceNotFound.t()}
-  def members_delete_member_by_external_id(external_id, opts \\ []) do
+  @spec customers_members_delete_external(
+          external_id :: String.t(),
+          member_external_id :: String.t(),
+          opts :: keyword
+        ) ::
+          :ok
+          | {:error,
+             Polarex.AmbiguousExternalCustomerID.t()
+             | Polarex.HTTPValidationError.t()
+             | Polarex.ResourceNotFound.t()}
+  def customers_members_delete_external(external_id, member_external_id, opts \\ []) do
     client = opts[:client] || @default_client
-    query = Keyword.take(opts, [:customer_id, :external_customer_id])
 
     client.request(%{
-      args: [external_id: external_id],
-      call: {Polarex.Members, :members_delete_member_by_external_id},
-      url: "/v1/members/external/#{external_id}",
+      args: [external_id: external_id, member_external_id: member_external_id],
+      call: {Polarex.Members, :customers_members_delete_external},
+      url: "/v1/customers/external/#{external_id}/members/#{member_external_id}",
       method: :delete,
-      query: query,
       response: [
         {204, :null},
         {404, {Polarex.ResourceNotFound, :t}},
+        {409, {Polarex.AmbiguousExternalCustomerID, :t}},
         {422, {Polarex.HTTPValidationError, :t}}
       ],
       opts: opts
@@ -258,22 +307,20 @@ defmodule Polarex.Members do
   @doc """
   Get Member
 
-  Get a member by ID.
-
-  The authenticated user or organization must have access to the member's organization.
+  Get a member of a customer by its ID.
 
   **Scopes**: `members:read` `members:write`
   """
-  @spec members_get_member(id :: String.t(), opts :: keyword) ::
+  @spec customers_members_get(id :: String.t(), member_id :: String.t(), opts :: keyword) ::
           {:ok, Polarex.Member.t()}
           | {:error, Polarex.HTTPValidationError.t() | Polarex.ResourceNotFound.t()}
-  def members_get_member(id, opts \\ []) do
+  def customers_members_get(id, member_id, opts \\ []) do
     client = opts[:client] || @default_client
 
     client.request(%{
-      args: [id: id],
-      call: {Polarex.Members, :members_get_member},
-      url: "/v1/members/#{id}",
+      args: [id: id, member_id: member_id],
+      call: {Polarex.Members, :customers_members_get},
+      url: "/v1/customers/#{id}/members/#{member_id}",
       method: :get,
       response: [
         {200, {Polarex.Member, :t}},
@@ -287,32 +334,114 @@ defmodule Polarex.Members do
   @doc """
   Get Member by External ID
 
-  Get a member by external ID. One of customer_id or external_customer_id must be specified.
+  Get a member by external ID for a customer identified by its external ID.
 
   **Scopes**: `members:read` `members:write`
-
-  ## Options
-
-    * `customer_id`: The customer ID.
-    * `external_customer_id`: The customer external ID.
-
   """
-  @spec members_get_member_by_external_id(external_id :: String.t(), opts :: keyword) ::
+  @spec customers_members_get_external(
+          external_id :: String.t(),
+          member_external_id :: String.t(),
+          opts :: keyword
+        ) ::
           {:ok, Polarex.Member.t()}
-          | {:error, Polarex.HTTPValidationError.t() | Polarex.ResourceNotFound.t()}
-  def members_get_member_by_external_id(external_id, opts \\ []) do
+          | {:error,
+             Polarex.AmbiguousExternalCustomerID.t()
+             | Polarex.HTTPValidationError.t()
+             | Polarex.ResourceNotFound.t()}
+  def customers_members_get_external(external_id, member_external_id, opts \\ []) do
     client = opts[:client] || @default_client
-    query = Keyword.take(opts, [:customer_id, :external_customer_id])
 
     client.request(%{
-      args: [external_id: external_id],
-      call: {Polarex.Members, :members_get_member_by_external_id},
-      url: "/v1/members/external/#{external_id}",
+      args: [external_id: external_id, member_external_id: member_external_id],
+      call: {Polarex.Members, :customers_members_get_external},
+      url: "/v1/customers/external/#{external_id}/members/#{member_external_id}",
       method: :get,
-      query: query,
       response: [
         {200, {Polarex.Member, :t}},
         {404, {Polarex.ResourceNotFound, :t}},
+        {409, {Polarex.AmbiguousExternalCustomerID, :t}},
+        {422, {Polarex.HTTPValidationError, :t}}
+      ],
+      opts: opts
+    })
+  end
+
+  @doc """
+  Update Member
+
+  Update a member of a customer.
+
+  Only name, email and role can be updated.
+
+  **Scopes**: `members:write`
+
+  ## Request Body
+
+  **Content Types**: `application/json`
+  """
+  @spec customers_members_update(
+          id :: String.t(),
+          member_id :: String.t(),
+          body :: Polarex.MemberUpdate.t(),
+          opts :: keyword
+        ) ::
+          {:ok, Polarex.Member.t()}
+          | {:error, Polarex.HTTPValidationError.t() | Polarex.ResourceNotFound.t()}
+  def customers_members_update(id, member_id, body, opts \\ []) do
+    client = opts[:client] || @default_client
+
+    client.request(%{
+      args: [id: id, member_id: member_id, body: body],
+      call: {Polarex.Members, :customers_members_update},
+      url: "/v1/customers/#{id}/members/#{member_id}",
+      body: body,
+      method: :patch,
+      request: [{"application/json", {Polarex.MemberUpdate, :t}}],
+      response: [
+        {200, {Polarex.Member, :t}},
+        {404, {Polarex.ResourceNotFound, :t}},
+        {422, {Polarex.HTTPValidationError, :t}}
+      ],
+      opts: opts
+    })
+  end
+
+  @doc """
+  Update Member by External ID
+
+  Update a member by external ID for a customer identified by its external ID.
+
+  **Scopes**: `members:write`
+
+  ## Request Body
+
+  **Content Types**: `application/json`
+  """
+  @spec customers_members_update_external(
+          external_id :: String.t(),
+          member_external_id :: String.t(),
+          body :: Polarex.MemberUpdate.t(),
+          opts :: keyword
+        ) ::
+          {:ok, Polarex.Member.t()}
+          | {:error,
+             Polarex.AmbiguousExternalCustomerID.t()
+             | Polarex.HTTPValidationError.t()
+             | Polarex.ResourceNotFound.t()}
+  def customers_members_update_external(external_id, member_external_id, body, opts \\ []) do
+    client = opts[:client] || @default_client
+
+    client.request(%{
+      args: [external_id: external_id, member_external_id: member_external_id, body: body],
+      call: {Polarex.Members, :customers_members_update_external},
+      url: "/v1/customers/external/#{external_id}/members/#{member_external_id}",
+      body: body,
+      method: :patch,
+      request: [{"application/json", {Polarex.MemberUpdate, :t}}],
+      response: [
+        {200, {Polarex.Member, :t}},
+        {404, {Polarex.ResourceNotFound, :t}},
+        {409, {Polarex.AmbiguousExternalCustomerID, :t}},
         {422, {Polarex.HTTPValidationError, :t}}
       ],
       opts: opts
@@ -352,86 +481,6 @@ defmodule Polarex.Members do
       query: query,
       response: [
         {200, {Polarex.ListResourceMember, :t}},
-        {422, {Polarex.HTTPValidationError, :t}}
-      ],
-      opts: opts
-    })
-  end
-
-  @doc """
-  Update Member
-
-  Update a member.
-
-  Only name and role can be updated.
-  The authenticated user or organization must have access to the member's organization.
-
-  **Scopes**: `members:write`
-
-  ## Request Body
-
-  **Content Types**: `application/json`
-  """
-  @spec members_update_member(id :: String.t(), body :: Polarex.MemberUpdate.t(), opts :: keyword) ::
-          {:ok, Polarex.Member.t()}
-          | {:error, Polarex.HTTPValidationError.t() | Polarex.ResourceNotFound.t()}
-  def members_update_member(id, body, opts \\ []) do
-    client = opts[:client] || @default_client
-
-    client.request(%{
-      args: [id: id, body: body],
-      call: {Polarex.Members, :members_update_member},
-      url: "/v1/members/#{id}",
-      body: body,
-      method: :patch,
-      request: [{"application/json", {Polarex.MemberUpdate, :t}}],
-      response: [
-        {200, {Polarex.Member, :t}},
-        {404, {Polarex.ResourceNotFound, :t}},
-        {422, {Polarex.HTTPValidationError, :t}}
-      ],
-      opts: opts
-    })
-  end
-
-  @doc """
-  Update Member by External ID
-
-  Update a member by external ID. One of customer_id or external_customer_id must be specified.
-
-  **Scopes**: `members:write`
-
-  ## Options
-
-    * `customer_id`: The customer ID.
-    * `external_customer_id`: The customer external ID.
-
-  ## Request Body
-
-  **Content Types**: `application/json`
-  """
-  @spec members_update_member_by_external_id(
-          external_id :: String.t(),
-          body :: Polarex.MemberUpdate.t(),
-          opts :: keyword
-        ) ::
-          {:ok, Polarex.Member.t()}
-          | {:error, Polarex.HTTPValidationError.t() | Polarex.ResourceNotFound.t()}
-  def members_update_member_by_external_id(external_id, body, opts \\ []) do
-    client = opts[:client] || @default_client
-    query = Keyword.take(opts, [:customer_id, :external_customer_id])
-
-    client.request(%{
-      args: [external_id: external_id, body: body],
-      call: {Polarex.Members, :members_update_member_by_external_id},
-      url: "/v1/members/external/#{external_id}",
-      body: body,
-      method: :patch,
-      query: query,
-      request: [{"application/json", {Polarex.MemberUpdate, :t}}],
-      response: [
-        {200, {Polarex.Member, :t}},
-        {404, {Polarex.ResourceNotFound, :t}},
         {422, {Polarex.HTTPValidationError, :t}}
       ],
       opts: opts

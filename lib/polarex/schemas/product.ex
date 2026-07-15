@@ -13,6 +13,7 @@ defmodule Polarex.Product do
             | Polarex.BenefitGitHubRepository.t()
             | Polarex.BenefitLicenseKeys.t()
             | Polarex.BenefitMeterCredit.t()
+            | Polarex.BenefitSlackSharedChannel.t()
           ],
           created_at: DateTime.t(),
           description: String.t() | nil,
@@ -21,6 +22,8 @@ defmodule Polarex.Product do
           is_recurring: boolean,
           medias: [Polarex.ProductMediaFileRead.t()],
           metadata: map,
+          meter_interval: String.t() | nil,
+          meter_interval_count: integer | nil,
           modified_at: DateTime.t() | nil,
           name: String.t(),
           organization_id: String.t(),
@@ -42,6 +45,8 @@ defmodule Polarex.Product do
     :is_recurring,
     :medias,
     :metadata,
+    :meter_interval,
+    :meter_interval_count,
     :modified_at,
     :name,
     :organization_id,
@@ -68,7 +73,8 @@ defmodule Polarex.Product do
           {Polarex.BenefitFeatureFlag, :t},
           {Polarex.BenefitGitHubRepository, :t},
           {Polarex.BenefitLicenseKeys, :t},
-          {Polarex.BenefitMeterCredit, :t}
+          {Polarex.BenefitMeterCredit, :t},
+          {Polarex.BenefitSlackSharedChannel, :t}
         ]
       ],
       created_at: {:string, "date-time"},
@@ -78,6 +84,8 @@ defmodule Polarex.Product do
       is_recurring: :boolean,
       medias: [{Polarex.ProductMediaFileRead, :t}],
       metadata: :map,
+      meter_interval: {:union, [{:enum, ["day", "week", "month", "year"]}, :null]},
+      meter_interval_count: {:union, [:integer, :null]},
       modified_at: {:union, [{:string, "date-time"}, :null]},
       name: :string,
       organization_id: {:string, "uuid4"},

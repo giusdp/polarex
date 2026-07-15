@@ -12,6 +12,7 @@ defmodule Polarex.ListResourceBenefit do
             | Polarex.BenefitGitHubRepository.t()
             | Polarex.BenefitLicenseKeys.t()
             | Polarex.BenefitMeterCredit.t()
+            | Polarex.BenefitSlackSharedChannel.t()
           ],
           pagination: Polarex.Pagination.t()
         }
@@ -32,7 +33,8 @@ defmodule Polarex.ListResourceBenefit do
           {Polarex.BenefitFeatureFlag, :t},
           {Polarex.BenefitGitHubRepository, :t},
           {Polarex.BenefitLicenseKeys, :t},
-          {Polarex.BenefitMeterCredit, :t}
+          {Polarex.BenefitMeterCredit, :t},
+          {Polarex.BenefitSlackSharedChannel, :t}
         ]
       ],
       pagination: {Polarex.Pagination, :t}

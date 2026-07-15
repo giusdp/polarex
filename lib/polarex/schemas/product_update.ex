@@ -15,7 +15,6 @@ defmodule Polarex.ProductUpdate do
               map
               | Polarex.ProductPriceCustomCreate.t()
               | Polarex.ProductPriceFixedCreate.t()
-              | Polarex.ProductPriceFreeCreate.t()
               | Polarex.ProductPriceMeteredUnitCreate.t()
               | Polarex.ProductPriceSeatBasedCreate.t()
             ]
@@ -62,7 +61,6 @@ defmodule Polarex.ProductUpdate do
                :map,
                {Polarex.ProductPriceCustomCreate, :t},
                {Polarex.ProductPriceFixedCreate, :t},
-               {Polarex.ProductPriceFreeCreate, :t},
                {Polarex.ProductPriceMeteredUnitCreate, :t},
                {Polarex.ProductPriceSeatBasedCreate, :t}
              ]

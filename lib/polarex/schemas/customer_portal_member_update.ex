@@ -3,15 +3,18 @@ defmodule Polarex.CustomerPortalMemberUpdate do
   Provides struct and type for a CustomerPortalMemberUpdate
   """
 
-  @type t :: %__MODULE__{role: String.t() | nil}
+  @type t :: %__MODULE__{name: String.t() | nil, role: String.t() | nil}
 
-  defstruct [:role]
+  defstruct [:name, :role]
 
   @doc false
   @spec __fields__(atom) :: keyword
   def __fields__(type \\ :t)
 
   def __fields__(:t) do
-    [role: {:union, [{:enum, ["owner", "billing_manager", "member"]}, :null]}]
+    [
+      name: {:union, [:string, :null]},
+      role: {:union, [{:enum, ["owner", "billing_manager", "member"]}, :null]}
+    ]
   end
 end

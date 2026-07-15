@@ -8,10 +8,11 @@ defmodule Polarex.BenefitFeatureFlagCreate do
           metadata: map | nil,
           organization_id: String.t() | nil,
           properties: map,
-          type: String.t()
+          type: String.t(),
+          visibility: String.t() | nil
         }
 
-  defstruct [:description, :metadata, :organization_id, :properties, :type]
+  defstruct [:description, :metadata, :organization_id, :properties, :type, :visibility]
 
   @doc false
   @spec __fields__(atom) :: keyword
@@ -23,7 +24,8 @@ defmodule Polarex.BenefitFeatureFlagCreate do
       metadata: :map,
       organization_id: {:union, [{:string, "uuid4"}, :null]},
       properties: :map,
-      type: {:const, "feature_flag"}
+      type: {:const, "feature_flag"},
+      visibility: {:union, [{:enum, ["draft", "private", "public"]}, :null]}
     ]
   end
 end

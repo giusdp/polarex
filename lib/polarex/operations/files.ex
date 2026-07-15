@@ -20,7 +20,8 @@ defmodule Polarex.Files do
           body ::
             Polarex.DownloadableFileCreate.t()
             | Polarex.OrganizationAvatarFileCreate.t()
-            | Polarex.ProductMediaFileCreate.t(),
+            | Polarex.ProductMediaFileCreate.t()
+            | Polarex.SupportCaseAttachmentFileCreate.t(),
           opts :: keyword
         ) :: {:ok, Polarex.FileUpload.t()} | {:error, Polarex.HTTPValidationError.t()}
   def files_create(body, opts \\ []) do
@@ -38,7 +39,8 @@ defmodule Polarex.Files do
           [
             {Polarex.DownloadableFileCreate, :t},
             {Polarex.OrganizationAvatarFileCreate, :t},
-            {Polarex.ProductMediaFileCreate, :t}
+            {Polarex.ProductMediaFileCreate, :t},
+            {Polarex.SupportCaseAttachmentFileCreate, :t}
           ]}}
       ],
       response: [{201, {Polarex.FileUpload, :t}}, {422, {Polarex.HTTPValidationError, :t}}],
@@ -127,7 +129,8 @@ defmodule Polarex.Files do
           {:ok,
            Polarex.DownloadableFileRead.t()
            | Polarex.OrganizationAvatarFileRead.t()
-           | Polarex.ProductMediaFileRead.t()}
+           | Polarex.ProductMediaFileRead.t()
+           | Polarex.SupportCaseAttachmentFileRead.t()}
           | {:error,
              Polarex.HTTPValidationError.t()
              | Polarex.NotPermitted.t()
@@ -148,7 +151,8 @@ defmodule Polarex.Files do
           [
             {Polarex.DownloadableFileRead, :t},
             {Polarex.OrganizationAvatarFileRead, :t},
-            {Polarex.ProductMediaFileRead, :t}
+            {Polarex.ProductMediaFileRead, :t},
+            {Polarex.SupportCaseAttachmentFileRead, :t}
           ]}},
         {403, {Polarex.NotPermitted, :t}},
         {404, {Polarex.ResourceNotFound, :t}},
@@ -173,7 +177,8 @@ defmodule Polarex.Files do
           {:ok,
            Polarex.DownloadableFileRead.t()
            | Polarex.OrganizationAvatarFileRead.t()
-           | Polarex.ProductMediaFileRead.t()}
+           | Polarex.ProductMediaFileRead.t()
+           | Polarex.SupportCaseAttachmentFileRead.t()}
           | {:error,
              Polarex.HTTPValidationError.t()
              | Polarex.NotPermitted.t()
@@ -194,7 +199,8 @@ defmodule Polarex.Files do
           [
             {Polarex.DownloadableFileRead, :t},
             {Polarex.OrganizationAvatarFileRead, :t},
-            {Polarex.ProductMediaFileRead, :t}
+            {Polarex.ProductMediaFileRead, :t},
+            {Polarex.SupportCaseAttachmentFileRead, :t}
           ]}},
         {403, {Polarex.NotPermitted, :t}},
         {404, {Polarex.ResourceNotFound, :t}},

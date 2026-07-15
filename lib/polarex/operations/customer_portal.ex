@@ -20,7 +20,8 @@ defmodule Polarex.CustomerPortal do
            | Polarex.CustomerBenefitGrantFeatureFlag.t()
            | Polarex.CustomerBenefitGrantGitHubRepository.t()
            | Polarex.CustomerBenefitGrantLicenseKeys.t()
-           | Polarex.CustomerBenefitGrantMeterCredit.t()}
+           | Polarex.CustomerBenefitGrantMeterCredit.t()
+           | Polarex.CustomerBenefitGrantSlackSharedChannel.t()}
           | {:error, Polarex.HTTPValidationError.t() | Polarex.ResourceNotFound.t()}
   def customer_portal_benefit_grants_get(id, opts \\ []) do
     client = opts[:client] || @default_client
@@ -40,7 +41,8 @@ defmodule Polarex.CustomerPortal do
             {Polarex.CustomerBenefitGrantFeatureFlag, :t},
             {Polarex.CustomerBenefitGrantGitHubRepository, :t},
             {Polarex.CustomerBenefitGrantLicenseKeys, :t},
-            {Polarex.CustomerBenefitGrantMeterCredit, :t}
+            {Polarex.CustomerBenefitGrantMeterCredit, :t},
+            {Polarex.CustomerBenefitGrantSlackSharedChannel, :t}
           ]}},
         {404, {Polarex.ResourceNotFound, :t}},
         {422, {Polarex.HTTPValidationError, :t}}
@@ -124,7 +126,8 @@ defmodule Polarex.CustomerPortal do
             | Polarex.CustomerBenefitGrantFeatureFlagUpdate.t()
             | Polarex.CustomerBenefitGrantGitHubRepositoryUpdate.t()
             | Polarex.CustomerBenefitGrantLicenseKeysUpdate.t()
-            | Polarex.CustomerBenefitGrantMeterCreditUpdate.t(),
+            | Polarex.CustomerBenefitGrantMeterCreditUpdate.t()
+            | Polarex.CustomerBenefitGrantSlackSharedChannelUpdate.t(),
           opts :: keyword
         ) ::
           {:ok,
@@ -134,7 +137,8 @@ defmodule Polarex.CustomerPortal do
            | Polarex.CustomerBenefitGrantFeatureFlag.t()
            | Polarex.CustomerBenefitGrantGitHubRepository.t()
            | Polarex.CustomerBenefitGrantLicenseKeys.t()
-           | Polarex.CustomerBenefitGrantMeterCredit.t()}
+           | Polarex.CustomerBenefitGrantMeterCredit.t()
+           | Polarex.CustomerBenefitGrantSlackSharedChannel.t()}
           | {:error,
              Polarex.HTTPValidationError.t()
              | Polarex.NotPermitted.t()
@@ -158,7 +162,8 @@ defmodule Polarex.CustomerPortal do
             {Polarex.CustomerBenefitGrantFeatureFlagUpdate, :t},
             {Polarex.CustomerBenefitGrantGitHubRepositoryUpdate, :t},
             {Polarex.CustomerBenefitGrantLicenseKeysUpdate, :t},
-            {Polarex.CustomerBenefitGrantMeterCreditUpdate, :t}
+            {Polarex.CustomerBenefitGrantMeterCreditUpdate, :t},
+            {Polarex.CustomerBenefitGrantSlackSharedChannelUpdate, :t}
           ]}}
       ],
       response: [
@@ -171,7 +176,8 @@ defmodule Polarex.CustomerPortal do
             {Polarex.CustomerBenefitGrantFeatureFlag, :t},
             {Polarex.CustomerBenefitGrantGitHubRepository, :t},
             {Polarex.CustomerBenefitGrantLicenseKeys, :t},
-            {Polarex.CustomerBenefitGrantMeterCredit, :t}
+            {Polarex.CustomerBenefitGrantMeterCredit, :t},
+            {Polarex.CustomerBenefitGrantSlackSharedChannel, :t}
           ]}},
         {403, {Polarex.NotPermitted, :t}},
         {404, {Polarex.ResourceNotFound, :t}},
@@ -901,7 +907,7 @@ defmodule Polarex.CustomerPortal do
   @doc """
   Update Member
 
-  Update a member's role.
+  Update a member's name or role.
 
   Only available to owners and billing managers of team customers.
 
@@ -988,7 +994,10 @@ defmodule Polarex.CustomerPortal do
   """
   @spec customer_portal_orders_generate_invoice(id :: String.t(), opts :: keyword) ::
           {:ok, map}
-          | {:error, Polarex.MissingInvoiceBillingDetails.t() | Polarex.NotPaidOrder.t()}
+          | {:error,
+             Polarex.MissingInvoiceBillingDetails.t()
+             | Polarex.OrderNotEligibleForInvoice.t()
+             | Polarex.ResourceNotFound.t()}
   def customer_portal_orders_generate_invoice(id, opts \\ []) do
     client = opts[:client] || @default_client
 
@@ -999,7 +1008,9 @@ defmodule Polarex.CustomerPortal do
       method: :post,
       response: [
         {202, :map},
-        {422, {:union, [{Polarex.MissingInvoiceBillingDetails, :t}, {Polarex.NotPaidOrder, :t}]}}
+        {404, {Polarex.ResourceNotFound, :t}},
+        {409, {Polarex.OrderNotEligibleForInvoice, :t}},
+        {422, {Polarex.MissingInvoiceBillingDetails, :t}}
       ],
       opts: opts
     })
@@ -1468,6 +1479,8 @@ defmodule Polarex.CustomerPortal do
           id :: String.t(),
           body ::
             Polarex.CustomerSubscriptionCancel.t()
+            | Polarex.CustomerSubscriptionPause.t()
+            | Polarex.CustomerSubscriptionResume.t()
             | Polarex.CustomerSubscriptionUpdateClear.t()
             | Polarex.CustomerSubscriptionUpdateProduct.t()
             | Polarex.CustomerSubscriptionUpdateSeats.t(),
@@ -1477,6 +1490,7 @@ defmodule Polarex.CustomerPortal do
           | {:error,
              Polarex.AlreadyCanceledSubscription.t()
              | Polarex.HTTPValidationError.t()
+             | Polarex.PauseResumeNotAllowed.t()
              | Polarex.PaymentFailed.t()
              | Polarex.ResourceNotFound.t()}
   def customer_portal_subscriptions_update(id, body, opts \\ []) do
@@ -1493,6 +1507,8 @@ defmodule Polarex.CustomerPortal do
          {:union,
           [
             {Polarex.CustomerSubscriptionCancel, :t},
+            {Polarex.CustomerSubscriptionPause, :t},
+            {Polarex.CustomerSubscriptionResume, :t},
             {Polarex.CustomerSubscriptionUpdateClear, :t},
             {Polarex.CustomerSubscriptionUpdateProduct, :t},
             {Polarex.CustomerSubscriptionUpdateSeats, :t}
@@ -1501,7 +1517,9 @@ defmodule Polarex.CustomerPortal do
       response: [
         {200, {Polarex.CustomerSubscription, :t}},
         {402, {Polarex.PaymentFailed, :t}},
-        {403, {Polarex.AlreadyCanceledSubscription, :t}},
+        {403,
+         {:union,
+          [{Polarex.AlreadyCanceledSubscription, :t}, {Polarex.PauseResumeNotAllowed, :t}]}},
         {404, {Polarex.ResourceNotFound, :t}},
         {422, {Polarex.HTTPValidationError, :t}}
       ],

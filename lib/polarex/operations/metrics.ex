@@ -79,7 +79,7 @@ defmodule Polarex.Metrics do
 
   """
   @spec metrics_export(opts :: keyword) ::
-          {:ok, map | String.t()} | {:error, Polarex.HTTPValidationError.t()}
+          {:ok, String.t()} | {:error, Polarex.HTTPValidationError.t()}
   def metrics_export(opts \\ []) do
     client = opts[:client] || @default_client
 
@@ -102,7 +102,7 @@ defmodule Polarex.Metrics do
       url: "/v1/metrics/export",
       method: :get,
       query: query,
-      response: [{200, {:union, [:map, :string]}}, {422, {Polarex.HTTPValidationError, :t}}],
+      response: [{200, :string}, {422, {Polarex.HTTPValidationError, :t}}],
       opts: opts
     })
   end

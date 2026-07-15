@@ -24,7 +24,8 @@ defmodule Polarex.Benefits do
             | Polarex.BenefitFeatureFlagCreate.t()
             | Polarex.BenefitGitHubRepositoryCreate.t()
             | Polarex.BenefitLicenseKeysCreate.t()
-            | Polarex.BenefitMeterCreditCreate.t(),
+            | Polarex.BenefitMeterCreditCreate.t()
+            | Polarex.BenefitSlackSharedChannelCreate.t(),
           opts :: keyword
         ) ::
           {:ok,
@@ -34,7 +35,8 @@ defmodule Polarex.Benefits do
            | Polarex.BenefitFeatureFlag.t()
            | Polarex.BenefitGitHubRepository.t()
            | Polarex.BenefitLicenseKeys.t()
-           | Polarex.BenefitMeterCredit.t()}
+           | Polarex.BenefitMeterCredit.t()
+           | Polarex.BenefitSlackSharedChannel.t()}
           | {:error, Polarex.HTTPValidationError.t()}
   def benefits_create(body, opts \\ []) do
     client = opts[:client] || @default_client
@@ -55,7 +57,8 @@ defmodule Polarex.Benefits do
             {Polarex.BenefitFeatureFlagCreate, :t},
             {Polarex.BenefitGitHubRepositoryCreate, :t},
             {Polarex.BenefitLicenseKeysCreate, :t},
-            {Polarex.BenefitMeterCreditCreate, :t}
+            {Polarex.BenefitMeterCreditCreate, :t},
+            {Polarex.BenefitSlackSharedChannelCreate, :t}
           ]}}
       ],
       response: [
@@ -68,7 +71,8 @@ defmodule Polarex.Benefits do
             {Polarex.BenefitFeatureFlag, :t},
             {Polarex.BenefitGitHubRepository, :t},
             {Polarex.BenefitLicenseKeys, :t},
-            {Polarex.BenefitMeterCredit, :t}
+            {Polarex.BenefitMeterCredit, :t},
+            {Polarex.BenefitSlackSharedChannel, :t}
           ]}},
         {422, {Polarex.HTTPValidationError, :t}}
       ],
@@ -126,7 +130,8 @@ defmodule Polarex.Benefits do
            | Polarex.BenefitFeatureFlag.t()
            | Polarex.BenefitGitHubRepository.t()
            | Polarex.BenefitLicenseKeys.t()
-           | Polarex.BenefitMeterCredit.t()}
+           | Polarex.BenefitMeterCredit.t()
+           | Polarex.BenefitSlackSharedChannel.t()}
           | {:error, Polarex.HTTPValidationError.t() | Polarex.ResourceNotFound.t()}
   def benefits_get(id, opts \\ []) do
     client = opts[:client] || @default_client
@@ -146,7 +151,8 @@ defmodule Polarex.Benefits do
             {Polarex.BenefitFeatureFlag, :t},
             {Polarex.BenefitGitHubRepository, :t},
             {Polarex.BenefitLicenseKeys, :t},
-            {Polarex.BenefitMeterCredit, :t}
+            {Polarex.BenefitMeterCredit, :t},
+            {Polarex.BenefitSlackSharedChannel, :t}
           ]}},
         {404, {Polarex.ResourceNotFound, :t}},
         {422, {Polarex.HTTPValidationError, :t}}
@@ -267,7 +273,8 @@ defmodule Polarex.Benefits do
             | Polarex.BenefitFeatureFlagUpdate.t()
             | Polarex.BenefitGitHubRepositoryUpdate.t()
             | Polarex.BenefitLicenseKeysUpdate.t()
-            | Polarex.BenefitMeterCreditUpdate.t(),
+            | Polarex.BenefitMeterCreditUpdate.t()
+            | Polarex.BenefitSlackSharedChannelUpdate.t(),
           opts :: keyword
         ) ::
           {:ok,
@@ -277,7 +284,8 @@ defmodule Polarex.Benefits do
            | Polarex.BenefitFeatureFlag.t()
            | Polarex.BenefitGitHubRepository.t()
            | Polarex.BenefitLicenseKeys.t()
-           | Polarex.BenefitMeterCredit.t()}
+           | Polarex.BenefitMeterCredit.t()
+           | Polarex.BenefitSlackSharedChannel.t()}
           | {:error, Polarex.HTTPValidationError.t() | Polarex.ResourceNotFound.t()}
   def benefits_update(id, body, opts \\ []) do
     client = opts[:client] || @default_client
@@ -298,7 +306,8 @@ defmodule Polarex.Benefits do
             {Polarex.BenefitFeatureFlagUpdate, :t},
             {Polarex.BenefitGitHubRepositoryUpdate, :t},
             {Polarex.BenefitLicenseKeysUpdate, :t},
-            {Polarex.BenefitMeterCreditUpdate, :t}
+            {Polarex.BenefitMeterCreditUpdate, :t},
+            {Polarex.BenefitSlackSharedChannelUpdate, :t}
           ]}}
       ],
       response: [
@@ -311,7 +320,8 @@ defmodule Polarex.Benefits do
             {Polarex.BenefitFeatureFlag, :t},
             {Polarex.BenefitGitHubRepository, :t},
             {Polarex.BenefitLicenseKeys, :t},
-            {Polarex.BenefitMeterCredit, :t}
+            {Polarex.BenefitMeterCredit, :t},
+            {Polarex.BenefitSlackSharedChannel, :t}
           ]}},
         {404, {Polarex.ResourceNotFound, :t}},
         {422, {Polarex.HTTPValidationError, :t}}

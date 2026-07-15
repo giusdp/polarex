@@ -3,19 +3,15 @@ defmodule Polarex.CustomerSubscriptionUpdateSeats do
   Provides struct and type for a CustomerSubscriptionUpdateSeats
   """
 
-  @type t :: %__MODULE__{proration_behavior: String.t() | nil, seats: integer}
+  @type t :: %__MODULE__{seats: integer}
 
-  defstruct [:proration_behavior, :seats]
+  defstruct [:seats]
 
   @doc false
   @spec __fields__(atom) :: keyword
   def __fields__(type \\ :t)
 
   def __fields__(:t) do
-    [
-      proration_behavior:
-        {:union, [{:enum, ["invoice", "prorate", "next_period", "reset"]}, :null]},
-      seats: :integer
-    ]
+    [seats: :integer]
   end
 end

@@ -14,7 +14,9 @@ defmodule Polarex.BenefitMeterCredit do
           organization_id: String.t(),
           properties: Polarex.BenefitMeterCreditProperties.t(),
           selectable: boolean,
-          type: String.t()
+          type: String.t(),
+          visibility: String.t(),
+          visibility_configurable: boolean
         }
 
   defstruct [
@@ -28,7 +30,9 @@ defmodule Polarex.BenefitMeterCredit do
     :organization_id,
     :properties,
     :selectable,
-    :type
+    :type,
+    :visibility,
+    :visibility_configurable
   ]
 
   @doc false
@@ -47,7 +51,9 @@ defmodule Polarex.BenefitMeterCredit do
       organization_id: {:string, "uuid4"},
       properties: {Polarex.BenefitMeterCreditProperties, :t},
       selectable: :boolean,
-      type: {:const, "meter_credit"}
+      type: {:const, "meter_credit"},
+      visibility: {:enum, ["draft", "private", "public"]},
+      visibility_configurable: :boolean
     ]
   end
 end

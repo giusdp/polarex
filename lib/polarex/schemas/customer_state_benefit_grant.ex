@@ -17,6 +17,7 @@ defmodule Polarex.CustomerStateBenefitGrant do
             | Polarex.BenefitGrantDownloadablesProperties.t()
             | Polarex.BenefitGrantGitHubRepositoryProperties.t()
             | Polarex.BenefitGrantLicenseKeysProperties.t()
+            | Polarex.BenefitGrantSlackSharedChannelProperties.t()
         }
 
   defstruct [
@@ -47,7 +48,8 @@ defmodule Polarex.CustomerStateBenefitGrant do
            "downloadables",
            "license_keys",
            "meter_credit",
-           "feature_flag"
+           "feature_flag",
+           "slack_shared_channel"
          ]},
       created_at: {:string, "date-time"},
       granted_at: {:string, "date-time"},
@@ -60,7 +62,8 @@ defmodule Polarex.CustomerStateBenefitGrant do
            {Polarex.BenefitGrantDiscordProperties, :t},
            {Polarex.BenefitGrantDownloadablesProperties, :t},
            {Polarex.BenefitGrantGitHubRepositoryProperties, :t},
-           {Polarex.BenefitGrantLicenseKeysProperties, :t}
+           {Polarex.BenefitGrantLicenseKeysProperties, :t},
+           {Polarex.BenefitGrantSlackSharedChannelProperties, :t}
          ]}
     ]
   end

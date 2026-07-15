@@ -50,7 +50,8 @@ defmodule Polarex.BenefitPublic do
            "downloadables",
            "license_keys",
            "meter_credit",
-           "feature_flag"
+           "feature_flag",
+           "slack_shared_channel"
          ]}
     ]
   end

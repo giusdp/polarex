@@ -68,6 +68,8 @@ defmodule Polarex.WebhookEvent do
            "subscription.uncanceled",
            "subscription.revoked",
            "subscription.past_due",
+           "subscription.paused",
+           "subscription.resumed",
            "refund.created",
            "refund.updated",
            "product.created",

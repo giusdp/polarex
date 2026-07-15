@@ -14,7 +14,9 @@ defmodule Polarex.BenefitFeatureFlag do
           organization_id: String.t(),
           properties: map,
           selectable: boolean,
-          type: String.t()
+          type: String.t(),
+          visibility: String.t(),
+          visibility_configurable: boolean
         }
 
   defstruct [
@@ -28,7 +30,9 @@ defmodule Polarex.BenefitFeatureFlag do
     :organization_id,
     :properties,
     :selectable,
-    :type
+    :type,
+    :visibility,
+    :visibility_configurable
   ]
 
   @doc false
@@ -47,7 +51,9 @@ defmodule Polarex.BenefitFeatureFlag do
       organization_id: {:string, "uuid4"},
       properties: :map,
       selectable: :boolean,
-      type: {:const, "feature_flag"}
+      type: {:const, "feature_flag"},
+      visibility: {:enum, ["draft", "private", "public"]},
+      visibility_configurable: :boolean
     ]
   end
 end

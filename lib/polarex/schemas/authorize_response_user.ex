@@ -5,13 +5,23 @@ defmodule Polarex.AuthorizeResponseUser do
 
   @type t :: %__MODULE__{
           client: Polarex.OAuth2ClientPublic.t(),
+          organizations: [Polarex.AuthorizeOrganization.t()],
+          requires_single_organization: boolean | nil,
           scope_display_names: map | nil,
           scopes: [String.t()],
           sub: Polarex.AuthorizeUser.t() | nil,
           sub_type: String.t()
         }
 
-  defstruct [:client, :scope_display_names, :scopes, :sub, :sub_type]
+  defstruct [
+    :client,
+    :organizations,
+    :requires_single_organization,
+    :scope_display_names,
+    :scopes,
+    :sub,
+    :sub_type
+  ]
 
   @doc false
   @spec __fields__(atom) :: keyword
@@ -20,6 +30,8 @@ defmodule Polarex.AuthorizeResponseUser do
   def __fields__(:t) do
     [
       client: {Polarex.OAuth2ClientPublic, :t},
+      organizations: [{Polarex.AuthorizeOrganization, :t}],
+      requires_single_organization: :boolean,
       scope_display_names: :map,
       scopes: [
         enum: [
@@ -61,6 +73,7 @@ defmodule Polarex.AuthorizeResponseUser do
           "wallets:read",
           "wallets:write",
           "disputes:read",
+          "disputes:write",
           "customer_meters:read",
           "customer_sessions:write",
           "member_sessions:write",
