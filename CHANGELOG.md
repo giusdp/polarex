@@ -1,3 +1,13 @@
+## [0.5.0](https://github.com/giusdp/polarex/compare/v0.4.2...v0.5.0) (2026-07-15)
+
+### Features
+
+* **spec:** sync OpenAPI spec ([#25](https://github.com/giusdp/polarex/issues/25)) ([573d9c3](https://github.com/giusdp/polarex/commit/573d9c3cf10d03d4990fd71aef5854fef14b3b60))
+
+### Bug Fixes
+
+* **ci:** cap spec-sync PR body under GitHub's 65536-char limit [skip ci] ([0cb0293](https://github.com/giusdp/polarex/commit/0cb0293c1dba989202d4bbf6d259d4e1d19c3869))
+
 ## [0.4.2](https://github.com/giusdp/polarex/compare/v0.4.1...v0.4.2) (2026-06-26)
 
 ## [0.4.1](https://github.com/giusdp/polarex/compare/v0.4.0...v0.4.1) (2026-06-12)
