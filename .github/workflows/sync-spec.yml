@@ -140,7 +140,7 @@ jobs:
 
       - name: Upload full oasdiff reports
         if: steps.diff.outputs.changed == 'true'
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: oasdiff-reports
           path: |
