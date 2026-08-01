@@ -5,6 +5,7 @@ defmodule Polarex.OrganizationCustomerEmailSettings do
 
   @type t :: %__MODULE__{
           order_confirmation: boolean,
+          payment_method_expiration_reminder: boolean,
           subscription_cancellation: boolean,
           subscription_confirmation: boolean,
           subscription_cycled: boolean,
@@ -21,6 +22,7 @@ defmodule Polarex.OrganizationCustomerEmailSettings do
 
   defstruct [
     :order_confirmation,
+    :payment_method_expiration_reminder,
     :subscription_cancellation,
     :subscription_confirmation,
     :subscription_cycled,
@@ -42,6 +44,7 @@ defmodule Polarex.OrganizationCustomerEmailSettings do
   def __fields__(:t) do
     [
       order_confirmation: :boolean,
+      payment_method_expiration_reminder: :boolean,
       subscription_cancellation: :boolean,
       subscription_confirmation: :boolean,
       subscription_cycled: :boolean,

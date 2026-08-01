@@ -15,6 +15,7 @@ defmodule Polarex.CheckoutUpdatePublic do
           discount_code: String.t() | nil,
           is_business_customer: boolean | nil,
           locale: String.t() | nil,
+          payment_method_type: String.t() | nil,
           product_id: String.t() | nil,
           product_price_id: String.t() | nil,
           seats: integer | nil
@@ -32,6 +33,7 @@ defmodule Polarex.CheckoutUpdatePublic do
     :discount_code,
     :is_business_customer,
     :locale,
+    :payment_method_type,
     :product_id,
     :product_price_id,
     :seats
@@ -54,6 +56,7 @@ defmodule Polarex.CheckoutUpdatePublic do
       discount_code: {:union, [:string, :null]},
       is_business_customer: {:union, [:boolean, :null]},
       locale: {:union, [:string, :null]},
+      payment_method_type: {:union, [:string, :null]},
       product_id: {:union, [{:string, "uuid4"}, :null]},
       product_price_id: {:union, [{:string, "uuid4"}, :null]},
       seats: {:union, [:integer, :null]}

@@ -280,6 +280,8 @@ defmodule Polarex.Subscriptions do
     * `customer_cancellation_reason`: Filter by customer cancellation reason.
     * `canceled_at_after`: Filter by cancellation date (after or equal to).
     * `canceled_at_before`: Filter by cancellation date (before or equal to).
+    * `started_after`: Only include subscriptions started after this date.
+    * `started_before`: Only include subscriptions started before this date.
     * `page`: Page number, defaults to 1.
     * `limit`: Size of a page, defaults to 10. Maximum is 100.
     * `sorting`: Sorting criterion. Several criteria can be used simultaneously and will be applied in order. Add a minus sign `-` before the criteria name to sort by descending order.
@@ -307,6 +309,8 @@ defmodule Polarex.Subscriptions do
         :page,
         :product_id,
         :sorting,
+        :started_after,
+        :started_before,
         :status
       ])
 
