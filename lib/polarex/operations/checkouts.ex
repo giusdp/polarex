@@ -24,6 +24,7 @@ defmodule Polarex.Checkouts do
           {:ok, Polarex.CheckoutPublicConfirmed.t()}
           | {:error,
              Polarex.AlreadyActiveSubscriptionError.t()
+             | Polarex.DiscountRedemptionLimitReached.t()
              | Polarex.ExpiredCheckoutError.t()
              | Polarex.HTTPValidationError.t()
              | Polarex.NotOpenCheckout.t()
@@ -48,6 +49,7 @@ defmodule Polarex.Checkouts do
          {:union,
           [
             {Polarex.AlreadyActiveSubscriptionError, :t},
+            {Polarex.DiscountRedemptionLimitReached, :t},
             {Polarex.NotOpenCheckout, :t},
             {Polarex.PaymentNotReady, :t},
             {Polarex.TrialAlreadyRedeemed, :t}
@@ -106,6 +108,7 @@ defmodule Polarex.Checkouts do
           {:ok, Polarex.CheckoutPublic.t()}
           | {:error,
              Polarex.AlreadyActiveSubscriptionError.t()
+             | Polarex.DiscountRedemptionLimitReached.t()
              | Polarex.ExpiredCheckoutError.t()
              | Polarex.HTTPValidationError.t()
              | Polarex.NotOpenCheckout.t()
@@ -128,6 +131,7 @@ defmodule Polarex.Checkouts do
          {:union,
           [
             {Polarex.AlreadyActiveSubscriptionError, :t},
+            {Polarex.DiscountRedemptionLimitReached, :t},
             {Polarex.NotOpenCheckout, :t},
             {Polarex.PaymentNotReady, :t},
             {Polarex.TrialAlreadyRedeemed, :t}
@@ -262,6 +266,7 @@ defmodule Polarex.Checkouts do
           {:ok, Polarex.Checkout.t()}
           | {:error,
              Polarex.AlreadyActiveSubscriptionError.t()
+             | Polarex.DiscountRedemptionLimitReached.t()
              | Polarex.HTTPValidationError.t()
              | Polarex.NotOpenCheckout.t()
              | Polarex.PaymentNotReady.t()
@@ -283,6 +288,7 @@ defmodule Polarex.Checkouts do
          {:union,
           [
             {Polarex.AlreadyActiveSubscriptionError, :t},
+            {Polarex.DiscountRedemptionLimitReached, :t},
             {Polarex.NotOpenCheckout, :t},
             {Polarex.PaymentNotReady, :t},
             {Polarex.TrialAlreadyRedeemed, :t}

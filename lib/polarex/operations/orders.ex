@@ -475,6 +475,9 @@ defmodule Polarex.Orders do
     * `external_customer_id`: Filter by customer external ID.
     * `checkout_id`: Filter by checkout ID.
     * `subscription_id`: Filter by subscription ID.
+    * `status`: Filter by order status.
+    * `created_after`: Only include orders created after this date
+    * `created_before`: Only include orders created before this date
     * `page`: Page number, defaults to 1.
     * `limit`: Size of a page, defaults to 10. Maximum is 100.
     * `sorting`: Sorting criterion. Several criteria can be used simultaneously and will be applied in order. Add a minus sign `-` before the criteria name to sort by descending order.
@@ -489,6 +492,8 @@ defmodule Polarex.Orders do
     query =
       Keyword.take(opts, [
         :checkout_id,
+        :created_after,
+        :created_before,
         :customer_id,
         :discount_id,
         :external_customer_id,
@@ -499,6 +504,7 @@ defmodule Polarex.Orders do
         :product_billing_type,
         :product_id,
         :sorting,
+        :status,
         :subscription_id
       ])
 

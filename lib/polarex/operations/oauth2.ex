@@ -62,7 +62,7 @@ defmodule Polarex.Oauth2 do
   Delete an OAuth2 client.
   """
   @spec oauth2_clients_oauth2_delete_client(client_id :: String.t(), opts :: keyword) ::
-          {:ok, map} | {:error, Polarex.HTTPValidationError.t()}
+          :ok | {:error, Polarex.HTTPValidationError.t()}
   def oauth2_clients_oauth2_delete_client(client_id, opts \\ []) do
     client = opts[:client] || @default_client
 
@@ -71,7 +71,7 @@ defmodule Polarex.Oauth2 do
       call: {Polarex.Oauth2, :oauth2_clients_oauth2_delete_client},
       url: "/v1/oauth2/register/#{client_id}",
       method: :delete,
-      response: [{200, :map}, {422, {Polarex.HTTPValidationError, :t}}],
+      response: [{204, :null}, {422, {Polarex.HTTPValidationError, :t}}],
       opts: opts
     })
   end

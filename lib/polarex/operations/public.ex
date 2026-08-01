@@ -564,6 +564,7 @@ defmodule Polarex.Public do
           {:ok, Polarex.CheckoutPublicConfirmed.t()}
           | {:error,
              Polarex.AlreadyActiveSubscriptionError.t()
+             | Polarex.DiscountRedemptionLimitReached.t()
              | Polarex.ExpiredCheckoutError.t()
              | Polarex.HTTPValidationError.t()
              | Polarex.NotOpenCheckout.t()
@@ -588,6 +589,7 @@ defmodule Polarex.Public do
          {:union,
           [
             {Polarex.AlreadyActiveSubscriptionError, :t},
+            {Polarex.DiscountRedemptionLimitReached, :t},
             {Polarex.NotOpenCheckout, :t},
             {Polarex.PaymentNotReady, :t},
             {Polarex.TrialAlreadyRedeemed, :t}
@@ -646,6 +648,7 @@ defmodule Polarex.Public do
           {:ok, Polarex.CheckoutPublic.t()}
           | {:error,
              Polarex.AlreadyActiveSubscriptionError.t()
+             | Polarex.DiscountRedemptionLimitReached.t()
              | Polarex.ExpiredCheckoutError.t()
              | Polarex.HTTPValidationError.t()
              | Polarex.NotOpenCheckout.t()
@@ -668,6 +671,7 @@ defmodule Polarex.Public do
          {:union,
           [
             {Polarex.AlreadyActiveSubscriptionError, :t},
+            {Polarex.DiscountRedemptionLimitReached, :t},
             {Polarex.NotOpenCheckout, :t},
             {Polarex.PaymentNotReady, :t},
             {Polarex.TrialAlreadyRedeemed, :t}
@@ -802,6 +806,7 @@ defmodule Polarex.Public do
           {:ok, Polarex.Checkout.t()}
           | {:error,
              Polarex.AlreadyActiveSubscriptionError.t()
+             | Polarex.DiscountRedemptionLimitReached.t()
              | Polarex.HTTPValidationError.t()
              | Polarex.NotOpenCheckout.t()
              | Polarex.PaymentNotReady.t()
@@ -823,6 +828,7 @@ defmodule Polarex.Public do
          {:union,
           [
             {Polarex.AlreadyActiveSubscriptionError, :t},
+            {Polarex.DiscountRedemptionLimitReached, :t},
             {Polarex.NotOpenCheckout, :t},
             {Polarex.PaymentNotReady, :t},
             {Polarex.TrialAlreadyRedeemed, :t}
@@ -5245,7 +5251,7 @@ defmodule Polarex.Public do
   Delete an OAuth2 client.
   """
   @spec oauth2_clients_oauth2_delete_client(client_id :: String.t(), opts :: keyword) ::
-          {:ok, map} | {:error, Polarex.HTTPValidationError.t()}
+          :ok | {:error, Polarex.HTTPValidationError.t()}
   def oauth2_clients_oauth2_delete_client(client_id, opts \\ []) do
     client = opts[:client] || @default_client
 
@@ -5254,7 +5260,7 @@ defmodule Polarex.Public do
       call: {Polarex.Public, :oauth2_clients_oauth2_delete_client},
       url: "/v1/oauth2/register/#{client_id}",
       method: :delete,
-      response: [{200, :map}, {422, {Polarex.HTTPValidationError, :t}}],
+      response: [{204, :null}, {422, {Polarex.HTTPValidationError, :t}}],
       opts: opts
     })
   end
@@ -5639,6 +5645,9 @@ defmodule Polarex.Public do
     * `external_customer_id`: Filter by customer external ID.
     * `checkout_id`: Filter by checkout ID.
     * `subscription_id`: Filter by subscription ID.
+    * `status`: Filter by order status.
+    * `created_after`: Only include orders created after this date
+    * `created_before`: Only include orders created before this date
     * `page`: Page number, defaults to 1.
     * `limit`: Size of a page, defaults to 10. Maximum is 100.
     * `sorting`: Sorting criterion. Several criteria can be used simultaneously and will be applied in order. Add a minus sign `-` before the criteria name to sort by descending order.
@@ -5653,6 +5662,8 @@ defmodule Polarex.Public do
     query =
       Keyword.take(opts, [
         :checkout_id,
+        :created_after,
+        :created_before,
         :customer_id,
         :discount_id,
         :external_customer_id,
@@ -5663,6 +5674,7 @@ defmodule Polarex.Public do
         :product_billing_type,
         :product_id,
         :sorting,
+        :status,
         :subscription_id
       ])
 
@@ -6358,6 +6370,8 @@ defmodule Polarex.Public do
     * `customer_cancellation_reason`: Filter by customer cancellation reason.
     * `canceled_at_after`: Filter by cancellation date (after or equal to).
     * `canceled_at_before`: Filter by cancellation date (before or equal to).
+    * `started_after`: Only include subscriptions started after this date.
+    * `started_before`: Only include subscriptions started before this date.
     * `page`: Page number, defaults to 1.
     * `limit`: Size of a page, defaults to 10. Maximum is 100.
     * `sorting`: Sorting criterion. Several criteria can be used simultaneously and will be applied in order. Add a minus sign `-` before the criteria name to sort by descending order.
@@ -6385,6 +6399,8 @@ defmodule Polarex.Public do
         :page,
         :product_id,
         :sorting,
+        :started_after,
+        :started_before,
         :status
       ])
 
