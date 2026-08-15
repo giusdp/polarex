@@ -6,6 +6,7 @@ defmodule Polarex.OrganizationFeatureSettings do
   @type t :: %__MODULE__{
           checkout_localization_enabled: boolean | nil,
           compass_enabled: boolean | nil,
+          dispute_auto_accept_enabled: boolean | nil,
           disputes_enabled: boolean | nil,
           issue_funding_enabled: boolean | nil,
           member_model_enabled: boolean | nil,
@@ -23,6 +24,7 @@ defmodule Polarex.OrganizationFeatureSettings do
   defstruct [
     :checkout_localization_enabled,
     :compass_enabled,
+    :dispute_auto_accept_enabled,
     :disputes_enabled,
     :issue_funding_enabled,
     :member_model_enabled,
@@ -45,6 +47,7 @@ defmodule Polarex.OrganizationFeatureSettings do
     [
       checkout_localization_enabled: :boolean,
       compass_enabled: :boolean,
+      dispute_auto_accept_enabled: :boolean,
       disputes_enabled: :boolean,
       issue_funding_enabled: :boolean,
       member_model_enabled: :boolean,

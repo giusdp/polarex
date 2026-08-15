@@ -164,6 +164,41 @@ defmodule Polarex.Public do
   end
 
   @doc """
+  List Benefit Files
+
+  List the downloadable files for a benefit with their download statistics.
+
+  **Scopes**: `benefits:read` `benefits:write`
+
+  ## Options
+
+    * `page`: Page number, defaults to 1.
+    * `limit`: Size of a page, defaults to 10. Maximum is 100.
+
+  """
+  @spec benefits_files(id :: String.t(), opts :: keyword) ::
+          {:ok, Polarex.ListResourceBenefitDownloadableFile.t()}
+          | {:error, Polarex.HTTPValidationError.t() | Polarex.ResourceNotFound.t()}
+  def benefits_files(id, opts \\ []) do
+    client = opts[:client] || @default_client
+    query = Keyword.take(opts, [:limit, :page])
+
+    client.request(%{
+      args: [id: id],
+      call: {Polarex.Public, :benefits_files},
+      url: "/v1/benefits/#{id}/files",
+      method: :get,
+      query: query,
+      response: [
+        {200, {Polarex.ListResourceBenefitDownloadableFile, :t}},
+        {404, {Polarex.ResourceNotFound, :t}},
+        {422, {Polarex.HTTPValidationError, :t}}
+      ],
+      opts: opts
+    })
+  end
+
+  @doc """
   Get Benefit
 
   Get a benefit by ID.
@@ -2633,6 +2668,7 @@ defmodule Polarex.Public do
              | Polarex.HTTPValidationError.t()
              | Polarex.PauseResumeNotAllowed.t()
              | Polarex.PaymentFailed.t()
+             | Polarex.PaymentMethodRequired.t()
              | Polarex.ResourceNotFound.t()}
   def customer_portal_subscriptions_update(id, body, opts \\ []) do
     client = opts[:client] || @default_client
@@ -2662,6 +2698,7 @@ defmodule Polarex.Public do
          {:union,
           [{Polarex.AlreadyCanceledSubscription, :t}, {Polarex.PauseResumeNotAllowed, :t}]}},
         {404, {Polarex.ResourceNotFound, :t}},
+        {409, {Polarex.PaymentMethodRequired, :t}},
         {422, {Polarex.HTTPValidationError, :t}}
       ],
       opts: opts
@@ -5470,13 +5507,28 @@ defmodule Polarex.Public do
 
     * `organization_id`: Filter by organization ID.
     * `product_id`: Filter by product ID.
+    * `status`: Filter by order status.
+    * `created_after`: Only include orders created after this date. Must include a UTC offset.
+    * `created_before`: Only include orders created before this date. Must include a UTC offset.
+    * `timezone`: Time zone used to render dates in the CSV.
+    * `columns`: Columns to include in the CSV, in order. Defaults to email, created_at, product, net_amount, currency, status and invoice_number.
 
   """
   @spec orders_export(opts :: keyword) ::
           {:ok, String.t()} | {:error, Polarex.HTTPValidationError.t()}
   def orders_export(opts \\ []) do
     client = opts[:client] || @default_client
-    query = Keyword.take(opts, [:organization_id, :product_id])
+
+    query =
+      Keyword.take(opts, [
+        :columns,
+        :created_after,
+        :created_before,
+        :organization_id,
+        :product_id,
+        :status,
+        :timezone
+      ])
 
     client.request(%{
       args: [],
@@ -5863,7 +5915,8 @@ defmodule Polarex.Public do
         ) ::
           {:ok, Polarex.Organization.t()}
           | {:error,
-             Polarex.HTTPValidationError.t()
+             Polarex.DisputeAutoAcceptNotEnabled.t()
+             | Polarex.HTTPValidationError.t()
              | Polarex.NotPermitted.t()
              | Polarex.ResourceNotFound.t()
              | Polarex.SSOEnforcementRequiresConnection.t()}
@@ -5879,7 +5932,7 @@ defmodule Polarex.Public do
       request: [{"application/json", {Polarex.OrganizationUpdate, :t}}],
       response: [
         {200, {Polarex.Organization, :t}},
-        {403, {Polarex.NotPermitted, :t}},
+        {403, {:union, [{Polarex.DisputeAutoAcceptNotEnabled, :t}, {Polarex.NotPermitted, :t}]}},
         {404, {Polarex.ResourceNotFound, :t}},
         {409, {Polarex.SSOEnforcementRequiresConnection, :t}},
         {422, {Polarex.HTTPValidationError, :t}}
@@ -6304,13 +6357,31 @@ defmodule Polarex.Public do
   ## Options
 
     * `organization_id`: Filter by organization ID.
+    * `product_id`: Filter by product ID.
+    * `status`: Filter by subscription status.
+    * `cancel_at_period_end`: Filter by subscriptions that are set to cancel at period end.
+    * `started_after`: Only include subscriptions started after this date. Must include a UTC offset.
+    * `started_before`: Only include subscriptions started before this date. Must include a UTC offset.
+    * `timezone`: Time zone used to render dates in the CSV.
+    * `columns`: Columns to include in the CSV, in order. Defaults to email, started_at, product, amount, currency, status and recurring_interval.
 
   """
   @spec subscriptions_export(opts :: keyword) ::
           {:ok, String.t()} | {:error, Polarex.HTTPValidationError.t()}
   def subscriptions_export(opts \\ []) do
     client = opts[:client] || @default_client
-    query = Keyword.take(opts, [:organization_id])
+
+    query =
+      Keyword.take(opts, [
+        :cancel_at_period_end,
+        :columns,
+        :organization_id,
+        :product_id,
+        :started_after,
+        :started_before,
+        :status,
+        :timezone
+      ])
 
     client.request(%{
       args: [],
@@ -6479,6 +6550,7 @@ defmodule Polarex.Public do
           | {:error,
              Polarex.AlreadyCanceledSubscription.t()
              | Polarex.HTTPValidationError.t()
+             | Polarex.InactiveSubscription.t()
              | Polarex.PaymentFailed.t()
              | Polarex.ResourceNotFound.t()
              | Polarex.SubscriptionLocked.t()}
@@ -6508,7 +6580,8 @@ defmodule Polarex.Public do
       response: [
         {200, {Polarex.Subscription, :t}},
         {402, {Polarex.PaymentFailed, :t}},
-        {403, {Polarex.AlreadyCanceledSubscription, :t}},
+        {403,
+         {:union, [{Polarex.AlreadyCanceledSubscription, :t}, {Polarex.InactiveSubscription, :t}]}},
         {404, {Polarex.ResourceNotFound, :t}},
         {409, {Polarex.SubscriptionLocked, :t}},
         {422, {Polarex.HTTPValidationError, :t}}

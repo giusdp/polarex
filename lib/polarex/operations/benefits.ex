@@ -116,6 +116,41 @@ defmodule Polarex.Benefits do
   end
 
   @doc """
+  List Benefit Files
+
+  List the downloadable files for a benefit with their download statistics.
+
+  **Scopes**: `benefits:read` `benefits:write`
+
+  ## Options
+
+    * `page`: Page number, defaults to 1.
+    * `limit`: Size of a page, defaults to 10. Maximum is 100.
+
+  """
+  @spec benefits_files(id :: String.t(), opts :: keyword) ::
+          {:ok, Polarex.ListResourceBenefitDownloadableFile.t()}
+          | {:error, Polarex.HTTPValidationError.t() | Polarex.ResourceNotFound.t()}
+  def benefits_files(id, opts \\ []) do
+    client = opts[:client] || @default_client
+    query = Keyword.take(opts, [:limit, :page])
+
+    client.request(%{
+      args: [id: id],
+      call: {Polarex.Benefits, :benefits_files},
+      url: "/v1/benefits/#{id}/files",
+      method: :get,
+      query: query,
+      response: [
+        {200, {Polarex.ListResourceBenefitDownloadableFile, :t}},
+        {404, {Polarex.ResourceNotFound, :t}},
+        {422, {Polarex.HTTPValidationError, :t}}
+      ],
+      opts: opts
+    })
+  end
+
+  @doc """
   Get Benefit
 
   Get a benefit by ID.

@@ -1492,6 +1492,7 @@ defmodule Polarex.CustomerPortal do
              | Polarex.HTTPValidationError.t()
              | Polarex.PauseResumeNotAllowed.t()
              | Polarex.PaymentFailed.t()
+             | Polarex.PaymentMethodRequired.t()
              | Polarex.ResourceNotFound.t()}
   def customer_portal_subscriptions_update(id, body, opts \\ []) do
     client = opts[:client] || @default_client
@@ -1521,6 +1522,7 @@ defmodule Polarex.CustomerPortal do
          {:union,
           [{Polarex.AlreadyCanceledSubscription, :t}, {Polarex.PauseResumeNotAllowed, :t}]}},
         {404, {Polarex.ResourceNotFound, :t}},
+        {409, {Polarex.PaymentMethodRequired, :t}},
         {422, {Polarex.HTTPValidationError, :t}}
       ],
       opts: opts
