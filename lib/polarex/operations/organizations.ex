@@ -143,7 +143,8 @@ defmodule Polarex.Organizations do
         ) ::
           {:ok, Polarex.Organization.t()}
           | {:error,
-             Polarex.HTTPValidationError.t()
+             Polarex.DisputeAutoAcceptNotEnabled.t()
+             | Polarex.HTTPValidationError.t()
              | Polarex.NotPermitted.t()
              | Polarex.ResourceNotFound.t()
              | Polarex.SSOEnforcementRequiresConnection.t()}
@@ -159,7 +160,7 @@ defmodule Polarex.Organizations do
       request: [{"application/json", {Polarex.OrganizationUpdate, :t}}],
       response: [
         {200, {Polarex.Organization, :t}},
-        {403, {Polarex.NotPermitted, :t}},
+        {403, {:union, [{Polarex.DisputeAutoAcceptNotEnabled, :t}, {Polarex.NotPermitted, :t}]}},
         {404, {Polarex.ResourceNotFound, :t}},
         {409, {Polarex.SSOEnforcementRequiresConnection, :t}},
         {422, {Polarex.HTTPValidationError, :t}}

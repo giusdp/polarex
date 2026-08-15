@@ -125,6 +125,7 @@ defmodule Polarex.Subscriptions do
              | Polarex.HTTPValidationError.t()
              | Polarex.PauseResumeNotAllowed.t()
              | Polarex.PaymentFailed.t()
+             | Polarex.PaymentMethodRequired.t()
              | Polarex.ResourceNotFound.t()}
   def customer_portal_subscriptions_update(id, body, opts \\ []) do
     client = opts[:client] || @default_client
@@ -154,6 +155,7 @@ defmodule Polarex.Subscriptions do
          {:union,
           [{Polarex.AlreadyCanceledSubscription, :t}, {Polarex.PauseResumeNotAllowed, :t}]}},
         {404, {Polarex.ResourceNotFound, :t}},
+        {409, {Polarex.PaymentMethodRequired, :t}},
         {422, {Polarex.HTTPValidationError, :t}}
       ],
       opts: opts
@@ -214,13 +216,31 @@ defmodule Polarex.Subscriptions do
   ## Options
 
     * `organization_id`: Filter by organization ID.
+    * `product_id`: Filter by product ID.
+    * `status`: Filter by subscription status.
+    * `cancel_at_period_end`: Filter by subscriptions that are set to cancel at period end.
+    * `started_after`: Only include subscriptions started after this date. Must include a UTC offset.
+    * `started_before`: Only include subscriptions started before this date. Must include a UTC offset.
+    * `timezone`: Time zone used to render dates in the CSV.
+    * `columns`: Columns to include in the CSV, in order. Defaults to email, started_at, product, amount, currency, status and recurring_interval.
 
   """
   @spec subscriptions_export(opts :: keyword) ::
           {:ok, String.t()} | {:error, Polarex.HTTPValidationError.t()}
   def subscriptions_export(opts \\ []) do
     client = opts[:client] || @default_client
-    query = Keyword.take(opts, [:organization_id])
+
+    query =
+      Keyword.take(opts, [
+        :cancel_at_period_end,
+        :columns,
+        :organization_id,
+        :product_id,
+        :started_after,
+        :started_before,
+        :status,
+        :timezone
+      ])
 
     client.request(%{
       args: [],
@@ -389,6 +409,7 @@ defmodule Polarex.Subscriptions do
           | {:error,
              Polarex.AlreadyCanceledSubscription.t()
              | Polarex.HTTPValidationError.t()
+             | Polarex.InactiveSubscription.t()
              | Polarex.PaymentFailed.t()
              | Polarex.ResourceNotFound.t()
              | Polarex.SubscriptionLocked.t()}
@@ -418,7 +439,8 @@ defmodule Polarex.Subscriptions do
       response: [
         {200, {Polarex.Subscription, :t}},
         {402, {Polarex.PaymentFailed, :t}},
-        {403, {Polarex.AlreadyCanceledSubscription, :t}},
+        {403,
+         {:union, [{Polarex.AlreadyCanceledSubscription, :t}, {Polarex.InactiveSubscription, :t}]}},
         {404, {Polarex.ResourceNotFound, :t}},
         {409, {Polarex.SubscriptionLocked, :t}},
         {422, {Polarex.HTTPValidationError, :t}}

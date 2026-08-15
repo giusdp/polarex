@@ -5,12 +5,13 @@ defmodule Polarex.SubscriptionUpdateBase do
 
   @type t :: %__MODULE__{
           discount_id: String.t() | nil,
+          metadata: map | nil,
           product_id: String.t() | nil,
           proration_behavior: String.t() | nil,
           trial_end: DateTime.t() | String.t() | nil
         }
 
-  defstruct [:discount_id, :product_id, :proration_behavior, :trial_end]
+  defstruct [:discount_id, :metadata, :product_id, :proration_behavior, :trial_end]
 
   @doc false
   @spec __fields__(atom) :: keyword
@@ -19,6 +20,7 @@ defmodule Polarex.SubscriptionUpdateBase do
   def __fields__(:t) do
     [
       discount_id: {:union, [{:string, "uuid4"}, :null]},
+      metadata: :map,
       product_id: {:union, [{:string, "uuid4"}, :null]},
       proration_behavior:
         {:union, [{:enum, ["invoice", "prorate", "next_period", "reset"]}, :null]},

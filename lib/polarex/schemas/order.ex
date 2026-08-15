@@ -99,7 +99,14 @@ defmodule Polarex.Order do
       billing_address: {:union, [{Polarex.Address, :t}, :null]},
       billing_name: {:union, [:string, :null]},
       billing_reason:
-        {:enum, ["purchase", "subscription_create", "subscription_cycle", "subscription_update"]},
+        {:enum,
+         [
+           "purchase",
+           "subscription_create",
+           "subscription_cycle",
+           "subscription_update",
+           "subscription_meter_cycle"
+         ]},
       checkout_id: {:union, [{:string, "uuid4"}, :null]},
       created_at: {:string, "date-time"},
       currency: :string,

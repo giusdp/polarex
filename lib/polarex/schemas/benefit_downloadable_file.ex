@@ -1,6 +1,6 @@
-defmodule Polarex.DownloadableFileRead do
+defmodule Polarex.BenefitDownloadableFile do
   @moduledoc """
-  Provides struct and type for a DownloadableFileRead
+  Provides struct and type for a BenefitDownloadableFile
   """
 
   @type t :: %__MODULE__{
@@ -8,6 +8,8 @@ defmodule Polarex.DownloadableFileRead do
           checksum_sha2_56_base6_4: String.t() | nil,
           checksum_sha2_56_hex: String.t() | nil,
           created_at: DateTime.t(),
+          downloaders: integer,
+          downloads: integer,
           flagged_malicious_at: DateTime.t() | nil,
           id: String.t(),
           is_uploaded: boolean,
@@ -28,6 +30,8 @@ defmodule Polarex.DownloadableFileRead do
     :checksum_sha2_56_base6_4,
     :checksum_sha2_56_hex,
     :created_at,
+    :downloaders,
+    :downloads,
     :flagged_malicious_at,
     :id,
     :is_uploaded,
@@ -53,6 +57,8 @@ defmodule Polarex.DownloadableFileRead do
       checksum_sha2_56_base6_4: {:union, [:string, :null]},
       checksum_sha2_56_hex: {:union, [:string, :null]},
       created_at: {:string, "date-time"},
+      downloaders: :integer,
+      downloads: :integer,
       flagged_malicious_at: {:union, [{:string, "date-time"}, :null]},
       id: {:string, "uuid4"},
       is_uploaded: :boolean,

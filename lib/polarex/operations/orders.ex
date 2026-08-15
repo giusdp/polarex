@@ -300,13 +300,28 @@ defmodule Polarex.Orders do
 
     * `organization_id`: Filter by organization ID.
     * `product_id`: Filter by product ID.
+    * `status`: Filter by order status.
+    * `created_after`: Only include orders created after this date. Must include a UTC offset.
+    * `created_before`: Only include orders created before this date. Must include a UTC offset.
+    * `timezone`: Time zone used to render dates in the CSV.
+    * `columns`: Columns to include in the CSV, in order. Defaults to email, created_at, product, net_amount, currency, status and invoice_number.
 
   """
   @spec orders_export(opts :: keyword) ::
           {:ok, String.t()} | {:error, Polarex.HTTPValidationError.t()}
   def orders_export(opts \\ []) do
     client = opts[:client] || @default_client
-    query = Keyword.take(opts, [:organization_id, :product_id])
+
+    query =
+      Keyword.take(opts, [
+        :columns,
+        :created_after,
+        :created_before,
+        :organization_id,
+        :product_id,
+        :status,
+        :timezone
+      ])
 
     client.request(%{
       args: [],
