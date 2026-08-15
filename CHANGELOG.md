@@ -1,3 +1,9 @@
+## [0.7.0](https://github.com/giusdp/polarex/compare/v0.6.0...v0.7.0) (2026-08-15)
+
+### Features
+
+* **spec:** sync OpenAPI spec ([#30](https://github.com/giusdp/polarex/issues/30)) ([139f13e](https://github.com/giusdp/polarex/commit/139f13e2f4420a7debc63d53e6041a6182b3932c))
+
 ## [0.6.0](https://github.com/giusdp/polarex/compare/v0.5.1...v0.6.0) (2026-08-01)
 
 ### Features
