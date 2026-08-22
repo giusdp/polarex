@@ -53,6 +53,21 @@ end)
 {:ok, %Polarex.ListResourceProduct{items: []}} = Polarex.Products.products_list([])
 ```
 
+### Errors
+
+Every failure returns `{:error, %Polarex.Error{}}` with the HTTP `status`, a
+human-readable `message`, the raw `body`, and on 422s the decoded
+`validation_errors`:
+
+```elixir
+{:error, %Polarex.Error{status: 422, validation_errors: [%Polarex.ValidationError{loc: ["body", "email"]} | _]}} =
+  Polarex.Customers.customers_create(%Polarex.CustomerIndividualCreate{email: "not-an-email"})
+```
+
+Transport failures (the request never got a response) have `status: nil` and
+the `reason` (e.g. `:econnrefused`). Empty success bodies such as `204 No
+Content` return `{:ok, nil}`.
+
 ### Retries
 
 Only GET requests are retried automatically (`retry: :safe_transient`).

@@ -48,26 +48,50 @@ defmodule Polarex.Support.Client do
   defp retry_policy(:get), do: :safe_transient
   defp retry_policy(_method), do: false
 
-  defp handle_response({:ok, %Req.Response{status: status, body: nil}}, _descriptor) when status < 300 do
-    {:error, nil}
-  end
-
   defp handle_response({:ok, %Req.Response{status: status, body: body}}, descriptor) when status < 300 do
+    case body do
+      empty when empty in [nil, ""] ->
+        {:ok, nil}
+
+      body ->
+        lookup = Map.new(descriptor.response)
+        result_type = Map.get(lookup, status)
+        {:ok, Translator.translate(result_type, body)}
+    end
+  end
+
+  defp handle_response({:ok, %Req.Response{status: status, body: body}}, descriptor) do
     lookup = Map.new(descriptor.response)
-    result_type = Map.get(lookup, status)
-    {:ok, Translator.translate(result_type, body)}
+
+    decoded =
+      case Map.get(lookup, status) do
+        nil -> nil
+        result_type -> Translator.translate(result_type, body)
+      end
+
+    {:error,
+     %Polarex.Error{
+       status: status,
+       message: error_message(status, body),
+       validation_errors: validation_errors(decoded),
+       body: body
+     }}
   end
 
-  defp handle_response({:ok, %Req.Response{body: %{"message" => message}}}, _descriptor) do
-    {:error, message}
+  defp handle_response({:error, %{reason: reason}}, _descriptor) do
+    {:error, %Polarex.Error{reason: reason, message: "transport error: #{inspect(reason)}"}}
   end
 
-  defp handle_response({:ok, %Req.Response{status: status}}, _descriptor) do
-    {:error, "HTTP response status: #{inspect(status)}"}
+  defp handle_response({:error, exception}, _descriptor) do
+    {:error, %Polarex.Error{reason: exception, message: "transport error: #{inspect(exception)}"}}
   end
 
-  defp handle_response({:error, %{reason: reason}}, _descriptor), do: {:error, reason}
-  defp handle_response({:error, exception}, _descriptor), do: {:error, exception}
+  defp error_message(_status, %{"message" => message}) when is_binary(message), do: message
+  defp error_message(_status, %{"detail" => detail}) when is_binary(detail), do: detail
+  defp error_message(status, _body), do: "HTTP response status: #{status}"
+
+  defp validation_errors(%Polarex.HTTPValidationError{detail: detail}) when is_list(detail), do: detail
+  defp validation_errors(_decoded), do: []
 
   defp build_endpoint(path) do
     :polarex
@@ -78,16 +102,22 @@ defmodule Polarex.Support.Client do
   end
 
   defp encode_body(nil), do: nil
+  defp encode_body(body), do: body |> deep_unstruct() |> JSON.encode!()
 
-  defp encode_body(%{__struct__: _} = body) do
-    body
-    |> Map.from_struct()
-    |> encode_body()
+  @calendar_structs [DateTime, Date, Time, NaiveDateTime]
+
+  defp deep_unstruct(%mod{} = value) when mod in @calendar_structs, do: value
+
+  defp deep_unstruct(%{__struct__: _} = struct) do
+    struct |> Map.from_struct() |> deep_unstruct()
   end
 
-  defp encode_body(body) when is_map(body) do
-    body
-    |> Map.reject(fn {_, v} -> is_nil(v) end)
-    |> JSON.encode!()
+  defp deep_unstruct(map) when is_map(map) do
+    map
+    |> Map.reject(fn {_key, value} -> is_nil(value) end)
+    |> Map.new(fn {key, value} -> {key, deep_unstruct(value)} end)
   end
+
+  defp deep_unstruct(list) when is_list(list), do: Enum.map(list, &deep_unstruct/1)
+  defp deep_unstruct(value), do: value
 end
