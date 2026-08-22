@@ -45,24 +45,21 @@ defmodule Polarex.Support.Translator do
 
     translated =
       Map.new(fields, fn
-        {field, {module, type}} ->
-          item = get_field(body, field)
-          translated = translate({module, type}, item)
-          {field, translated}
-
-        {field, [{module, type}]} ->
-          items = get_field(body, field)
-          translated = Enum.map(items, &translate({module, type}, &1))
-          {field, translated}
-
         {field, type} ->
-          item = get_field(body, field)
-          translated = translate(type, item)
-          {field, translated}
+          case get_field(body, field) do
+            nil -> {field, nil}
+            item -> {field, translate_field(type, item)}
+          end
       end)
 
     struct!(module, translated)
   end
+
+  defp translate_field([{module, type}], items) when is_list(items) do
+    Enum.map(items, &translate({module, type}, &1))
+  end
+
+  defp translate_field(type, item), do: translate(type, item)
 
   def translate([type], body) when is_list(body) do
     Enum.map(body, &translate(type, &1))

@@ -122,4 +122,16 @@ defmodule Polarex.Support.TranslatorTest do
 
     assert [%Polarex.CustomerStateBenefitGrant{properties: %{}}] = customer.granted_benefits
   end
+
+  test "translates bodies with missing fields, leaving them nil" do
+    body = %{"id" => "co-1", "url" => "https://polar.sh/checkout/co-1"}
+
+    assert %Polarex.Checkout{
+             id: "co-1",
+             url: "https://polar.sh/checkout/co-1",
+             products: nil,
+             prices: nil
+           } =
+             Translator.translate({Polarex.Checkout, :t}, body)
+  end
 end
