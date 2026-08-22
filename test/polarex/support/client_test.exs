@@ -14,7 +14,11 @@ defmodule Polarex.Support.ClientTest do
       Req.Test.json(conn, %{"items" => [], "pagination" => %{"total_count" => 0, "max_page" => 0}})
     end)
 
-    assert {:ok, %Polarex.ListResourceProduct{items: [], pagination: %Polarex.Pagination{total_count: 0}}} =
+    assert {:ok,
+            %Polarex.ListResourceProduct{
+              items: [],
+              pagination: %Polarex.Pagination{total_count: 0}
+            }} =
              Polarex.Products.products_list([])
   end
 
@@ -42,14 +46,21 @@ defmodule Polarex.Support.ClientTest do
       conn
       |> Plug.Conn.put_status(422)
       |> Req.Test.json(%{
-        "detail" => [%{"loc" => ["body", "email"], "msg" => "value is not a valid email", "type" => "value_error"}]
+        "detail" => [
+          %{
+            "loc" => ["body", "email"],
+            "msg" => "value is not a valid email",
+            "type" => "value_error"
+          }
+        ]
       })
     end)
 
     assert {:error, %Polarex.Error{status: 422, validation_errors: [error]}} =
              Polarex.Customers.customers_create(%Polarex.CustomerTeamCreate{type: "team"})
 
-    assert %Polarex.ValidationError{loc: ["body", "email"], msg: "value is not a valid email"} = error
+    assert %Polarex.ValidationError{loc: ["body", "email"], msg: "value is not a valid email"} =
+             error
   end
 
   test "treats empty success bodies as ok" do

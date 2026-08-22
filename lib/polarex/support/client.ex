@@ -36,7 +36,8 @@ defmodule Polarex.Support.Client do
       body: encode_body(descriptor[:body]),
       params: Map.get(descriptor, :query, %{}),
       auth: {:bearer, Application.fetch_env!(:polarex, :access_token)},
-      headers: [{"content-type", "application/json"}] ++ Keyword.get(descriptor.opts, :headers, []),
+      headers:
+        [{"content-type", "application/json"}] ++ Keyword.get(descriptor.opts, :headers, []),
       retry: retry_policy(method)
     ]
     |> Keyword.merge(Application.get_env(:polarex, :req_options, []))
@@ -48,7 +49,8 @@ defmodule Polarex.Support.Client do
   defp retry_policy(:get), do: :safe_transient
   defp retry_policy(_method), do: false
 
-  defp handle_response({:ok, %Req.Response{status: status, body: body}}, descriptor) when status < 300 do
+  defp handle_response({:ok, %Req.Response{status: status, body: body}}, descriptor)
+       when status < 300 do
     case body do
       empty when empty in [nil, ""] ->
         {:ok, nil}
@@ -90,7 +92,9 @@ defmodule Polarex.Support.Client do
   defp error_message(_status, %{"detail" => detail}) when is_binary(detail), do: detail
   defp error_message(status, _body), do: "HTTP response status: #{status}"
 
-  defp validation_errors(%Polarex.HTTPValidationError{detail: detail}) when is_list(detail), do: detail
+  defp validation_errors(%Polarex.HTTPValidationError{detail: detail}) when is_list(detail),
+    do: detail
+
   defp validation_errors(_decoded), do: []
 
   defp build_endpoint(path) do
