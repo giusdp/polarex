@@ -1,3 +1,10 @@
+## [0.8.0](https://github.com/giusdp/polarex/compare/v0.7.0...v0.8.0) (2026-08-22)
+
+### Features
+
+* configurable req options, telemetry, and safe-by-default retries ([b705a27](https://github.com/giusdp/polarex/commit/b705a27488e04ab6f03df8f281a4f54853e3005b))
+* typed errors and recursive request encoding ([a35eafc](https://github.com/giusdp/polarex/commit/a35eafc5dc303fc3aeaabbdfd28e89d5eddb6f06))
+
 ## [0.7.0](https://github.com/giusdp/polarex/compare/v0.6.0...v0.7.0) (2026-08-15)
 
 ### Features
