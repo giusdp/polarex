@@ -1,3 +1,10 @@
+## [0.8.1](https://github.com/giusdp/polarex/compare/v0.8.0...v0.8.1) (2026-08-22)
+
+### Bug Fixes
+
+* group translate clauses and drop a redundant nil clause ([d8f8af5](https://github.com/giusdp/polarex/commit/d8f8af5df7f1b81277222cf69c1ca21e15466c36))
+* translate response bodies with missing fields instead of crashing ([d2b4bd1](https://github.com/giusdp/polarex/commit/d2b4bd1f102bfd4a5b0b23d363c90c1fd9c683bb))
+
 ## [0.8.0](https://github.com/giusdp/polarex/compare/v0.7.0...v0.8.0) (2026-08-22)
 
 ### Features
