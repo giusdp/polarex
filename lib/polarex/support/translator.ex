@@ -55,21 +55,19 @@ defmodule Polarex.Support.Translator do
     struct!(module, translated)
   end
 
+  def translate([type], body) when is_list(body) do
+    Enum.map(body, &translate(type, &1))
+  end
+
+  def translate(type, _body) do
+    raise("Response translation not implemented: #{inspect(type)}")
+  end
+
   defp translate_field([{module, type}], items) when is_list(items) do
     Enum.map(items, &translate({module, type}, &1))
   end
 
   defp translate_field(type, item), do: translate(type, item)
-
-  def translate([type], body) when is_list(body) do
-    Enum.map(body, &translate(type, &1))
-  end
-
-  def translate([_type], nil), do: nil
-
-  def translate(type, _body) do
-    raise("Response translation not implemented: #{inspect(type)}")
-  end
 
   defp matches_type?(:null, body), do: is_nil(body)
   defp matches_type?(:map, body), do: is_map(body)
