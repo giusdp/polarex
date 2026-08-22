@@ -53,6 +53,8 @@ defmodule Polarex.MixProject do
   defp deps do
     [
       {:req, "~> 0.5"},
+      {:telemetry, "~> 1.0"},
+      {:plug, "~> 1.0", only: :test},
       {:oapi_generator, "~> 0.4.0", only: :dev, runtime: false},
       {:ex_doc, ">= 0.0.0", only: :dev, runtime: false}
     ]
