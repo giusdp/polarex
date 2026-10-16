@@ -1,3 +1,5 @@
+## [0.8.5](https://github.com/giusdp/polarex/compare/v0.8.4...v0.8.5) (2026-10-16)
+
 ## [0.8.4](https://github.com/giusdp/polarex/compare/v0.8.3...v0.8.4) (2026-09-11)
 
 ## [0.8.3](https://github.com/giusdp/polarex/compare/v0.8.2...v0.8.3) (2026-09-04)
