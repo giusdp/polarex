@@ -4,6 +4,7 @@ defmodule Polarex.WebhookEvent do
   """
 
   @type t :: %__MODULE__{
+          api_version: String.t(),
           created_at: DateTime.t(),
           id: String.t(),
           is_archived: boolean,
@@ -16,6 +17,7 @@ defmodule Polarex.WebhookEvent do
         }
 
   defstruct [
+    :api_version,
     :created_at,
     :id,
     :is_archived,
@@ -33,6 +35,7 @@ defmodule Polarex.WebhookEvent do
 
   def __fields__(:t) do
     [
+      api_version: :string,
       created_at: {:string, "date-time"},
       id: {:string, "uuid4"},
       is_archived: :boolean,
@@ -71,6 +74,7 @@ defmodule Polarex.WebhookEvent do
            "subscription.past_due",
            "subscription.paused",
            "subscription.resumed",
+           "subscription.migrated",
            "refund.created",
            "refund.updated",
            "product.created",

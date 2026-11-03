@@ -4,6 +4,7 @@ defmodule Polarex.WebhookEndpoint do
   """
 
   @type t :: %__MODULE__{
+          api_version: String.t(),
           created_at: DateTime.t(),
           enabled: boolean,
           events: [String.t()],
@@ -13,10 +14,12 @@ defmodule Polarex.WebhookEndpoint do
           name: String.t() | nil,
           organization_id: String.t(),
           secret: String.t(),
-          url: String.t()
+          url: String.t(),
+          uses_standard_webhook_signature: boolean
         }
 
   defstruct [
+    :api_version,
     :created_at,
     :enabled,
     :events,
@@ -26,7 +29,8 @@ defmodule Polarex.WebhookEndpoint do
     :name,
     :organization_id,
     :secret,
-    :url
+    :url,
+    :uses_standard_webhook_signature
   ]
 
   @doc false
@@ -35,6 +39,7 @@ defmodule Polarex.WebhookEndpoint do
 
   def __fields__(:t) do
     [
+      api_version: :string,
       created_at: {:string, "date-time"},
       enabled: :boolean,
       events: [
@@ -66,6 +71,7 @@ defmodule Polarex.WebhookEndpoint do
           "subscription.past_due",
           "subscription.paused",
           "subscription.resumed",
+          "subscription.migrated",
           "refund.created",
           "refund.updated",
           "product.created",
@@ -88,7 +94,8 @@ defmodule Polarex.WebhookEndpoint do
       name: {:union, [:string, :null]},
       organization_id: {:string, "uuid4"},
       secret: :string,
-      url: :string
+      url: :string,
+      uses_standard_webhook_signature: :boolean
     ]
   end
 end

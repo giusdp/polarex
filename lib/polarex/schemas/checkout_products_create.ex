@@ -23,8 +23,10 @@ defmodule Polarex.CheckoutProductsCreate do
           is_business_customer: boolean | nil,
           locale: String.t() | nil,
           max_seats: integer | nil,
+          max_units: integer | nil,
           metadata: map | nil,
           min_seats: integer | nil,
+          min_units: integer | nil,
           prices: map | nil,
           products: [String.t()],
           require_billing_address: boolean | nil,
@@ -33,7 +35,8 @@ defmodule Polarex.CheckoutProductsCreate do
           subscription_id: String.t() | nil,
           success_url: String.t() | nil,
           trial_interval: String.t() | nil,
-          trial_interval_count: integer | nil
+          trial_interval_count: integer | nil,
+          units: integer | nil
         }
 
   defstruct [
@@ -56,8 +59,10 @@ defmodule Polarex.CheckoutProductsCreate do
     :is_business_customer,
     :locale,
     :max_seats,
+    :max_units,
     :metadata,
     :min_seats,
+    :min_units,
     :prices,
     :products,
     :require_billing_address,
@@ -66,7 +71,8 @@ defmodule Polarex.CheckoutProductsCreate do
     :subscription_id,
     :success_url,
     :trial_interval,
-    :trial_interval_count
+    :trial_interval_count,
+    :units
   ]
 
   @doc false
@@ -227,8 +233,10 @@ defmodule Polarex.CheckoutProductsCreate do
       is_business_customer: :boolean,
       locale: {:union, [:string, :null]},
       max_seats: {:union, [:integer, :null]},
+      max_units: {:union, [:integer, :null]},
       metadata: :map,
       min_seats: {:union, [:integer, :null]},
+      min_units: {:union, [:integer, :null]},
       prices: {:union, [:map, :null]},
       products: [string: "uuid4"],
       require_billing_address: :boolean,
@@ -237,7 +245,8 @@ defmodule Polarex.CheckoutProductsCreate do
       subscription_id: {:union, [{:string, "uuid4"}, :null]},
       success_url: {:union, [{:string, "uri"}, :null]},
       trial_interval: {:union, [{:enum, ["day", "week", "month", "year"]}, :null]},
-      trial_interval_count: {:union, [:integer, :null]}
+      trial_interval_count: {:union, [:integer, :null]},
+      units: {:union, [:integer, :null]}
     ]
   end
 end

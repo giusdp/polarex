@@ -397,7 +397,7 @@ defmodule Polarex.CustomerPortal do
             {Polarex.CustomerPaymentMethodCreateRequiresActionResponse, :t},
             {Polarex.CustomerPaymentMethodCreateSucceededResponse, :t}
           ]}},
-        {400, {Polarex.CustomerNotReady, :t}},
+        {403, {Polarex.CustomerNotReady, :t}},
         {422, {Polarex.HTTPValidationError, :t}}
       ],
       opts: opts
@@ -629,7 +629,7 @@ defmodule Polarex.CustomerPortal do
           body :: Polarex.LicenseKeyActivate.t(),
           opts :: keyword
         ) ::
-          {:ok, Polarex.LicenseKeyActivationRead.t()}
+          {:ok, Polarex.LicenseKeyActivationCreated.t()}
           | {:error,
              Polarex.HTTPValidationError.t()
              | Polarex.NotPermitted.t()
@@ -645,7 +645,7 @@ defmodule Polarex.CustomerPortal do
       method: :post,
       request: [{"application/json", {Polarex.LicenseKeyActivate, :t}}],
       response: [
-        {200, {Polarex.LicenseKeyActivationRead, :t}},
+        {200, {Polarex.LicenseKeyActivationCreated, :t}},
         {403, {Polarex.NotPermitted, :t}},
         {404, {Polarex.ResourceNotFound, :t}},
         {422, {Polarex.HTTPValidationError, :t}}
@@ -757,6 +757,43 @@ defmodule Polarex.CustomerPortal do
   end
 
   @doc """
+  Rotate License Key
+
+  Rotate a license key.
+
+  Generates a new key string for the same license key record. The previous
+  key string immediately stops validating. Status, usage, limits, expiry,
+  and activations are preserved.
+
+  **Scopes**: `customer_portal:write`
+  """
+  @spec customer_portal_license_keys_rotate(id :: String.t(), opts :: keyword) ::
+          {:ok, Polarex.RotatedLicenseKey.t()}
+          | {:error,
+             Polarex.HTTPValidationError.t()
+             | Polarex.ResourceNotFound.t()
+             | Polarex.RotateNotPermitted.t()
+             | Polarex.Unauthorized.t()}
+  def customer_portal_license_keys_rotate(id, opts \\ []) do
+    client = opts[:client] || @default_client
+
+    client.request(%{
+      args: [id: id],
+      call: {Polarex.CustomerPortal, :customer_portal_license_keys_rotate},
+      url: "/v1/customer-portal/license-keys/#{id}/rotate",
+      method: :post,
+      response: [
+        {200, {Polarex.RotatedLicenseKey, :t}},
+        {400, {Polarex.RotateNotPermitted, :t}},
+        {401, {Polarex.Unauthorized, :t}},
+        {404, {Polarex.ResourceNotFound, :t}},
+        {422, {Polarex.HTTPValidationError, :t}}
+      ],
+      opts: opts
+    })
+  end
+
+  @doc """
   Validate License Key
 
   Validate a license key.
@@ -775,7 +812,10 @@ defmodule Polarex.CustomerPortal do
           opts :: keyword
         ) ::
           {:ok, Polarex.ValidatedLicenseKey.t()}
-          | {:error, Polarex.HTTPValidationError.t() | Polarex.ResourceNotFound.t()}
+          | {:error,
+             Polarex.BadRequest.t()
+             | Polarex.HTTPValidationError.t()
+             | Polarex.ResourceNotFound.t()}
   def customer_portal_license_keys_validate(body, opts \\ []) do
     client = opts[:client] || @default_client
 
@@ -788,6 +828,7 @@ defmodule Polarex.CustomerPortal do
       request: [{"application/json", {Polarex.LicenseKeyValidate, :t}}],
       response: [
         {200, {Polarex.ValidatedLicenseKey, :t}},
+        {400, {Polarex.BadRequest, :t}},
         {404, {Polarex.ResourceNotFound, :t}},
         {422, {Polarex.HTTPValidationError, :t}}
       ],
@@ -1483,7 +1524,8 @@ defmodule Polarex.CustomerPortal do
             | Polarex.CustomerSubscriptionResume.t()
             | Polarex.CustomerSubscriptionUpdateClear.t()
             | Polarex.CustomerSubscriptionUpdateProduct.t()
-            | Polarex.CustomerSubscriptionUpdateSeats.t(),
+            | Polarex.CustomerSubscriptionUpdateSeats.t()
+            | Polarex.CustomerSubscriptionUpdateUnits.t(),
           opts :: keyword
         ) ::
           {:ok, Polarex.CustomerSubscription.t()}
@@ -1493,7 +1535,11 @@ defmodule Polarex.CustomerPortal do
              | Polarex.PauseResumeNotAllowed.t()
              | Polarex.PaymentFailed.t()
              | Polarex.PaymentMethodRequired.t()
-             | Polarex.ResourceNotFound.t()}
+             | Polarex.ResourceNotFound.t()
+             | Polarex.SubscriptionNotScheduledToCancel.t()
+             | Polarex.UpdateSubscriptionPlanNotAllowed.t()
+             | Polarex.UpdateSubscriptionSeatsNotAllowed.t()
+             | Polarex.UpdateSubscriptionUnitsNotAllowed.t()}
   def customer_portal_subscriptions_update(id, body, opts \\ []) do
     client = opts[:client] || @default_client
 
@@ -1512,7 +1558,8 @@ defmodule Polarex.CustomerPortal do
             {Polarex.CustomerSubscriptionResume, :t},
             {Polarex.CustomerSubscriptionUpdateClear, :t},
             {Polarex.CustomerSubscriptionUpdateProduct, :t},
-            {Polarex.CustomerSubscriptionUpdateSeats, :t}
+            {Polarex.CustomerSubscriptionUpdateSeats, :t},
+            {Polarex.CustomerSubscriptionUpdateUnits, :t}
           ]}}
       ],
       response: [
@@ -1520,9 +1567,17 @@ defmodule Polarex.CustomerPortal do
         {402, {Polarex.PaymentFailed, :t}},
         {403,
          {:union,
-          [{Polarex.AlreadyCanceledSubscription, :t}, {Polarex.PauseResumeNotAllowed, :t}]}},
+          [
+            {Polarex.AlreadyCanceledSubscription, :t},
+            {Polarex.PauseResumeNotAllowed, :t},
+            {Polarex.UpdateSubscriptionPlanNotAllowed, :t},
+            {Polarex.UpdateSubscriptionSeatsNotAllowed, :t},
+            {Polarex.UpdateSubscriptionUnitsNotAllowed, :t}
+          ]}},
         {404, {Polarex.ResourceNotFound, :t}},
-        {409, {Polarex.PaymentMethodRequired, :t}},
+        {409,
+         {:union,
+          [{Polarex.PaymentMethodRequired, :t}, {Polarex.SubscriptionNotScheduledToCancel, :t}]}},
         {422, {Polarex.HTTPValidationError, :t}}
       ],
       opts: opts

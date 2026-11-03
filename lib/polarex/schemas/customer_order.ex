@@ -37,7 +37,8 @@ defmodule Polarex.CustomerOrder do
           subscription_id: String.t() | nil,
           subtotal_amount: integer,
           tax_amount: integer,
-          total_amount: integer
+          total_amount: integer,
+          units: integer | nil
         }
 
   defstruct [
@@ -74,7 +75,8 @@ defmodule Polarex.CustomerOrder do
     :subscription_id,
     :subtotal_amount,
     :tax_amount,
-    :total_amount
+    :total_amount,
+    :units
   ]
 
   @doc false
@@ -124,7 +126,8 @@ defmodule Polarex.CustomerOrder do
       subscription_id: {:union, [{:string, "uuid4"}, :null]},
       subtotal_amount: :integer,
       tax_amount: :integer,
-      total_amount: :integer
+      total_amount: :integer,
+      units: {:union, [:integer, :null]}
     ]
   end
 end

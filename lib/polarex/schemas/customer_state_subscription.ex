@@ -20,10 +20,12 @@ defmodule Polarex.CustomerStateSubscription do
           modified_at: DateTime.t() | nil,
           product_id: String.t(),
           recurring_interval: String.t(),
+          seats: integer | nil,
           started_at: DateTime.t() | nil,
           status: String.t(),
           trial_end: DateTime.t() | nil,
-          trial_start: DateTime.t() | nil
+          trial_start: DateTime.t() | nil,
+          units: integer | nil
         }
 
   defstruct [
@@ -43,10 +45,12 @@ defmodule Polarex.CustomerStateSubscription do
     :modified_at,
     :product_id,
     :recurring_interval,
+    :seats,
     :started_at,
     :status,
     :trial_end,
-    :trial_start
+    :trial_start,
+    :units
   ]
 
   @doc false
@@ -71,10 +75,12 @@ defmodule Polarex.CustomerStateSubscription do
       modified_at: {:union, [{:string, "date-time"}, :null]},
       product_id: {:string, "uuid4"},
       recurring_interval: {:enum, ["day", "week", "month", "year"]},
+      seats: {:union, [:integer, :null]},
       started_at: {:union, [{:string, "date-time"}, :null]},
       status: {:enum, ["active", "trialing"]},
       trial_end: {:union, [{:string, "date-time"}, :null]},
-      trial_start: {:union, [{:string, "date-time"}, :null]}
+      trial_start: {:union, [{:string, "date-time"}, :null]},
+      units: {:union, [:integer, :null]}
     ]
   end
 end

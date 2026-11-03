@@ -23,7 +23,7 @@ defmodule Polarex.LicenseKeys do
           body :: Polarex.LicenseKeyActivate.t(),
           opts :: keyword
         ) ::
-          {:ok, Polarex.LicenseKeyActivationRead.t()}
+          {:ok, Polarex.LicenseKeyActivationCreated.t()}
           | {:error,
              Polarex.HTTPValidationError.t()
              | Polarex.NotPermitted.t()
@@ -39,7 +39,7 @@ defmodule Polarex.LicenseKeys do
       method: :post,
       request: [{"application/json", {Polarex.LicenseKeyActivate, :t}}],
       response: [
-        {200, {Polarex.LicenseKeyActivationRead, :t}},
+        {200, {Polarex.LicenseKeyActivationCreated, :t}},
         {403, {Polarex.NotPermitted, :t}},
         {404, {Polarex.ResourceNotFound, :t}},
         {422, {Polarex.HTTPValidationError, :t}}
@@ -151,6 +151,43 @@ defmodule Polarex.LicenseKeys do
   end
 
   @doc """
+  Rotate License Key
+
+  Rotate a license key.
+
+  Generates a new key string for the same license key record. The previous
+  key string immediately stops validating. Status, usage, limits, expiry,
+  and activations are preserved.
+
+  **Scopes**: `customer_portal:write`
+  """
+  @spec customer_portal_license_keys_rotate(id :: String.t(), opts :: keyword) ::
+          {:ok, Polarex.RotatedLicenseKey.t()}
+          | {:error,
+             Polarex.HTTPValidationError.t()
+             | Polarex.ResourceNotFound.t()
+             | Polarex.RotateNotPermitted.t()
+             | Polarex.Unauthorized.t()}
+  def customer_portal_license_keys_rotate(id, opts \\ []) do
+    client = opts[:client] || @default_client
+
+    client.request(%{
+      args: [id: id],
+      call: {Polarex.LicenseKeys, :customer_portal_license_keys_rotate},
+      url: "/v1/customer-portal/license-keys/#{id}/rotate",
+      method: :post,
+      response: [
+        {200, {Polarex.RotatedLicenseKey, :t}},
+        {400, {Polarex.RotateNotPermitted, :t}},
+        {401, {Polarex.Unauthorized, :t}},
+        {404, {Polarex.ResourceNotFound, :t}},
+        {422, {Polarex.HTTPValidationError, :t}}
+      ],
+      opts: opts
+    })
+  end
+
+  @doc """
   Validate License Key
 
   Validate a license key.
@@ -169,7 +206,10 @@ defmodule Polarex.LicenseKeys do
           opts :: keyword
         ) ::
           {:ok, Polarex.ValidatedLicenseKey.t()}
-          | {:error, Polarex.HTTPValidationError.t() | Polarex.ResourceNotFound.t()}
+          | {:error,
+             Polarex.BadRequest.t()
+             | Polarex.HTTPValidationError.t()
+             | Polarex.ResourceNotFound.t()}
   def customer_portal_license_keys_validate(body, opts \\ []) do
     client = opts[:client] || @default_client
 
@@ -182,6 +222,7 @@ defmodule Polarex.LicenseKeys do
       request: [{"application/json", {Polarex.LicenseKeyValidate, :t}}],
       response: [
         {200, {Polarex.ValidatedLicenseKey, :t}},
+        {400, {Polarex.BadRequest, :t}},
         {404, {Polarex.ResourceNotFound, :t}},
         {422, {Polarex.HTTPValidationError, :t}}
       ],
@@ -201,7 +242,7 @@ defmodule Polarex.LicenseKeys do
   **Content Types**: `application/json`
   """
   @spec license_keys_activate(body :: Polarex.LicenseKeyActivate.t(), opts :: keyword) ::
-          {:ok, Polarex.LicenseKeyActivationRead.t()}
+          {:ok, Polarex.LicenseKeyActivationCreated.t()}
           | {:error,
              Polarex.HTTPValidationError.t()
              | Polarex.NotPermitted.t()
@@ -217,7 +258,7 @@ defmodule Polarex.LicenseKeys do
       method: :post,
       request: [{"application/json", {Polarex.LicenseKeyActivate, :t}}],
       response: [
-        {200, {Polarex.LicenseKeyActivationRead, :t}},
+        {200, {Polarex.LicenseKeyActivationCreated, :t}},
         {403, {Polarex.NotPermitted, :t}},
         {404, {Polarex.ResourceNotFound, :t}},
         {422, {Polarex.HTTPValidationError, :t}}
@@ -367,6 +408,43 @@ defmodule Polarex.LicenseKeys do
   end
 
   @doc """
+  Rotate License Key
+
+  Rotate a license key.
+
+  Generates a new key string for the same license key record. The previous
+  key string immediately stops validating. Status, usage, limits, expiry,
+  and activations are preserved.
+
+  **Scopes**: `license_keys:write`
+  """
+  @spec license_keys_rotate(id :: String.t(), opts :: keyword) ::
+          {:ok, Polarex.RotatedLicenseKey.t()}
+          | {:error,
+             Polarex.HTTPValidationError.t()
+             | Polarex.ResourceNotFound.t()
+             | Polarex.RotateNotPermitted.t()
+             | Polarex.Unauthorized.t()}
+  def license_keys_rotate(id, opts \\ []) do
+    client = opts[:client] || @default_client
+
+    client.request(%{
+      args: [id: id],
+      call: {Polarex.LicenseKeys, :license_keys_rotate},
+      url: "/v1/license-keys/#{id}/rotate",
+      method: :post,
+      response: [
+        {200, {Polarex.RotatedLicenseKey, :t}},
+        {400, {Polarex.RotateNotPermitted, :t}},
+        {401, {Polarex.Unauthorized, :t}},
+        {404, {Polarex.ResourceNotFound, :t}},
+        {422, {Polarex.HTTPValidationError, :t}}
+      ],
+      opts: opts
+    })
+  end
+
+  @doc """
   Update License Key
 
   Update a license key.
@@ -420,7 +498,10 @@ defmodule Polarex.LicenseKeys do
   """
   @spec license_keys_validate(body :: Polarex.LicenseKeyValidate.t(), opts :: keyword) ::
           {:ok, Polarex.ValidatedLicenseKey.t()}
-          | {:error, Polarex.HTTPValidationError.t() | Polarex.ResourceNotFound.t()}
+          | {:error,
+             Polarex.BadRequest.t()
+             | Polarex.HTTPValidationError.t()
+             | Polarex.ResourceNotFound.t()}
   def license_keys_validate(body, opts \\ []) do
     client = opts[:client] || @default_client
 
@@ -433,6 +514,7 @@ defmodule Polarex.LicenseKeys do
       request: [{"application/json", {Polarex.LicenseKeyValidate, :t}}],
       response: [
         {200, {Polarex.ValidatedLicenseKey, :t}},
+        {400, {Polarex.BadRequest, :t}},
         {404, {Polarex.ResourceNotFound, :t}},
         {422, {Polarex.HTTPValidationError, :t}}
       ],

@@ -36,7 +36,9 @@ defmodule Polarex.CheckoutPublic do
           is_payment_setup_required: boolean,
           locale: String.t() | nil,
           max_seats: integer | nil,
+          max_units: integer | nil,
           min_seats: integer | nil,
+          min_units: integer | nil,
           modified_at: DateTime.t() | nil,
           net_amount: integer,
           organization: Polarex.CheckoutOrganization.t(),
@@ -59,6 +61,7 @@ defmodule Polarex.CheckoutPublic do
           tax_behavior: String.t() | nil,
           total_amount: integer,
           trial_end: DateTime.t() | nil,
+          units: integer | nil,
           url: String.t()
         }
 
@@ -95,7 +98,9 @@ defmodule Polarex.CheckoutPublic do
     :is_payment_setup_required,
     :locale,
     :max_seats,
+    :max_units,
     :min_seats,
+    :min_units,
     :modified_at,
     :net_amount,
     :organization,
@@ -118,6 +123,7 @@ defmodule Polarex.CheckoutPublic do
     :tax_behavior,
     :total_amount,
     :trial_end,
+    :units,
     :url
   ]
 
@@ -159,7 +165,9 @@ defmodule Polarex.CheckoutPublic do
       is_payment_setup_required: :boolean,
       locale: {:union, [:string, :null]},
       max_seats: {:union, [:integer, :null]},
+      max_units: {:union, [:integer, :null]},
       min_seats: {:union, [:integer, :null]},
+      min_units: {:union, [:integer, :null]},
       modified_at: {:union, [{:string, "date-time"}, :null]},
       net_amount: :integer,
       organization: {Polarex.CheckoutOrganization, :t},
@@ -182,6 +190,7 @@ defmodule Polarex.CheckoutPublic do
       tax_behavior: {:union, [{:enum, ["inclusive", "exclusive"]}, :null]},
       total_amount: :integer,
       trial_end: {:union, [{:string, "date-time"}, :null]},
+      units: {:union, [:integer, :null]},
       url: :string
     ]
   end

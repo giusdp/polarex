@@ -56,7 +56,7 @@ defmodule Polarex.Public do
   @doc """
   Create Benefit
 
-  Create a benefit.
+  Create a benefit, for example license keys, file downloads or Discord access.
 
   **Scopes**: `benefits:write`
 
@@ -599,10 +599,12 @@ defmodule Polarex.Public do
           {:ok, Polarex.CheckoutPublicConfirmed.t()}
           | {:error,
              Polarex.AlreadyActiveSubscriptionError.t()
+             | Polarex.CheckoutLocked.t()
              | Polarex.DiscountRedemptionLimitReached.t()
              | Polarex.ExpiredCheckoutError.t()
              | Polarex.HTTPValidationError.t()
              | Polarex.NotOpenCheckout.t()
+             | Polarex.NotPermitted.t()
              | Polarex.PaymentError.t()
              | Polarex.PaymentNotReady.t()
              | Polarex.ResourceNotFound.t()
@@ -626,10 +628,12 @@ defmodule Polarex.Public do
             {Polarex.AlreadyActiveSubscriptionError, :t},
             {Polarex.DiscountRedemptionLimitReached, :t},
             {Polarex.NotOpenCheckout, :t},
+            {Polarex.NotPermitted, :t},
             {Polarex.PaymentNotReady, :t},
             {Polarex.TrialAlreadyRedeemed, :t}
           ]}},
         {404, {Polarex.ResourceNotFound, :t}},
+        {409, {Polarex.CheckoutLocked, :t}},
         {410, {Polarex.ExpiredCheckoutError, :t}},
         {422, {Polarex.HTTPValidationError, :t}}
       ],
@@ -647,6 +651,7 @@ defmodule Polarex.Public do
           | {:error,
              Polarex.ExpiredCheckoutError.t()
              | Polarex.HTTPValidationError.t()
+             | Polarex.NotPermitted.t()
              | Polarex.ResourceNotFound.t()}
   def checkouts_client_get(client_secret, opts \\ []) do
     client = opts[:client] || @default_client
@@ -658,6 +663,7 @@ defmodule Polarex.Public do
       method: :get,
       response: [
         {200, {Polarex.CheckoutPublic, :t}},
+        {403, {Polarex.NotPermitted, :t}},
         {404, {Polarex.ResourceNotFound, :t}},
         {410, {Polarex.ExpiredCheckoutError, :t}},
         {422, {Polarex.HTTPValidationError, :t}}
@@ -683,10 +689,12 @@ defmodule Polarex.Public do
           {:ok, Polarex.CheckoutPublic.t()}
           | {:error,
              Polarex.AlreadyActiveSubscriptionError.t()
+             | Polarex.CheckoutLocked.t()
              | Polarex.DiscountRedemptionLimitReached.t()
              | Polarex.ExpiredCheckoutError.t()
              | Polarex.HTTPValidationError.t()
              | Polarex.NotOpenCheckout.t()
+             | Polarex.NotPermitted.t()
              | Polarex.PaymentNotReady.t()
              | Polarex.ResourceNotFound.t()
              | Polarex.TrialAlreadyRedeemed.t()}
@@ -708,10 +716,12 @@ defmodule Polarex.Public do
             {Polarex.AlreadyActiveSubscriptionError, :t},
             {Polarex.DiscountRedemptionLimitReached, :t},
             {Polarex.NotOpenCheckout, :t},
+            {Polarex.NotPermitted, :t},
             {Polarex.PaymentNotReady, :t},
             {Polarex.TrialAlreadyRedeemed, :t}
           ]}},
         {404, {Polarex.ResourceNotFound, :t}},
+        {409, {Polarex.CheckoutLocked, :t}},
         {410, {Polarex.ExpiredCheckoutError, :t}},
         {422, {Polarex.HTTPValidationError, :t}}
       ],
@@ -844,6 +854,7 @@ defmodule Polarex.Public do
              | Polarex.DiscountRedemptionLimitReached.t()
              | Polarex.HTTPValidationError.t()
              | Polarex.NotOpenCheckout.t()
+             | Polarex.NotPermitted.t()
              | Polarex.PaymentNotReady.t()
              | Polarex.ResourceNotFound.t()
              | Polarex.TrialAlreadyRedeemed.t()}
@@ -865,6 +876,7 @@ defmodule Polarex.Public do
             {Polarex.AlreadyActiveSubscriptionError, :t},
             {Polarex.DiscountRedemptionLimitReached, :t},
             {Polarex.NotOpenCheckout, :t},
+            {Polarex.NotPermitted, :t},
             {Polarex.PaymentNotReady, :t},
             {Polarex.TrialAlreadyRedeemed, :t}
           ]}},
@@ -1573,7 +1585,7 @@ defmodule Polarex.Public do
             {Polarex.CustomerPaymentMethodCreateRequiresActionResponse, :t},
             {Polarex.CustomerPaymentMethodCreateSucceededResponse, :t}
           ]}},
-        {400, {Polarex.CustomerNotReady, :t}},
+        {403, {Polarex.CustomerNotReady, :t}},
         {422, {Polarex.HTTPValidationError, :t}}
       ],
       opts: opts
@@ -1805,7 +1817,7 @@ defmodule Polarex.Public do
           body :: Polarex.LicenseKeyActivate.t(),
           opts :: keyword
         ) ::
-          {:ok, Polarex.LicenseKeyActivationRead.t()}
+          {:ok, Polarex.LicenseKeyActivationCreated.t()}
           | {:error,
              Polarex.HTTPValidationError.t()
              | Polarex.NotPermitted.t()
@@ -1821,7 +1833,7 @@ defmodule Polarex.Public do
       method: :post,
       request: [{"application/json", {Polarex.LicenseKeyActivate, :t}}],
       response: [
-        {200, {Polarex.LicenseKeyActivationRead, :t}},
+        {200, {Polarex.LicenseKeyActivationCreated, :t}},
         {403, {Polarex.NotPermitted, :t}},
         {404, {Polarex.ResourceNotFound, :t}},
         {422, {Polarex.HTTPValidationError, :t}}
@@ -1933,6 +1945,43 @@ defmodule Polarex.Public do
   end
 
   @doc """
+  Rotate License Key
+
+  Rotate a license key.
+
+  Generates a new key string for the same license key record. The previous
+  key string immediately stops validating. Status, usage, limits, expiry,
+  and activations are preserved.
+
+  **Scopes**: `customer_portal:write`
+  """
+  @spec customer_portal_license_keys_rotate(id :: String.t(), opts :: keyword) ::
+          {:ok, Polarex.RotatedLicenseKey.t()}
+          | {:error,
+             Polarex.HTTPValidationError.t()
+             | Polarex.ResourceNotFound.t()
+             | Polarex.RotateNotPermitted.t()
+             | Polarex.Unauthorized.t()}
+  def customer_portal_license_keys_rotate(id, opts \\ []) do
+    client = opts[:client] || @default_client
+
+    client.request(%{
+      args: [id: id],
+      call: {Polarex.Public, :customer_portal_license_keys_rotate},
+      url: "/v1/customer-portal/license-keys/#{id}/rotate",
+      method: :post,
+      response: [
+        {200, {Polarex.RotatedLicenseKey, :t}},
+        {400, {Polarex.RotateNotPermitted, :t}},
+        {401, {Polarex.Unauthorized, :t}},
+        {404, {Polarex.ResourceNotFound, :t}},
+        {422, {Polarex.HTTPValidationError, :t}}
+      ],
+      opts: opts
+    })
+  end
+
+  @doc """
   Validate License Key
 
   Validate a license key.
@@ -1951,7 +2000,10 @@ defmodule Polarex.Public do
           opts :: keyword
         ) ::
           {:ok, Polarex.ValidatedLicenseKey.t()}
-          | {:error, Polarex.HTTPValidationError.t() | Polarex.ResourceNotFound.t()}
+          | {:error,
+             Polarex.BadRequest.t()
+             | Polarex.HTTPValidationError.t()
+             | Polarex.ResourceNotFound.t()}
   def customer_portal_license_keys_validate(body, opts \\ []) do
     client = opts[:client] || @default_client
 
@@ -1964,6 +2016,7 @@ defmodule Polarex.Public do
       request: [{"application/json", {Polarex.LicenseKeyValidate, :t}}],
       response: [
         {200, {Polarex.ValidatedLicenseKey, :t}},
+        {400, {Polarex.BadRequest, :t}},
         {404, {Polarex.ResourceNotFound, :t}},
         {422, {Polarex.HTTPValidationError, :t}}
       ],
@@ -2659,7 +2712,8 @@ defmodule Polarex.Public do
             | Polarex.CustomerSubscriptionResume.t()
             | Polarex.CustomerSubscriptionUpdateClear.t()
             | Polarex.CustomerSubscriptionUpdateProduct.t()
-            | Polarex.CustomerSubscriptionUpdateSeats.t(),
+            | Polarex.CustomerSubscriptionUpdateSeats.t()
+            | Polarex.CustomerSubscriptionUpdateUnits.t(),
           opts :: keyword
         ) ::
           {:ok, Polarex.CustomerSubscription.t()}
@@ -2669,7 +2723,11 @@ defmodule Polarex.Public do
              | Polarex.PauseResumeNotAllowed.t()
              | Polarex.PaymentFailed.t()
              | Polarex.PaymentMethodRequired.t()
-             | Polarex.ResourceNotFound.t()}
+             | Polarex.ResourceNotFound.t()
+             | Polarex.SubscriptionNotScheduledToCancel.t()
+             | Polarex.UpdateSubscriptionPlanNotAllowed.t()
+             | Polarex.UpdateSubscriptionSeatsNotAllowed.t()
+             | Polarex.UpdateSubscriptionUnitsNotAllowed.t()}
   def customer_portal_subscriptions_update(id, body, opts \\ []) do
     client = opts[:client] || @default_client
 
@@ -2688,7 +2746,8 @@ defmodule Polarex.Public do
             {Polarex.CustomerSubscriptionResume, :t},
             {Polarex.CustomerSubscriptionUpdateClear, :t},
             {Polarex.CustomerSubscriptionUpdateProduct, :t},
-            {Polarex.CustomerSubscriptionUpdateSeats, :t}
+            {Polarex.CustomerSubscriptionUpdateSeats, :t},
+            {Polarex.CustomerSubscriptionUpdateUnits, :t}
           ]}}
       ],
       response: [
@@ -2696,9 +2755,17 @@ defmodule Polarex.Public do
         {402, {Polarex.PaymentFailed, :t}},
         {403,
          {:union,
-          [{Polarex.AlreadyCanceledSubscription, :t}, {Polarex.PauseResumeNotAllowed, :t}]}},
+          [
+            {Polarex.AlreadyCanceledSubscription, :t},
+            {Polarex.PauseResumeNotAllowed, :t},
+            {Polarex.UpdateSubscriptionPlanNotAllowed, :t},
+            {Polarex.UpdateSubscriptionSeatsNotAllowed, :t},
+            {Polarex.UpdateSubscriptionUnitsNotAllowed, :t}
+          ]}},
         {404, {Polarex.ResourceNotFound, :t}},
-        {409, {Polarex.PaymentMethodRequired, :t}},
+        {409,
+         {:union,
+          [{Polarex.PaymentMethodRequired, :t}, {Polarex.SubscriptionNotScheduledToCancel, :t}]}},
         {422, {Polarex.HTTPValidationError, :t}}
       ],
       opts: opts
@@ -2766,6 +2833,8 @@ defmodule Polarex.Public do
   @doc """
   Assign Seat
 
+  Assign a seat for a subscription or order.
+
   **Scopes**: `customer_seats:write`
 
   ## Request Body
@@ -2799,6 +2868,8 @@ defmodule Polarex.Public do
   @doc """
   Claim Seat
 
+  Claim a customer seat with an invitation token.
+
   ## Request Body
 
   **Content Types**: `application/json`
@@ -2827,6 +2898,8 @@ defmodule Polarex.Public do
 
   @doc """
   Get Claim Info
+
+  Get claim information for a customer seat invitation.
   """
   @spec customer_seats_get_claim_info(invitation_token :: String.t(), opts :: keyword) ::
           {:ok, Polarex.SeatClaimInfo.t()} | {:error, Polarex.HTTPValidationError.t()}
@@ -2851,6 +2924,8 @@ defmodule Polarex.Public do
 
   @doc """
   List Seats
+
+  List seats for a subscription or order.
 
   **Scopes**: `customer_seats:read`
 
@@ -2886,6 +2961,8 @@ defmodule Polarex.Public do
   @doc """
   Resend Invitation
 
+  Resend an invitation for a pending customer seat.
+
   **Scopes**: `customer_seats:write`
   """
   @spec customer_seats_resend_invitation(seat_id :: String.t(), opts :: keyword) ::
@@ -2912,6 +2989,8 @@ defmodule Polarex.Public do
 
   @doc """
   Revoke Seat
+
+  Revoke a customer seat.
 
   **Scopes**: `customer_seats:write`
   """
@@ -2955,7 +3034,9 @@ defmodule Polarex.Public do
             Polarex.CustomerSessionCustomerExternalIDCreate.t()
             | Polarex.CustomerSessionCustomerIDCreate.t(),
           opts :: keyword
-        ) :: {:ok, Polarex.CustomerSession.t()} | {:error, Polarex.HTTPValidationError.t()}
+        ) ::
+          {:ok, Polarex.CustomerSession.t()}
+          | {:error, Polarex.AmbiguousExternalCustomerID.t() | Polarex.HTTPValidationError.t()}
   def customer_sessions_create(body, opts \\ []) do
     client = opts[:client] || @default_client
 
@@ -2973,7 +3054,11 @@ defmodule Polarex.Public do
             {Polarex.CustomerSessionCustomerIDCreate, :t}
           ]}}
       ],
-      response: [{201, {Polarex.CustomerSession, :t}}, {422, {Polarex.HTTPValidationError, :t}}],
+      response: [
+        {201, {Polarex.CustomerSession, :t}},
+        {409, {Polarex.AmbiguousExternalCustomerID, :t}},
+        {422, {Polarex.HTTPValidationError, :t}}
+      ],
       opts: opts
     })
   end
@@ -2982,6 +3067,8 @@ defmodule Polarex.Public do
   Create Customer
 
   Create a customer.
+
+  Set `external_id` to the customer's ID in your system to look it up by that ID.
 
   **Scopes**: `customers:write`
 
@@ -3571,6 +3658,84 @@ defmodule Polarex.Public do
       method: :get,
       response: [
         {200, {Polarex.Member, :t}},
+        {404, {Polarex.ResourceNotFound, :t}},
+        {409, {Polarex.AmbiguousExternalCustomerID, :t}},
+        {422, {Polarex.HTTPValidationError, :t}}
+      ],
+      opts: opts
+    })
+  end
+
+  @doc """
+  List Members
+
+  List the members of a customer.
+
+  **Scopes**: `members:read` `members:write`
+
+  ## Options
+
+    * `role`: Filter by member role.
+    * `page`: Page number, defaults to 1.
+    * `limit`: Size of a page, defaults to 10. Maximum is 100.
+    * `sorting`: Sorting criterion. Several criteria can be used simultaneously and will be applied in order. Add a minus sign `-` before the criteria name to sort by descending order.
+
+  """
+  @spec customers_members_list(id :: String.t(), opts :: keyword) ::
+          {:ok, Polarex.ListResourceMember.t()}
+          | {:error, Polarex.HTTPValidationError.t() | Polarex.ResourceNotFound.t()}
+  def customers_members_list(id, opts \\ []) do
+    client = opts[:client] || @default_client
+    query = Keyword.take(opts, [:limit, :page, :role, :sorting])
+
+    client.request(%{
+      args: [id: id],
+      call: {Polarex.Public, :customers_members_list},
+      url: "/v1/customers/#{id}/members",
+      method: :get,
+      query: query,
+      response: [
+        {200, {Polarex.ListResourceMember, :t}},
+        {404, {Polarex.ResourceNotFound, :t}},
+        {422, {Polarex.HTTPValidationError, :t}}
+      ],
+      opts: opts
+    })
+  end
+
+  @doc """
+  List Members by Customer External ID
+
+  List the members of a customer identified by its external ID.
+
+  **Scopes**: `members:read` `members:write`
+
+  ## Options
+
+    * `role`: Filter by member role.
+    * `page`: Page number, defaults to 1.
+    * `limit`: Size of a page, defaults to 10. Maximum is 100.
+    * `sorting`: Sorting criterion. Several criteria can be used simultaneously and will be applied in order. Add a minus sign `-` before the criteria name to sort by descending order.
+
+  """
+  @spec customers_members_list_external(external_id :: String.t(), opts :: keyword) ::
+          {:ok, Polarex.ListResourceMember.t()}
+          | {:error,
+             Polarex.AmbiguousExternalCustomerID.t()
+             | Polarex.HTTPValidationError.t()
+             | Polarex.ResourceNotFound.t()}
+  def customers_members_list_external(external_id, opts \\ []) do
+    client = opts[:client] || @default_client
+    query = Keyword.take(opts, [:limit, :page, :role, :sorting])
+
+    client.request(%{
+      args: [external_id: external_id],
+      call: {Polarex.Public, :customers_members_list_external},
+      url: "/v1/customers/external/#{external_id}/members",
+      method: :get,
+      query: query,
+      response: [
+        {200, {Polarex.ListResourceMember, :t}},
         {404, {Polarex.ResourceNotFound, :t}},
         {409, {Polarex.AmbiguousExternalCustomerID, :t}},
         {422, {Polarex.HTTPValidationError, :t}}
@@ -4503,7 +4668,7 @@ defmodule Polarex.Public do
   **Content Types**: `application/json`
   """
   @spec license_keys_activate(body :: Polarex.LicenseKeyActivate.t(), opts :: keyword) ::
-          {:ok, Polarex.LicenseKeyActivationRead.t()}
+          {:ok, Polarex.LicenseKeyActivationCreated.t()}
           | {:error,
              Polarex.HTTPValidationError.t()
              | Polarex.NotPermitted.t()
@@ -4519,7 +4684,7 @@ defmodule Polarex.Public do
       method: :post,
       request: [{"application/json", {Polarex.LicenseKeyActivate, :t}}],
       response: [
-        {200, {Polarex.LicenseKeyActivationRead, :t}},
+        {200, {Polarex.LicenseKeyActivationCreated, :t}},
         {403, {Polarex.NotPermitted, :t}},
         {404, {Polarex.ResourceNotFound, :t}},
         {422, {Polarex.HTTPValidationError, :t}}
@@ -4669,6 +4834,43 @@ defmodule Polarex.Public do
   end
 
   @doc """
+  Rotate License Key
+
+  Rotate a license key.
+
+  Generates a new key string for the same license key record. The previous
+  key string immediately stops validating. Status, usage, limits, expiry,
+  and activations are preserved.
+
+  **Scopes**: `license_keys:write`
+  """
+  @spec license_keys_rotate(id :: String.t(), opts :: keyword) ::
+          {:ok, Polarex.RotatedLicenseKey.t()}
+          | {:error,
+             Polarex.HTTPValidationError.t()
+             | Polarex.ResourceNotFound.t()
+             | Polarex.RotateNotPermitted.t()
+             | Polarex.Unauthorized.t()}
+  def license_keys_rotate(id, opts \\ []) do
+    client = opts[:client] || @default_client
+
+    client.request(%{
+      args: [id: id],
+      call: {Polarex.Public, :license_keys_rotate},
+      url: "/v1/license-keys/#{id}/rotate",
+      method: :post,
+      response: [
+        {200, {Polarex.RotatedLicenseKey, :t}},
+        {400, {Polarex.RotateNotPermitted, :t}},
+        {401, {Polarex.Unauthorized, :t}},
+        {404, {Polarex.ResourceNotFound, :t}},
+        {422, {Polarex.HTTPValidationError, :t}}
+      ],
+      opts: opts
+    })
+  end
+
+  @doc """
   Update License Key
 
   Update a license key.
@@ -4722,7 +4924,10 @@ defmodule Polarex.Public do
   """
   @spec license_keys_validate(body :: Polarex.LicenseKeyValidate.t(), opts :: keyword) ::
           {:ok, Polarex.ValidatedLicenseKey.t()}
-          | {:error, Polarex.HTTPValidationError.t() | Polarex.ResourceNotFound.t()}
+          | {:error,
+             Polarex.BadRequest.t()
+             | Polarex.HTTPValidationError.t()
+             | Polarex.ResourceNotFound.t()}
   def license_keys_validate(body, opts \\ []) do
     client = opts[:client] || @default_client
 
@@ -4735,46 +4940,8 @@ defmodule Polarex.Public do
       request: [{"application/json", {Polarex.LicenseKeyValidate, :t}}],
       response: [
         {200, {Polarex.ValidatedLicenseKey, :t}},
+        {400, {Polarex.BadRequest, :t}},
         {404, {Polarex.ResourceNotFound, :t}},
-        {422, {Polarex.HTTPValidationError, :t}}
-      ],
-      opts: opts
-    })
-  end
-
-  @doc """
-  List Members
-
-  List members with optional customer ID filter.
-
-  **Scopes**: `members:read` `members:write`
-
-  ## Options
-
-    * `customer_id`: Filter by customer ID.
-    * `external_customer_id`: Filter by customer external ID.
-    * `role`: Filter by member role.
-    * `page`: Page number, defaults to 1.
-    * `limit`: Size of a page, defaults to 10. Maximum is 100.
-    * `sorting`: Sorting criterion. Several criteria can be used simultaneously and will be applied in order. Add a minus sign `-` before the criteria name to sort by descending order.
-
-  """
-  @spec members_list_members(opts :: keyword) ::
-          {:ok, Polarex.ListResourceMember.t()} | {:error, Polarex.HTTPValidationError.t()}
-  def members_list_members(opts \\ []) do
-    client = opts[:client] || @default_client
-
-    query =
-      Keyword.take(opts, [:customer_id, :external_customer_id, :limit, :page, :role, :sorting])
-
-    client.request(%{
-      args: [],
-      call: {Polarex.Public, :members_list_members},
-      url: "/v1/members/",
-      method: :get,
-      query: query,
-      response: [
-        {200, {Polarex.ListResourceMember, :t}},
         {422, {Polarex.HTTPValidationError, :t}}
       ],
       opts: opts
@@ -5949,7 +6116,7 @@ defmodule Polarex.Public do
   **Scopes**: `payments:read`
   """
   @spec payments_get(id :: String.t(), opts :: keyword) ::
-          {:ok, Polarex.CardPayment.t() | Polarex.GenericPayment.t()}
+          {:ok, Polarex.CardPayment.t() | Polarex.GenericPayment.t() | Polarex.KrCardPayment.t()}
           | {:error, Polarex.HTTPValidationError.t() | Polarex.ResourceNotFound.t()}
   def payments_get(id, opts \\ []) do
     client = opts[:client] || @default_client
@@ -5960,7 +6127,9 @@ defmodule Polarex.Public do
       url: "/v1/payments/#{id}",
       method: :get,
       response: [
-        {200, {:union, [{Polarex.CardPayment, :t}, {Polarex.GenericPayment, :t}]}},
+        {200,
+         {:union,
+          [{Polarex.CardPayment, :t}, {Polarex.GenericPayment, :t}, {Polarex.KrCardPayment, :t}]}},
         {404, {Polarex.ResourceNotFound, :t}},
         {422, {Polarex.HTTPValidationError, :t}}
       ],
@@ -6051,6 +6220,42 @@ defmodule Polarex.Public do
          {:union, [{Polarex.ProductCreateOneTime, :t}, {Polarex.ProductCreateRecurring, :t}]}}
       ],
       response: [{201, {Polarex.Product, :t}}, {422, {Polarex.HTTPValidationError, :t}}],
+      opts: opts
+    })
+  end
+
+  @doc """
+  Delete Product
+
+  Delete a product.
+
+  Only products without orders, subscriptions, trials or discounts can be deleted.
+  Products that are in use can only be archived.
+
+  **Scopes**: `products:write`
+  """
+  @spec products_delete(id :: String.t(), opts :: keyword) ::
+          :ok
+          | {:error,
+             Polarex.HTTPValidationError.t()
+             | Polarex.NotPermitted.t()
+             | Polarex.ProductNotDeletable.t()
+             | Polarex.ResourceNotFound.t()}
+  def products_delete(id, opts \\ []) do
+    client = opts[:client] || @default_client
+
+    client.request(%{
+      args: [id: id],
+      call: {Polarex.Public, :products_delete},
+      url: "/v1/products/#{id}",
+      method: :delete,
+      response: [
+        {204, :null},
+        {403, {Polarex.NotPermitted, :t}},
+        {404, {Polarex.ResourceNotFound, :t}},
+        {409, {Polarex.ProductNotDeletable, :t}},
+        {422, {Polarex.HTTPValidationError, :t}}
+      ],
       opts: opts
     })
   end
@@ -6543,7 +6748,8 @@ defmodule Polarex.Public do
             | Polarex.SubscriptionUpdateBase.t()
             | Polarex.SubscriptionUpdateBillingPeriod.t()
             | Polarex.SubscriptionUpdateClear.t()
-            | Polarex.SubscriptionUpdateSeats.t(),
+            | Polarex.SubscriptionUpdateSeats.t()
+            | Polarex.SubscriptionUpdateUnits.t(),
           opts :: keyword
         ) ::
           {:ok, Polarex.Subscription.t()}
@@ -6551,9 +6757,12 @@ defmodule Polarex.Public do
              Polarex.AlreadyCanceledSubscription.t()
              | Polarex.HTTPValidationError.t()
              | Polarex.InactiveSubscription.t()
+             | Polarex.PaymentActionRequired.t()
              | Polarex.PaymentFailed.t()
+             | Polarex.PaymentNotReady.t()
              | Polarex.ResourceNotFound.t()
-             | Polarex.SubscriptionLocked.t()}
+             | Polarex.SubscriptionLocked.t()
+             | Polarex.SubscriptionNotScheduledToCancel.t()}
   def subscriptions_update(id, body, opts \\ []) do
     client = opts[:client] || @default_client
 
@@ -6574,16 +6783,24 @@ defmodule Polarex.Public do
             {Polarex.SubscriptionUpdateBase, :t},
             {Polarex.SubscriptionUpdateBillingPeriod, :t},
             {Polarex.SubscriptionUpdateClear, :t},
-            {Polarex.SubscriptionUpdateSeats, :t}
+            {Polarex.SubscriptionUpdateSeats, :t},
+            {Polarex.SubscriptionUpdateUnits, :t}
           ]}}
       ],
       response: [
         {200, {Polarex.Subscription, :t}},
-        {402, {Polarex.PaymentFailed, :t}},
+        {402, {:union, [{Polarex.PaymentActionRequired, :t}, {Polarex.PaymentFailed, :t}]}},
         {403,
-         {:union, [{Polarex.AlreadyCanceledSubscription, :t}, {Polarex.InactiveSubscription, :t}]}},
+         {:union,
+          [
+            {Polarex.AlreadyCanceledSubscription, :t},
+            {Polarex.InactiveSubscription, :t},
+            {Polarex.PaymentNotReady, :t}
+          ]}},
         {404, {Polarex.ResourceNotFound, :t}},
-        {409, {Polarex.SubscriptionLocked, :t}},
+        {409,
+         {:union,
+          [{Polarex.SubscriptionLocked, :t}, {Polarex.SubscriptionNotScheduledToCancel, :t}]}},
         {422, {Polarex.HTTPValidationError, :t}}
       ],
       opts: opts

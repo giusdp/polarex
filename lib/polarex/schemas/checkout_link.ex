@@ -22,6 +22,7 @@ defmodule Polarex.CheckoutLink do
           success_url: String.t() | nil,
           trial_interval: String.t() | nil,
           trial_interval_count: integer | nil,
+          units: integer | nil,
           url: String.t()
         }
 
@@ -44,6 +45,7 @@ defmodule Polarex.CheckoutLink do
     :success_url,
     :trial_interval,
     :trial_interval_count,
+    :units,
     :url
   ]
 
@@ -71,6 +73,7 @@ defmodule Polarex.CheckoutLink do
       success_url: {:union, [:string, :null]},
       trial_interval: {:union, [{:enum, ["day", "week", "month", "year"]}, :null]},
       trial_interval_count: {:union, [:integer, :null]},
+      units: {:union, [:integer, :null]},
       url: :string
     ]
   end

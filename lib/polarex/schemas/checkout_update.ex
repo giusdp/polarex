@@ -28,7 +28,8 @@ defmodule Polarex.CheckoutUpdate do
           seats: integer | nil,
           success_url: String.t() | nil,
           trial_interval: String.t() | nil,
-          trial_interval_count: integer | nil
+          trial_interval_count: integer | nil,
+          units: integer | nil
         }
 
   defstruct [
@@ -56,7 +57,8 @@ defmodule Polarex.CheckoutUpdate do
     :seats,
     :success_url,
     :trial_interval,
-    :trial_interval_count
+    :trial_interval_count,
+    :units
   ]
 
   @doc false
@@ -222,7 +224,8 @@ defmodule Polarex.CheckoutUpdate do
       seats: {:union, [:integer, :null]},
       success_url: {:union, [{:string, "uri"}, :null]},
       trial_interval: {:union, [{:enum, ["day", "week", "month", "year"]}, :null]},
-      trial_interval_count: {:union, [:integer, :null]}
+      trial_interval_count: {:union, [:integer, :null]},
+      units: {:union, [:integer, :null]}
     ]
   end
 end

@@ -13,7 +13,7 @@ defmodule Polarex.Payments do
   **Scopes**: `payments:read`
   """
   @spec payments_get(id :: String.t(), opts :: keyword) ::
-          {:ok, Polarex.CardPayment.t() | Polarex.GenericPayment.t()}
+          {:ok, Polarex.CardPayment.t() | Polarex.GenericPayment.t() | Polarex.KrCardPayment.t()}
           | {:error, Polarex.HTTPValidationError.t() | Polarex.ResourceNotFound.t()}
   def payments_get(id, opts \\ []) do
     client = opts[:client] || @default_client
@@ -24,7 +24,9 @@ defmodule Polarex.Payments do
       url: "/v1/payments/#{id}",
       method: :get,
       response: [
-        {200, {:union, [{Polarex.CardPayment, :t}, {Polarex.GenericPayment, :t}]}},
+        {200,
+         {:union,
+          [{Polarex.CardPayment, :t}, {Polarex.GenericPayment, :t}, {Polarex.KrCardPayment, :t}]}},
         {404, {Polarex.ResourceNotFound, :t}},
         {422, {Polarex.HTTPValidationError, :t}}
       ],
