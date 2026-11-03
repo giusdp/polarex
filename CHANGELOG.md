@@ -1,3 +1,10 @@
+## [0.9.0](https://github.com/giusdp/polarex/compare/v0.8.5...v0.9.0) (2026-11-03)
+
+### Features
+
+* **api:** move to Polar API version 2026-10 ([#38](https://github.com/giusdp/polarex/issues/38)) ([b2a9bfa](https://github.com/giusdp/polarex/commit/b2a9bfa34cebbc905567f760459bfd143950cc56))
+* pin Polar API version and auto-maintain SDK via CI [skip release] ([36c2d5b](https://github.com/giusdp/polarex/commit/36c2d5b37bb698c6a14c6a3ab8cae98d4e51f7eb))
+
 ## [0.8.5](https://github.com/giusdp/polarex/compare/v0.8.4...v0.8.5) (2026-10-16)
 
 ## [0.8.4](https://github.com/giusdp/polarex/compare/v0.8.3...v0.8.4) (2026-09-11)
