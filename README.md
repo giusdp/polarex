@@ -92,10 +92,30 @@ attach handlers for logging or metrics without wrapping the client.
 
 ### API versioning
 
-Polar versions its API by date (e.g. `2026-04`) and selects the version by
-SDK generation rather than an HTTP header: the behavior you get matches the
-OpenAPI spec this library was generated from. Check the `info.version` field
-of the bundled `openapi.json` for the current one.
+Polar versions its API by date (`YYYY-MM`, a new one every quarter) and picks
+the version from the `Polar-Version` request header; requests without it
+follow whatever Polar currently calls Current, which changes under you every
+quarter.
+
+Each Polarex release is generated from one API version and pins every request
+to it, so responses always match the bundled structs:
+
+```elixir
+Polarex.APIVersion.version()
+#=> "2026-10"
+```
+
+Upgrading Polarex is how you move to a newer API version. Releases that change
+the API version bump the minor version, so a `~> 0.x.y` requirement never
+moves you to a new API contract by surprise.
+
+A `polar-version` header passed to a call takes precedence, e.g.
+`headers: [{"polar-version", "2026-04"}]`, but the structs will still
+describe the pinned version.
+
+Webhook endpoints are versioned separately: Polar sends payloads in the
+`api_version` set on the endpoint, so keep it equal to
+`Polarex.APIVersion.version()` if you decode webhooks with Polarex structs.
 
 ## Usage
 
@@ -123,7 +143,7 @@ Polarex.Checkouts.checkouts_list([])
 Because this library uses a code generator for the majority of its mass, there are two modes of contribution.
 Please consider these when creating issues or opening pull requests:
 
-* If the generated code is out of date, there is a mix task `mix sdk.build` that will pull the latest spec and generate the code.
+* The generated code is maintained by CI: the `Sync OpenAPI Spec` workflow runs weekly, follows Polar's Current API version, regenerates `lib/`, deletes modules for schemas and operations Polar removed, and opens a PR that auto-merges when CI passes. Don't hand-edit `lib/polarex/operations`, `lib/polarex/schemas` or `lib/polarex/api_version.ex`. To pin a specific version, run the workflow manually with a `version` input. Locally, `mix sdk.build [VERSION | --current]` does the same regeneration.
 * In the the support folder there is a [req](https://github.com/wojtekmach/req) client that does the actual HTTP requests. If you find a bug or want to improve it (e.g. adding telemetry), you can add to `Polarex.Support.Client` and open a pull request.
 
 

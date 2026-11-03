@@ -6,6 +6,7 @@ defmodule Polarex.MixProject do
       app: :polarex,
       version: "0.8.5",
       elixir: "~> 1.15",
+      elixirc_paths: elixirc_paths(Mix.env()),
       start_permanent: Mix.env() == :prod,
       deps: deps(),
       aliases: aliases(),
@@ -60,9 +61,17 @@ defmodule Polarex.MixProject do
     ]
   end
 
+  # The SDK maintenance tasks in dev/ are not compiled into the Hex package.
+  defp elixirc_paths(:dev), do: ["lib", "dev"]
+  defp elixirc_paths(_env), do: ["lib"]
+
   defp aliases do
     [
-      "sdk.build": ["spec.sync", "api.gen default openapi.json"]
+      # mix sdk.build [VERSION | --current]: fetch the spec, then regenerate.
+      "sdk.build": fn args ->
+        Mix.Task.run("spec.sync", args)
+        Mix.Task.run("sdk.gen")
+      end
     ]
   end
 end

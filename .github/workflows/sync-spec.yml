@@ -1,13 +1,39 @@
 name: Sync OpenAPI Spec
 
+# Keeps the SDK in step with Polar with no manual work:
+#   * follows Polar's Current API version (discovered from the API itself),
+#   * refreshes the pinned spec between version releases,
+#   * regenerates lib/ and deletes modules of removed schemas and operations,
+#   * opens or updates a single PR that auto-merges once CI passes.
+
 on:
   schedule:
-    - cron: "0 6 1,15 * *"
-  workflow_dispatch: {}
+    # Weekly. Polar releases a new version in the first week of Jan/Apr/Jul/Oct.
+    - cron: "0 6 * * 1"
+  push:
+    branches: [ main ]
+    # Anything that can change the generated code without a spec change.
+    paths:
+      - mix.lock
+      - config/config.exs
+      - dev/**
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Pin this Polar API version (YYYY-MM). Leave empty to follow Polar's Current version."
+        required: false
+        default: ""
+
+concurrency:
+  group: sync-spec
+  cancel-in-progress: false
 
 permissions:
   contents: write
   pull-requests: write
+
+env:
+  BRANCH: bot/spec-sync
 
 jobs:
   sync:
@@ -25,7 +51,10 @@ jobs:
           git config user.email "polarex-bot@users.noreply.github.com"
 
       - name: Snapshot previous spec
-        run: cp openapi.json /tmp/openapi.previous.json
+        id: previous
+        run: |
+          cp openapi.json /tmp/openapi.previous.json
+          echo "version=$(jq -r .info.version openapi.json)" >> "$GITHUB_OUTPUT"
 
       - name: Install mise
         uses: jdx/mise-action@v5
@@ -45,14 +74,23 @@ jobs:
         run: mix deps.get
 
       - name: Regenerate SDK
-        run: mix sdk.build
+        id: regen
+        env:
+          VERSION: ${{ inputs.version }}
+        run: |
+          if [ -n "$VERSION" ]; then
+            mix sdk.build "$VERSION"
+          else
+            mix sdk.build --current
+          fi
+          echo "version=$(jq -r .info.version openapi.json)" >> "$GITHUB_OUTPUT"
 
       - name: Detect change
         id: diff
         run: |
-          if git diff --quiet openapi.json; then
+          if [ -z "$(git status --porcelain -- openapi.json lib)" ]; then
             echo "changed=false" >> "$GITHUB_OUTPUT"
-            echo "No spec change."
+            echo "Generated code is up to date."
           else
             echo "changed=true" >> "$GITHUB_OUTPUT"
           fi
@@ -60,6 +98,9 @@ jobs:
       - name: Classify with oasdiff
         if: steps.diff.outputs.changed == 'true'
         id: classify
+        env:
+          PREVIOUS_VERSION: ${{ steps.previous.outputs.version }}
+          VERSION: ${{ steps.regen.outputs.version }}
         run: |
           set -euo pipefail
 
@@ -79,9 +120,13 @@ jobs:
           ENDPOINT_ADDED_COUNT=$(jq '[.[] | select(.id == "endpoint-added")] | length' /tmp/changelog.json)
 
           echo "breaking_count=$BREAKING_COUNT" >> "$GITHUB_OUTPUT"
-          echo "endpoint_added_count=$ENDPOINT_ADDED_COUNT" >> "$GITHUB_OUTPUT"
 
-          if [ "$BREAKING_COUNT" -gt 0 ]; then
+          # feat bumps the minor version, which is the breaking boundary for
+          # `~> 0.x.y` requirements, so users only move API version on purpose.
+          if [ "$VERSION" != "$PREVIOUS_VERSION" ]; then
+            echo "kind=version" >> "$GITHUB_OUTPUT"
+            echo "subject=feat(api): move to Polar API version $VERSION" >> "$GITHUB_OUTPUT"
+          elif [ "$BREAKING_COUNT" -gt 0 ]; then
             echo "kind=breaking" >> "$GITHUB_OUTPUT"
             echo "subject=feat(spec): sync OpenAPI spec" >> "$GITHUB_OUTPUT"
           elif [ "$ENDPOINT_ADDED_COUNT" -gt 0 ]; then
@@ -94,7 +139,12 @@ jobs:
 
       - name: Build PR body
         if: steps.diff.outputs.changed == 'true'
-        id: body
+        env:
+          PREVIOUS_VERSION: ${{ steps.previous.outputs.version }}
+          VERSION: ${{ steps.regen.outputs.version }}
+          KIND: ${{ steps.classify.outputs.kind }}
+          SUBJECT: ${{ steps.classify.outputs.subject }}
+          BREAKING_COUNT: ${{ steps.classify.outputs.breaking_count }}
         run: |
           # GitHub caps PR bodies at 65536 characters; cap each section so the
           # combined body stays well under it.
@@ -111,24 +161,41 @@ jobs:
             fi
           }
 
+          git ls-files --deleted -- lib > /tmp/removed.txt
+
           {
             echo "Automated OpenAPI spec sync."
             echo
             echo "## Classification"
             echo
-            echo "- Kind: \`${{ steps.classify.outputs.kind }}\`"
-            echo "- Commit subject: \`${{ steps.classify.outputs.subject }}\`"
+            if [ "$KIND" = "version" ]; then
+              echo "- Polar API version: \`$PREVIOUS_VERSION\` → \`$VERSION\`"
+              echo "  Every request now sends \`Polar-Version: $VERSION\`."
+            else
+              echo "- Polar API version: \`$VERSION\` (unchanged)"
+            fi
+            echo "- Kind: \`$KIND\`"
+            echo "- Commit subject: \`$SUBJECT\`"
+            echo "- Stale modules removed: $(wc -l < /tmp/removed.txt)"
             echo
             echo "Auto-merges when CI passes."
             echo
             echo "Full oasdiff output: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+            if [ -s /tmp/removed.txt ]; then
+              echo
+              echo "## Removed modules"
+              echo
+              echo '```'
+              print_capped /tmp/removed.txt 5000
+              echo '```'
+            fi
             echo
             echo "## oasdiff changelog"
             echo
             echo '```'
-            print_capped /tmp/changelog.txt 30000
+            print_capped /tmp/changelog.txt 25000
             echo '```'
-            if [ "${{ steps.classify.outputs.breaking_count }}" -gt 0 ]; then
+            if [ "$BREAKING_COUNT" -gt 0 ]; then
               echo
               echo "## Breaking changes"
               echo
@@ -149,25 +216,32 @@ jobs:
             /tmp/breaking.json
             /tmp/breaking.txt
 
-      - name: Create branch and commit
+      # One long-lived bot branch: a sync PR that fails CI is updated in place by
+      # the next run instead of piling up new ones.
+      - name: Commit and push
         if: steps.diff.outputs.changed == 'true'
-        id: branch
+        env:
+          SUBJECT: ${{ steps.classify.outputs.subject }}
         run: |
-          BRANCH="chore/spec-sync-${{ github.run_id }}"
-          git checkout -b "$BRANCH"
-          git add openapi.json lib/polarex
-          git commit -m "${{ steps.classify.outputs.subject }}"
-          git push -u origin "$BRANCH"
-          echo "name=$BRANCH" >> "$GITHUB_OUTPUT"
+          git checkout -B "$BRANCH"
+          git add -A -- openapi.json lib
+          git commit -m "$SUBJECT"
+          git push --force origin "$BRANCH"
 
-      - name: Open PR and enable auto-merge
+      - name: Open or update PR and enable auto-merge
         if: steps.diff.outputs.changed == 'true'
         env:
           GH_TOKEN: ${{ secrets.GH_PAT }}
+          SUBJECT: ${{ steps.classify.outputs.subject }}
         run: |
-          gh pr create \
-            --title "${{ steps.classify.outputs.subject }}" \
-            --body-file /tmp/pr-body.md \
-            --base main \
-            --head "${{ steps.branch.outputs.name }}"
-          gh pr merge "${{ steps.branch.outputs.name }}" --auto --squash
+          PR=$(gh pr list --head "$BRANCH" --state open --json number --jq '.[0].number // empty')
+          if [ -n "$PR" ]; then
+            gh pr edit "$PR" --title "$SUBJECT" --body-file /tmp/pr-body.md
+          else
+            gh pr create \
+              --title "$SUBJECT" \
+              --body-file /tmp/pr-body.md \
+              --base main \
+              --head "$BRANCH"
+          fi
+          gh pr merge "$BRANCH" --auto --squash

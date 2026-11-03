@@ -12,6 +12,10 @@ defmodule Polarex.Support.Client do
   Requests are only retried when they are safe to repeat (GET); mutating
   requests are never retried automatically. Override through `req_options` if
   you know better.
+
+  Every request carries a `polar-version` header pinned to
+  `Polarex.APIVersion.version/0`, the API version the structs were generated
+  from. A `polar-version` passed per call through `headers:` takes precedence.
   """
   alias Polarex.Support.Translator
 
@@ -43,6 +47,8 @@ defmodule Polarex.Support.Client do
     |> Keyword.merge(Application.get_env(:polarex, :req_options, []))
     |> Keyword.merge(Keyword.get(descriptor.opts, :req_options, []))
     |> Req.new()
+    # put_new so a polar-version given through headers/req_options wins.
+    |> Req.Request.put_new_header("polar-version", Polarex.APIVersion.version())
   end
 
   # Only idempotent requests may be repeated without asking the caller.

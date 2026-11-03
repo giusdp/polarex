@@ -108,4 +108,26 @@ defmodule Polarex.Support.ClientTest do
     assert_received {[:polarex, :request, :stop], ^ref, %{duration: _},
                      %{operation: {Polarex.Products, :products_list}, method: :get}}
   end
+
+  test "pins the Polar-Version header to the generated API version" do
+    Req.Test.expect(Polarex, fn conn ->
+      assert [version] = Plug.Conn.get_req_header(conn, "polar-version")
+      assert version == Polarex.APIVersion.version()
+      assert version =~ ~r/^\d{4}-\d{2}$/
+
+      Req.Test.json(conn, %{"items" => [], "pagination" => %{"total_count" => 0, "max_page" => 0}})
+    end)
+
+    assert {:ok, _list} = Polarex.Products.products_list([])
+  end
+
+  test "a per-call Polar-Version header wins over the pinned one" do
+    Req.Test.expect(Polarex, fn conn ->
+      assert Plug.Conn.get_req_header(conn, "polar-version") == ["2000-01"]
+
+      Req.Test.json(conn, %{"items" => [], "pagination" => %{"total_count" => 0, "max_page" => 0}})
+    end)
+
+    assert {:ok, _list} = Polarex.Products.products_list(headers: [{"Polar-Version", "2000-01"}])
+  end
 end

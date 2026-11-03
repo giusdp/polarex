@@ -58,6 +58,9 @@ jobs:
       - name: Compile (warnings as errors)
         run: mix compile --warnings-as-errors
 
+      - name: Test
+        run: mix test
+
   release:
     name: Release
     needs: build
