@@ -4,7 +4,16 @@ defmodule Polarex.CheckoutLinkProduct do
   """
 
   @type t :: %__MODULE__{
-          benefits: [Polarex.BenefitPublic.t()],
+          benefits: [
+            Polarex.BenefitCustomPublic.t()
+            | Polarex.BenefitDiscordPublic.t()
+            | Polarex.BenefitDownloadablesPublic.t()
+            | Polarex.BenefitFeatureFlagPublic.t()
+            | Polarex.BenefitGitHubRepositoryPublic.t()
+            | Polarex.BenefitLicenseKeysPublic.t()
+            | Polarex.BenefitMeterCreditPublic.t()
+            | Polarex.BenefitSlackSharedChannelPublic.t()
+          ],
           created_at: DateTime.t(),
           description: String.t() | nil,
           id: String.t(),
@@ -53,7 +62,18 @@ defmodule Polarex.CheckoutLinkProduct do
 
   def __fields__(:t) do
     [
-      benefits: [{Polarex.BenefitPublic, :t}],
+      benefits: [
+        union: [
+          {Polarex.BenefitCustomPublic, :t},
+          {Polarex.BenefitDiscordPublic, :t},
+          {Polarex.BenefitDownloadablesPublic, :t},
+          {Polarex.BenefitFeatureFlagPublic, :t},
+          {Polarex.BenefitGitHubRepositoryPublic, :t},
+          {Polarex.BenefitLicenseKeysPublic, :t},
+          {Polarex.BenefitMeterCreditPublic, :t},
+          {Polarex.BenefitSlackSharedChannelPublic, :t}
+        ]
+      ],
       created_at: {:string, "date-time"},
       description: {:union, [:string, :null]},
       id: {:string, "uuid4"},

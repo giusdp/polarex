@@ -4,7 +4,10 @@ defmodule Polarex.CustomerPaymentMethodCreateSucceededResponse do
   """
 
   @type t :: %__MODULE__{
-          payment_method: Polarex.PaymentMethodCard.t() | Polarex.PaymentMethodGeneric.t(),
+          payment_method:
+            Polarex.PaymentMethodCard.t()
+            | Polarex.PaymentMethodGeneric.t()
+            | Polarex.PaymentMethodKrCard.t(),
           status: String.t()
         }
 
@@ -17,7 +20,12 @@ defmodule Polarex.CustomerPaymentMethodCreateSucceededResponse do
   def __fields__(:t) do
     [
       payment_method:
-        {:union, [{Polarex.PaymentMethodCard, :t}, {Polarex.PaymentMethodGeneric, :t}]},
+        {:union,
+         [
+           {Polarex.PaymentMethodCard, :t},
+           {Polarex.PaymentMethodGeneric, :t},
+           {Polarex.PaymentMethodKrCard, :t}
+         ]},
       status: {:const, "succeeded"}
     ]
   end

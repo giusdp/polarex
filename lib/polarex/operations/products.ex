@@ -39,6 +39,42 @@ defmodule Polarex.Products do
   end
 
   @doc """
+  Delete Product
+
+  Delete a product.
+
+  Only products without orders, subscriptions, trials or discounts can be deleted.
+  Products that are in use can only be archived.
+
+  **Scopes**: `products:write`
+  """
+  @spec products_delete(id :: String.t(), opts :: keyword) ::
+          :ok
+          | {:error,
+             Polarex.HTTPValidationError.t()
+             | Polarex.NotPermitted.t()
+             | Polarex.ProductNotDeletable.t()
+             | Polarex.ResourceNotFound.t()}
+  def products_delete(id, opts \\ []) do
+    client = opts[:client] || @default_client
+
+    client.request(%{
+      args: [id: id],
+      call: {Polarex.Products, :products_delete},
+      url: "/v1/products/#{id}",
+      method: :delete,
+      response: [
+        {204, :null},
+        {403, {Polarex.NotPermitted, :t}},
+        {404, {Polarex.ResourceNotFound, :t}},
+        {409, {Polarex.ProductNotDeletable, :t}},
+        {422, {Polarex.HTTPValidationError, :t}}
+      ],
+      opts: opts
+    })
+  end
+
+  @doc """
   Get Product
 
   Get a product by ID.

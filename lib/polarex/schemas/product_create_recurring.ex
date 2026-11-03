@@ -15,8 +15,10 @@ defmodule Polarex.ProductCreateRecurring do
           prices: [
             Polarex.ProductPriceCustomCreate.t()
             | Polarex.ProductPriceFixedCreate.t()
+            | Polarex.ProductPriceMeteredTiersCreate.t()
             | Polarex.ProductPriceMeteredUnitCreate.t()
             | Polarex.ProductPriceSeatBasedCreate.t()
+            | Polarex.ProductPriceUnitBasedCreate.t()
           ],
           recurring_interval: String.t(),
           recurring_interval_count: integer | nil,
@@ -60,8 +62,10 @@ defmodule Polarex.ProductCreateRecurring do
         union: [
           {Polarex.ProductPriceCustomCreate, :t},
           {Polarex.ProductPriceFixedCreate, :t},
+          {Polarex.ProductPriceMeteredTiersCreate, :t},
           {Polarex.ProductPriceMeteredUnitCreate, :t},
-          {Polarex.ProductPriceSeatBasedCreate, :t}
+          {Polarex.ProductPriceSeatBasedCreate, :t},
+          {Polarex.ProductPriceUnitBasedCreate, :t}
         ]
       ],
       recurring_interval: {:enum, ["day", "week", "month", "year"]},

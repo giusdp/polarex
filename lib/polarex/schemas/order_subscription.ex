@@ -34,7 +34,8 @@ defmodule Polarex.OrderSubscription do
           started_at: DateTime.t() | nil,
           status: String.t(),
           trial_end: DateTime.t() | nil,
-          trial_start: DateTime.t() | nil
+          trial_start: DateTime.t() | nil,
+          units: integer | nil
         }
 
   defstruct [
@@ -68,7 +69,8 @@ defmodule Polarex.OrderSubscription do
     :started_at,
     :status,
     :trial_end,
-    :trial_start
+    :trial_start,
+    :units
   ]
 
   @doc false
@@ -133,7 +135,8 @@ defmodule Polarex.OrderSubscription do
            "paused"
          ]},
       trial_end: {:union, [{:string, "date-time"}, :null]},
-      trial_start: {:union, [{:string, "date-time"}, :null]}
+      trial_start: {:union, [{:string, "date-time"}, :null]},
+      units: {:union, [:integer, :null]}
     ]
   end
 end

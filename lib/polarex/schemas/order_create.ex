@@ -11,7 +11,8 @@ defmodule Polarex.OrderCreate do
           description: String.t() | nil,
           metadata: map | nil,
           organization_id: String.t() | nil,
-          product_id: String.t()
+          product_id: String.t(),
+          units: integer | nil
         }
 
   defstruct [
@@ -22,7 +23,8 @@ defmodule Polarex.OrderCreate do
     :description,
     :metadata,
     :organization_id,
-    :product_id
+    :product_id,
+    :units
   ]
 
   @doc false
@@ -38,7 +40,8 @@ defmodule Polarex.OrderCreate do
       description: {:union, [:string, :null]},
       metadata: :map,
       organization_id: {:union, [{:string, "uuid4"}, :null]},
-      product_id: {:string, "uuid4"}
+      product_id: {:string, "uuid4"},
+      units: {:union, [:integer, :null]}
     ]
   end
 end

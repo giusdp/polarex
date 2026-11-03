@@ -4,6 +4,7 @@ defmodule Polarex.WebhookEndpointCreate do
   """
 
   @type t :: %__MODULE__{
+          api_version: String.t() | nil,
           events: [String.t()],
           format: String.t(),
           name: String.t() | nil,
@@ -11,7 +12,7 @@ defmodule Polarex.WebhookEndpointCreate do
           url: String.t()
         }
 
-  defstruct [:events, :format, :name, :organization_id, :url]
+  defstruct [:api_version, :events, :format, :name, :organization_id, :url]
 
   @doc false
   @spec __fields__(atom) :: keyword
@@ -19,6 +20,7 @@ defmodule Polarex.WebhookEndpointCreate do
 
   def __fields__(:t) do
     [
+      api_version: {:enum, ["2026-04", "2026-10"]},
       events: [
         enum: [
           "checkout.created",
@@ -48,6 +50,7 @@ defmodule Polarex.WebhookEndpointCreate do
           "subscription.past_due",
           "subscription.paused",
           "subscription.resumed",
+          "subscription.migrated",
           "refund.created",
           "refund.updated",
           "product.created",

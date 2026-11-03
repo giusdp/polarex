@@ -116,7 +116,8 @@ defmodule Polarex.Subscriptions do
             | Polarex.CustomerSubscriptionResume.t()
             | Polarex.CustomerSubscriptionUpdateClear.t()
             | Polarex.CustomerSubscriptionUpdateProduct.t()
-            | Polarex.CustomerSubscriptionUpdateSeats.t(),
+            | Polarex.CustomerSubscriptionUpdateSeats.t()
+            | Polarex.CustomerSubscriptionUpdateUnits.t(),
           opts :: keyword
         ) ::
           {:ok, Polarex.CustomerSubscription.t()}
@@ -126,7 +127,11 @@ defmodule Polarex.Subscriptions do
              | Polarex.PauseResumeNotAllowed.t()
              | Polarex.PaymentFailed.t()
              | Polarex.PaymentMethodRequired.t()
-             | Polarex.ResourceNotFound.t()}
+             | Polarex.ResourceNotFound.t()
+             | Polarex.SubscriptionNotScheduledToCancel.t()
+             | Polarex.UpdateSubscriptionPlanNotAllowed.t()
+             | Polarex.UpdateSubscriptionSeatsNotAllowed.t()
+             | Polarex.UpdateSubscriptionUnitsNotAllowed.t()}
   def customer_portal_subscriptions_update(id, body, opts \\ []) do
     client = opts[:client] || @default_client
 
@@ -145,7 +150,8 @@ defmodule Polarex.Subscriptions do
             {Polarex.CustomerSubscriptionResume, :t},
             {Polarex.CustomerSubscriptionUpdateClear, :t},
             {Polarex.CustomerSubscriptionUpdateProduct, :t},
-            {Polarex.CustomerSubscriptionUpdateSeats, :t}
+            {Polarex.CustomerSubscriptionUpdateSeats, :t},
+            {Polarex.CustomerSubscriptionUpdateUnits, :t}
           ]}}
       ],
       response: [
@@ -153,9 +159,17 @@ defmodule Polarex.Subscriptions do
         {402, {Polarex.PaymentFailed, :t}},
         {403,
          {:union,
-          [{Polarex.AlreadyCanceledSubscription, :t}, {Polarex.PauseResumeNotAllowed, :t}]}},
+          [
+            {Polarex.AlreadyCanceledSubscription, :t},
+            {Polarex.PauseResumeNotAllowed, :t},
+            {Polarex.UpdateSubscriptionPlanNotAllowed, :t},
+            {Polarex.UpdateSubscriptionSeatsNotAllowed, :t},
+            {Polarex.UpdateSubscriptionUnitsNotAllowed, :t}
+          ]}},
         {404, {Polarex.ResourceNotFound, :t}},
-        {409, {Polarex.PaymentMethodRequired, :t}},
+        {409,
+         {:union,
+          [{Polarex.PaymentMethodRequired, :t}, {Polarex.SubscriptionNotScheduledToCancel, :t}]}},
         {422, {Polarex.HTTPValidationError, :t}}
       ],
       opts: opts
@@ -402,7 +416,8 @@ defmodule Polarex.Subscriptions do
             | Polarex.SubscriptionUpdateBase.t()
             | Polarex.SubscriptionUpdateBillingPeriod.t()
             | Polarex.SubscriptionUpdateClear.t()
-            | Polarex.SubscriptionUpdateSeats.t(),
+            | Polarex.SubscriptionUpdateSeats.t()
+            | Polarex.SubscriptionUpdateUnits.t(),
           opts :: keyword
         ) ::
           {:ok, Polarex.Subscription.t()}
@@ -410,9 +425,12 @@ defmodule Polarex.Subscriptions do
              Polarex.AlreadyCanceledSubscription.t()
              | Polarex.HTTPValidationError.t()
              | Polarex.InactiveSubscription.t()
+             | Polarex.PaymentActionRequired.t()
              | Polarex.PaymentFailed.t()
+             | Polarex.PaymentNotReady.t()
              | Polarex.ResourceNotFound.t()
-             | Polarex.SubscriptionLocked.t()}
+             | Polarex.SubscriptionLocked.t()
+             | Polarex.SubscriptionNotScheduledToCancel.t()}
   def subscriptions_update(id, body, opts \\ []) do
     client = opts[:client] || @default_client
 
@@ -433,16 +451,24 @@ defmodule Polarex.Subscriptions do
             {Polarex.SubscriptionUpdateBase, :t},
             {Polarex.SubscriptionUpdateBillingPeriod, :t},
             {Polarex.SubscriptionUpdateClear, :t},
-            {Polarex.SubscriptionUpdateSeats, :t}
+            {Polarex.SubscriptionUpdateSeats, :t},
+            {Polarex.SubscriptionUpdateUnits, :t}
           ]}}
       ],
       response: [
         {200, {Polarex.Subscription, :t}},
-        {402, {Polarex.PaymentFailed, :t}},
+        {402, {:union, [{Polarex.PaymentActionRequired, :t}, {Polarex.PaymentFailed, :t}]}},
         {403,
-         {:union, [{Polarex.AlreadyCanceledSubscription, :t}, {Polarex.InactiveSubscription, :t}]}},
+         {:union,
+          [
+            {Polarex.AlreadyCanceledSubscription, :t},
+            {Polarex.InactiveSubscription, :t},
+            {Polarex.PaymentNotReady, :t}
+          ]}},
         {404, {Polarex.ResourceNotFound, :t}},
-        {409, {Polarex.SubscriptionLocked, :t}},
+        {409,
+         {:union,
+          [{Polarex.SubscriptionLocked, :t}, {Polarex.SubscriptionNotScheduledToCancel, :t}]}},
         {422, {Polarex.HTTPValidationError, :t}}
       ],
       opts: opts

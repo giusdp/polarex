@@ -1,6 +1,6 @@
-defmodule Polarex.BenefitPublic do
+defmodule Polarex.BenefitDownloadablesPublic do
   @moduledoc """
-  Provides struct and type for a BenefitPublic
+  Provides struct and type for a BenefitDownloadablesPublic
   """
 
   @type t :: %__MODULE__{
@@ -41,18 +41,7 @@ defmodule Polarex.BenefitPublic do
       modified_at: {:union, [{:string, "date-time"}, :null]},
       organization_id: {:string, "uuid4"},
       selectable: :boolean,
-      type:
-        {:enum,
-         [
-           "custom",
-           "discord",
-           "github_repository",
-           "downloadables",
-           "license_keys",
-           "meter_credit",
-           "feature_flag",
-           "slack_shared_channel"
-         ]}
+      type: {:const, "downloadables"}
     ]
   end
 end

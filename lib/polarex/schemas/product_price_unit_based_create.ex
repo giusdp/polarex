@@ -1,15 +1,18 @@
-defmodule Polarex.ProductPriceFreeCreate do
+defmodule Polarex.ProductPriceUnitBasedCreate do
   @moduledoc """
-  Provides struct and type for a ProductPriceFreeCreate
+  Provides struct and type for a ProductPriceUnitBasedCreate
   """
 
   @type t :: %__MODULE__{
           amount_type: String.t(),
+          minimum_units: integer | nil,
           price_currency: String.t() | nil,
-          tax_behavior: String.t() | nil
+          tax_behavior: String.t() | nil,
+          tiers: Polarex.TiersInput.t(),
+          unit_label: map | nil
         }
 
-  defstruct [:amount_type, :price_currency, :tax_behavior]
+  defstruct [:amount_type, :minimum_units, :price_currency, :tax_behavior, :tiers, :unit_label]
 
   @doc false
   @spec __fields__(atom) :: keyword
@@ -17,7 +20,8 @@ defmodule Polarex.ProductPriceFreeCreate do
 
   def __fields__(:t) do
     [
-      amount_type: {:const, "free"},
+      amount_type: {:const, "unit_based"},
+      minimum_units: {:union, [:integer, :null]},
       price_currency:
         {:enum,
          [
@@ -148,7 +152,9 @@ defmodule Polarex.ProductPriceFreeCreate do
            "zar",
            "zmw"
          ]},
-      tax_behavior: {:union, [{:enum, ["location", "inclusive", "exclusive"]}, :null]}
+      tax_behavior: {:union, [{:enum, ["location", "inclusive", "exclusive"]}, :null]},
+      tiers: {Polarex.TiersInput, :t},
+      unit_label: {:union, [:map, :null]}
     ]
   end
 end

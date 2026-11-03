@@ -38,8 +38,10 @@ defmodule Polarex.Checkout do
           is_payment_setup_required: boolean,
           locale: String.t() | nil,
           max_seats: integer | nil,
+          max_units: integer | nil,
           metadata: map,
           min_seats: integer | nil,
+          min_units: integer | nil,
           modified_at: DateTime.t() | nil,
           net_amount: integer,
           organization_id: String.t(),
@@ -64,6 +66,7 @@ defmodule Polarex.Checkout do
           trial_end: DateTime.t() | nil,
           trial_interval: String.t() | nil,
           trial_interval_count: integer | nil,
+          units: integer | nil,
           url: String.t()
         }
 
@@ -102,8 +105,10 @@ defmodule Polarex.Checkout do
     :is_payment_setup_required,
     :locale,
     :max_seats,
+    :max_units,
     :metadata,
     :min_seats,
+    :min_units,
     :modified_at,
     :net_amount,
     :organization_id,
@@ -128,6 +133,7 @@ defmodule Polarex.Checkout do
     :trial_end,
     :trial_interval,
     :trial_interval_count,
+    :units,
     :url
   ]
 
@@ -171,8 +177,10 @@ defmodule Polarex.Checkout do
       is_payment_setup_required: :boolean,
       locale: {:union, [:string, :null]},
       max_seats: {:union, [:integer, :null]},
+      max_units: {:union, [:integer, :null]},
       metadata: :map,
       min_seats: {:union, [:integer, :null]},
+      min_units: {:union, [:integer, :null]},
       modified_at: {:union, [{:string, "date-time"}, :null]},
       net_amount: :integer,
       organization_id: {:string, "uuid4"},
@@ -197,6 +205,7 @@ defmodule Polarex.Checkout do
       trial_end: {:union, [{:string, "date-time"}, :null]},
       trial_interval: {:union, [{:enum, ["day", "week", "month", "year"]}, :null]},
       trial_interval_count: {:union, [:integer, :null]},
+      units: {:union, [:integer, :null]},
       url: :string
     ]
   end

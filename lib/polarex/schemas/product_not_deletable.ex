@@ -1,6 +1,6 @@
-defmodule Polarex.NotPaidOrder do
+defmodule Polarex.ProductNotDeletable do
   @moduledoc """
-  Provides struct and type for a NotPaidOrder
+  Provides struct and type for a ProductNotDeletable
   """
 
   @type t :: %__MODULE__{detail: String.t(), error: String.t()}
@@ -12,6 +12,6 @@ defmodule Polarex.NotPaidOrder do
   def __fields__(type \\ :t)
 
   def __fields__(:t) do
-    [detail: :string, error: {:const, "NotPaidOrder"}]
+    [detail: :string, error: {:const, "ProductNotDeletable"}]
   end
 end

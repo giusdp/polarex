@@ -5,7 +5,9 @@ defmodule Polarex.ListResourcePaymentMethod do
 
   @type t :: %__MODULE__{
           items: [
-            Polarex.CustomerPaymentMethodCard.t() | Polarex.CustomerPaymentMethodGeneric.t()
+            Polarex.CustomerPaymentMethodCard.t()
+            | Polarex.CustomerPaymentMethodGeneric.t()
+            | Polarex.CustomerPaymentMethodKrCard.t()
           ],
           pagination: Polarex.Pagination.t()
         }
@@ -21,7 +23,8 @@ defmodule Polarex.ListResourcePaymentMethod do
       items: [
         union: [
           {Polarex.CustomerPaymentMethodCard, :t},
-          {Polarex.CustomerPaymentMethodGeneric, :t}
+          {Polarex.CustomerPaymentMethodGeneric, :t},
+          {Polarex.CustomerPaymentMethodKrCard, :t}
         ]
       ],
       pagination: {Polarex.Pagination, :t}

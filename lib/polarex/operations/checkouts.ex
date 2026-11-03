@@ -24,10 +24,12 @@ defmodule Polarex.Checkouts do
           {:ok, Polarex.CheckoutPublicConfirmed.t()}
           | {:error,
              Polarex.AlreadyActiveSubscriptionError.t()
+             | Polarex.CheckoutLocked.t()
              | Polarex.DiscountRedemptionLimitReached.t()
              | Polarex.ExpiredCheckoutError.t()
              | Polarex.HTTPValidationError.t()
              | Polarex.NotOpenCheckout.t()
+             | Polarex.NotPermitted.t()
              | Polarex.PaymentError.t()
              | Polarex.PaymentNotReady.t()
              | Polarex.ResourceNotFound.t()
@@ -51,10 +53,12 @@ defmodule Polarex.Checkouts do
             {Polarex.AlreadyActiveSubscriptionError, :t},
             {Polarex.DiscountRedemptionLimitReached, :t},
             {Polarex.NotOpenCheckout, :t},
+            {Polarex.NotPermitted, :t},
             {Polarex.PaymentNotReady, :t},
             {Polarex.TrialAlreadyRedeemed, :t}
           ]}},
         {404, {Polarex.ResourceNotFound, :t}},
+        {409, {Polarex.CheckoutLocked, :t}},
         {410, {Polarex.ExpiredCheckoutError, :t}},
         {422, {Polarex.HTTPValidationError, :t}}
       ],
@@ -72,6 +76,7 @@ defmodule Polarex.Checkouts do
           | {:error,
              Polarex.ExpiredCheckoutError.t()
              | Polarex.HTTPValidationError.t()
+             | Polarex.NotPermitted.t()
              | Polarex.ResourceNotFound.t()}
   def checkouts_client_get(client_secret, opts \\ []) do
     client = opts[:client] || @default_client
@@ -83,6 +88,7 @@ defmodule Polarex.Checkouts do
       method: :get,
       response: [
         {200, {Polarex.CheckoutPublic, :t}},
+        {403, {Polarex.NotPermitted, :t}},
         {404, {Polarex.ResourceNotFound, :t}},
         {410, {Polarex.ExpiredCheckoutError, :t}},
         {422, {Polarex.HTTPValidationError, :t}}
@@ -108,10 +114,12 @@ defmodule Polarex.Checkouts do
           {:ok, Polarex.CheckoutPublic.t()}
           | {:error,
              Polarex.AlreadyActiveSubscriptionError.t()
+             | Polarex.CheckoutLocked.t()
              | Polarex.DiscountRedemptionLimitReached.t()
              | Polarex.ExpiredCheckoutError.t()
              | Polarex.HTTPValidationError.t()
              | Polarex.NotOpenCheckout.t()
+             | Polarex.NotPermitted.t()
              | Polarex.PaymentNotReady.t()
              | Polarex.ResourceNotFound.t()
              | Polarex.TrialAlreadyRedeemed.t()}
@@ -133,10 +141,12 @@ defmodule Polarex.Checkouts do
             {Polarex.AlreadyActiveSubscriptionError, :t},
             {Polarex.DiscountRedemptionLimitReached, :t},
             {Polarex.NotOpenCheckout, :t},
+            {Polarex.NotPermitted, :t},
             {Polarex.PaymentNotReady, :t},
             {Polarex.TrialAlreadyRedeemed, :t}
           ]}},
         {404, {Polarex.ResourceNotFound, :t}},
+        {409, {Polarex.CheckoutLocked, :t}},
         {410, {Polarex.ExpiredCheckoutError, :t}},
         {422, {Polarex.HTTPValidationError, :t}}
       ],
@@ -269,6 +279,7 @@ defmodule Polarex.Checkouts do
              | Polarex.DiscountRedemptionLimitReached.t()
              | Polarex.HTTPValidationError.t()
              | Polarex.NotOpenCheckout.t()
+             | Polarex.NotPermitted.t()
              | Polarex.PaymentNotReady.t()
              | Polarex.ResourceNotFound.t()
              | Polarex.TrialAlreadyRedeemed.t()}
@@ -290,6 +301,7 @@ defmodule Polarex.Checkouts do
             {Polarex.AlreadyActiveSubscriptionError, :t},
             {Polarex.DiscountRedemptionLimitReached, :t},
             {Polarex.NotOpenCheckout, :t},
+            {Polarex.NotPermitted, :t},
             {Polarex.PaymentNotReady, :t},
             {Polarex.TrialAlreadyRedeemed, :t}
           ]}},

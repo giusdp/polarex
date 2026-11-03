@@ -3,15 +3,20 @@ defmodule Polarex.AuthorizeOrganization do
   Provides struct and type for a AuthorizeOrganization
   """
 
-  @type t :: %__MODULE__{avatar_url: String.t() | nil, id: String.t(), slug: String.t()}
+  @type t :: %__MODULE__{
+          avatar_url: String.t() | nil,
+          id: String.t(),
+          name: String.t(),
+          slug: String.t()
+        }
 
-  defstruct [:avatar_url, :id, :slug]
+  defstruct [:avatar_url, :id, :name, :slug]
 
   @doc false
   @spec __fields__(atom) :: keyword
   def __fields__(type \\ :t)
 
   def __fields__(:t) do
-    [avatar_url: {:union, [:string, :null]}, id: {:string, "uuid4"}, slug: :string]
+    [avatar_url: {:union, [:string, :null]}, id: {:string, "uuid4"}, name: :string, slug: :string]
   end
 end

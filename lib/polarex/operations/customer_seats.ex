@@ -8,6 +8,8 @@ defmodule Polarex.CustomerSeats do
   @doc """
   Assign Seat
 
+  Assign a seat for a subscription or order.
+
   **Scopes**: `customer_seats:write`
 
   ## Request Body
@@ -41,6 +43,8 @@ defmodule Polarex.CustomerSeats do
   @doc """
   Claim Seat
 
+  Claim a customer seat with an invitation token.
+
   ## Request Body
 
   **Content Types**: `application/json`
@@ -69,6 +73,8 @@ defmodule Polarex.CustomerSeats do
 
   @doc """
   Get Claim Info
+
+  Get claim information for a customer seat invitation.
   """
   @spec customer_seats_get_claim_info(invitation_token :: String.t(), opts :: keyword) ::
           {:ok, Polarex.SeatClaimInfo.t()} | {:error, Polarex.HTTPValidationError.t()}
@@ -93,6 +99,8 @@ defmodule Polarex.CustomerSeats do
 
   @doc """
   List Seats
+
+  List seats for a subscription or order.
 
   **Scopes**: `customer_seats:read`
 
@@ -128,6 +136,8 @@ defmodule Polarex.CustomerSeats do
   @doc """
   Resend Invitation
 
+  Resend an invitation for a pending customer seat.
+
   **Scopes**: `customer_seats:write`
   """
   @spec customer_seats_resend_invitation(seat_id :: String.t(), opts :: keyword) ::
@@ -154,6 +164,8 @@ defmodule Polarex.CustomerSeats do
 
   @doc """
   Revoke Seat
+
+  Revoke a customer seat.
 
   **Scopes**: `customer_seats:write`
   """

@@ -15,8 +15,10 @@ defmodule Polarex.ProductUpdate do
               map
               | Polarex.ProductPriceCustomCreate.t()
               | Polarex.ProductPriceFixedCreate.t()
+              | Polarex.ProductPriceMeteredTiersCreate.t()
               | Polarex.ProductPriceMeteredUnitCreate.t()
               | Polarex.ProductPriceSeatBasedCreate.t()
+              | Polarex.ProductPriceUnitBasedCreate.t()
             ]
             | nil,
           recurring_interval: String.t() | nil,
@@ -61,8 +63,10 @@ defmodule Polarex.ProductUpdate do
                :map,
                {Polarex.ProductPriceCustomCreate, :t},
                {Polarex.ProductPriceFixedCreate, :t},
+               {Polarex.ProductPriceMeteredTiersCreate, :t},
                {Polarex.ProductPriceMeteredUnitCreate, :t},
-               {Polarex.ProductPriceSeatBasedCreate, :t}
+               {Polarex.ProductPriceSeatBasedCreate, :t},
+               {Polarex.ProductPriceUnitBasedCreate, :t}
              ]
            ],
            :null

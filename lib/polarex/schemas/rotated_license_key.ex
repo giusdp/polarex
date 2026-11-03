@@ -1,0 +1,74 @@
+defmodule Polarex.RotatedLicenseKey do
+  @moduledoc """
+  Provides struct and type for a RotatedLicenseKey
+  """
+
+  @type t :: %__MODULE__{
+          benefit_id: String.t(),
+          created_at: DateTime.t(),
+          customer: Polarex.LicenseKeyCustomer.t(),
+          customer_id: String.t(),
+          display_key: String.t(),
+          expires_at: DateTime.t() | nil,
+          id: String.t(),
+          key: String.t(),
+          last_validated_at: DateTime.t() | nil,
+          limit_activations: integer | nil,
+          limit_usage: integer | nil,
+          member: Polarex.LicenseKeyMember.t() | nil,
+          member_id: String.t() | nil,
+          modified_at: DateTime.t() | nil,
+          organization_id: String.t(),
+          status: String.t(),
+          usage: integer,
+          validations: integer
+        }
+
+  defstruct [
+    :benefit_id,
+    :created_at,
+    :customer,
+    :customer_id,
+    :display_key,
+    :expires_at,
+    :id,
+    :key,
+    :last_validated_at,
+    :limit_activations,
+    :limit_usage,
+    :member,
+    :member_id,
+    :modified_at,
+    :organization_id,
+    :status,
+    :usage,
+    :validations
+  ]
+
+  @doc false
+  @spec __fields__(atom) :: keyword
+  def __fields__(type \\ :t)
+
+  def __fields__(:t) do
+    [
+      benefit_id: {:string, "uuid4"},
+      created_at: {:string, "date-time"},
+      customer: {Polarex.LicenseKeyCustomer, :t},
+      customer_id: {:string, "uuid4"},
+      display_key: :string,
+      expires_at: {:union, [{:string, "date-time"}, :null]},
+      id: {:string, "uuid4"},
+      key: :string,
+      last_validated_at: {:union, [{:string, "date-time"}, :null]},
+      limit_activations: {:union, [:integer, :null]},
+      limit_usage: {:union, [:integer, :null]},
+      member: {:union, [{Polarex.LicenseKeyMember, :t}, :null]},
+      member_id: {:union, [{:string, "uuid4"}, :null]},
+      modified_at: {:union, [{:string, "date-time"}, :null]},
+      organization_id: {:string, "uuid4"},
+      status: {:enum, ["granted", "disabled"]},
+      usage: :integer,
+      validations: :integer
+    ]
+  end
+end

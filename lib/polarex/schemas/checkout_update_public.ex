@@ -18,7 +18,8 @@ defmodule Polarex.CheckoutUpdatePublic do
           payment_method_type: String.t() | nil,
           product_id: String.t() | nil,
           product_price_id: String.t() | nil,
-          seats: integer | nil
+          seats: integer | nil,
+          units: integer | nil
         }
 
   defstruct [
@@ -36,7 +37,8 @@ defmodule Polarex.CheckoutUpdatePublic do
     :payment_method_type,
     :product_id,
     :product_price_id,
-    :seats
+    :seats,
+    :units
   ]
 
   @doc false
@@ -59,7 +61,8 @@ defmodule Polarex.CheckoutUpdatePublic do
       payment_method_type: {:union, [:string, :null]},
       product_id: {:union, [{:string, "uuid4"}, :null]},
       product_price_id: {:union, [{:string, "uuid4"}, :null]},
-      seats: {:union, [:integer, :null]}
+      seats: {:union, [:integer, :null]},
+      units: {:union, [:integer, :null]}
     ]
   end
 end

@@ -9,10 +9,11 @@ defmodule Polarex.PendingSubscriptionUpdate do
           id: String.t(),
           modified_at: DateTime.t() | nil,
           product_id: String.t() | nil,
-          seats: integer | nil
+          seats: integer | nil,
+          units: integer | nil
         }
 
-  defstruct [:applies_at, :created_at, :id, :modified_at, :product_id, :seats]
+  defstruct [:applies_at, :created_at, :id, :modified_at, :product_id, :seats, :units]
 
   @doc false
   @spec __fields__(atom) :: keyword
@@ -25,7 +26,8 @@ defmodule Polarex.PendingSubscriptionUpdate do
       id: {:string, "uuid4"},
       modified_at: {:union, [{:string, "date-time"}, :null]},
       product_id: {:union, [{:string, "uuid4"}, :null]},
-      seats: {:union, [:integer, :null]}
+      seats: {:union, [:integer, :null]},
+      units: {:union, [:integer, :null]}
     ]
   end
 end

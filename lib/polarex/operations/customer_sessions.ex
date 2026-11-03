@@ -24,7 +24,9 @@ defmodule Polarex.CustomerSessions do
             Polarex.CustomerSessionCustomerExternalIDCreate.t()
             | Polarex.CustomerSessionCustomerIDCreate.t(),
           opts :: keyword
-        ) :: {:ok, Polarex.CustomerSession.t()} | {:error, Polarex.HTTPValidationError.t()}
+        ) ::
+          {:ok, Polarex.CustomerSession.t()}
+          | {:error, Polarex.AmbiguousExternalCustomerID.t() | Polarex.HTTPValidationError.t()}
   def customer_sessions_create(body, opts \\ []) do
     client = opts[:client] || @default_client
 
@@ -42,7 +44,11 @@ defmodule Polarex.CustomerSessions do
             {Polarex.CustomerSessionCustomerIDCreate, :t}
           ]}}
       ],
-      response: [{201, {Polarex.CustomerSession, :t}}, {422, {Polarex.HTTPValidationError, :t}}],
+      response: [
+        {201, {Polarex.CustomerSession, :t}},
+        {409, {Polarex.AmbiguousExternalCustomerID, :t}},
+        {422, {Polarex.HTTPValidationError, :t}}
+      ],
       opts: opts
     })
   end

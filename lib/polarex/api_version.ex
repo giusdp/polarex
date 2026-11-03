@@ -9,5 +9,5 @@ defmodule Polarex.APIVersion do
 
   @doc "Returns the pinned Polar API version (`YYYY-MM`)."
   @spec version() :: String.t()
-  def version, do: "2026-04"
+  def version, do: "2026-10"
 end

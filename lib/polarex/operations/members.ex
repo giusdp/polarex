@@ -367,6 +367,84 @@ defmodule Polarex.Members do
   end
 
   @doc """
+  List Members
+
+  List the members of a customer.
+
+  **Scopes**: `members:read` `members:write`
+
+  ## Options
+
+    * `role`: Filter by member role.
+    * `page`: Page number, defaults to 1.
+    * `limit`: Size of a page, defaults to 10. Maximum is 100.
+    * `sorting`: Sorting criterion. Several criteria can be used simultaneously and will be applied in order. Add a minus sign `-` before the criteria name to sort by descending order.
+
+  """
+  @spec customers_members_list(id :: String.t(), opts :: keyword) ::
+          {:ok, Polarex.ListResourceMember.t()}
+          | {:error, Polarex.HTTPValidationError.t() | Polarex.ResourceNotFound.t()}
+  def customers_members_list(id, opts \\ []) do
+    client = opts[:client] || @default_client
+    query = Keyword.take(opts, [:limit, :page, :role, :sorting])
+
+    client.request(%{
+      args: [id: id],
+      call: {Polarex.Members, :customers_members_list},
+      url: "/v1/customers/#{id}/members",
+      method: :get,
+      query: query,
+      response: [
+        {200, {Polarex.ListResourceMember, :t}},
+        {404, {Polarex.ResourceNotFound, :t}},
+        {422, {Polarex.HTTPValidationError, :t}}
+      ],
+      opts: opts
+    })
+  end
+
+  @doc """
+  List Members by Customer External ID
+
+  List the members of a customer identified by its external ID.
+
+  **Scopes**: `members:read` `members:write`
+
+  ## Options
+
+    * `role`: Filter by member role.
+    * `page`: Page number, defaults to 1.
+    * `limit`: Size of a page, defaults to 10. Maximum is 100.
+    * `sorting`: Sorting criterion. Several criteria can be used simultaneously and will be applied in order. Add a minus sign `-` before the criteria name to sort by descending order.
+
+  """
+  @spec customers_members_list_external(external_id :: String.t(), opts :: keyword) ::
+          {:ok, Polarex.ListResourceMember.t()}
+          | {:error,
+             Polarex.AmbiguousExternalCustomerID.t()
+             | Polarex.HTTPValidationError.t()
+             | Polarex.ResourceNotFound.t()}
+  def customers_members_list_external(external_id, opts \\ []) do
+    client = opts[:client] || @default_client
+    query = Keyword.take(opts, [:limit, :page, :role, :sorting])
+
+    client.request(%{
+      args: [external_id: external_id],
+      call: {Polarex.Members, :customers_members_list_external},
+      url: "/v1/customers/external/#{external_id}/members",
+      method: :get,
+      query: query,
+      response: [
+        {200, {Polarex.ListResourceMember, :t}},
+        {404, {Polarex.ResourceNotFound, :t}},
+        {409, {Polarex.AmbiguousExternalCustomerID, :t}},
+        {422, {Polarex.HTTPValidationError, :t}}
+      ],
+      opts: opts
+    })
+  end
+
+  @doc """
   Update Member
 
   Update a member of a customer.
@@ -442,45 +520,6 @@ defmodule Polarex.Members do
         {200, {Polarex.Member, :t}},
         {404, {Polarex.ResourceNotFound, :t}},
         {409, {Polarex.AmbiguousExternalCustomerID, :t}},
-        {422, {Polarex.HTTPValidationError, :t}}
-      ],
-      opts: opts
-    })
-  end
-
-  @doc """
-  List Members
-
-  List members with optional customer ID filter.
-
-  **Scopes**: `members:read` `members:write`
-
-  ## Options
-
-    * `customer_id`: Filter by customer ID.
-    * `external_customer_id`: Filter by customer external ID.
-    * `role`: Filter by member role.
-    * `page`: Page number, defaults to 1.
-    * `limit`: Size of a page, defaults to 10. Maximum is 100.
-    * `sorting`: Sorting criterion. Several criteria can be used simultaneously and will be applied in order. Add a minus sign `-` before the criteria name to sort by descending order.
-
-  """
-  @spec members_list_members(opts :: keyword) ::
-          {:ok, Polarex.ListResourceMember.t()} | {:error, Polarex.HTTPValidationError.t()}
-  def members_list_members(opts \\ []) do
-    client = opts[:client] || @default_client
-
-    query =
-      Keyword.take(opts, [:customer_id, :external_customer_id, :limit, :page, :role, :sorting])
-
-    client.request(%{
-      args: [],
-      call: {Polarex.Members, :members_list_members},
-      url: "/v1/members/",
-      method: :get,
-      query: query,
-      response: [
-        {200, {Polarex.ListResourceMember, :t}},
         {422, {Polarex.HTTPValidationError, :t}}
       ],
       opts: opts
