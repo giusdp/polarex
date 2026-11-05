@@ -79,7 +79,7 @@ jobs:
 
       - name: Determine next version (dry run)
         id: dryrun
-        uses: cycjimmy/semantic-release-action@v8.1.3
+        uses: cycjimmy/semantic-release-action@v8.1.4
         with:
           dry_run: true
           extra_plugins: |
@@ -106,7 +106,7 @@ jobs:
 
       - name: Run semantic-release
         if: steps.dryrun.outputs.new_release_published == 'true'
-        uses: cycjimmy/semantic-release-action@v8.1.3
+        uses: cycjimmy/semantic-release-action@v8.1.4
         with:
           extra_plugins: |
             conventional-changelog-conventionalcommits@9.1.0
