@@ -1,3 +1,5 @@
+## [0.9.1](https://github.com/giusdp/polarex/compare/v0.9.0...v0.9.1) (2026-11-09)
+
 ## [0.9.0](https://github.com/giusdp/polarex/compare/v0.8.5...v0.9.0) (2026-11-03)
 
 ### Features
