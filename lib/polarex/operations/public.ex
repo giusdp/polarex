@@ -4341,16 +4341,16 @@ defmodule Polarex.Public do
 
   ## Options
 
+    * `organization_id`: Filter by organization ID.
+    * `query`: Query to filter events.
     * `filter`: Filter events following filter clauses. JSON string following the same schema a meter filter clause. 
     * `start_timestamp`: Filter events after this timestamp.
     * `end_timestamp`: Filter events before this timestamp.
-    * `organization_id`: Filter by organization ID.
     * `customer_id`: Filter by customer ID.
     * `external_customer_id`: Filter by external customer ID.
     * `meter_id`: Filter by a meter filter clause.
     * `name`: Filter by event name.
     * `source`: Filter by event source.
-    * `query`: Query to filter events.
     * `parent_id`: When combined with depth, use this event as the anchor instead of root events.
     * `depth`: Fetch descendants up to this depth. When set: 0=root events only, 1=roots+children, etc. Max 5. When not set, returns all events.
     * `page`: Page number, defaults to 1.
