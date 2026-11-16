@@ -2176,47 +2176,6 @@ defmodule Polarex.Public do
   end
 
   @doc """
-  Confirm Retry Payment
-
-  Confirm a retry payment using a Stripe confirmation token.
-
-  ## Request Body
-
-  **Content Types**: `application/json`
-  """
-  @spec customer_portal_orders_confirm_retry_payment(
-          id :: String.t(),
-          body :: Polarex.CustomerOrderConfirmPayment.t(),
-          opts :: keyword
-        ) ::
-          {:ok, Polarex.CustomerOrderPaymentConfirmation.t()}
-          | {:error,
-             Polarex.ManualRetryLimitExceeded.t()
-             | Polarex.OrderNotEligibleForRetry.t()
-             | Polarex.PaymentAlreadyInProgress.t()
-             | Polarex.ResourceNotFound.t()}
-  def customer_portal_orders_confirm_retry_payment(id, body, opts \\ []) do
-    client = opts[:client] || @default_client
-
-    client.request(%{
-      args: [id: id, body: body],
-      call: {Polarex.Public, :customer_portal_orders_confirm_retry_payment},
-      url: "/v1/customer-portal/orders/#{id}/confirm-payment",
-      body: body,
-      method: :post,
-      request: [{"application/json", {Polarex.CustomerOrderConfirmPayment, :t}}],
-      response: [
-        {200, {Polarex.CustomerOrderPaymentConfirmation, :t}},
-        {404, {Polarex.ResourceNotFound, :t}},
-        {409, {Polarex.PaymentAlreadyInProgress, :t}},
-        {422, {Polarex.OrderNotEligibleForRetry, :t}},
-        {429, {Polarex.ManualRetryLimitExceeded, :t}}
-      ],
-      opts: opts
-    })
-  end
-
-  @doc """
   Generate Order Invoice
 
   Trigger generation of an order's invoice.
@@ -2263,31 +2222,6 @@ defmodule Polarex.Public do
       method: :get,
       response: [
         {200, {Polarex.CustomerOrder, :t}},
-        {404, {Polarex.ResourceNotFound, :t}},
-        {422, {Polarex.HTTPValidationError, :t}}
-      ],
-      opts: opts
-    })
-  end
-
-  @doc """
-  Get Order Payment Status
-
-  Get the current payment status for an order.
-  """
-  @spec customer_portal_orders_get_payment_status(id :: String.t(), opts :: keyword) ::
-          {:ok, Polarex.CustomerOrderPaymentStatus.t()}
-          | {:error, Polarex.HTTPValidationError.t() | Polarex.ResourceNotFound.t()}
-  def customer_portal_orders_get_payment_status(id, opts \\ []) do
-    client = opts[:client] || @default_client
-
-    client.request(%{
-      args: [id: id],
-      call: {Polarex.Public, :customer_portal_orders_get_payment_status},
-      url: "/v1/customer-portal/orders/#{id}/payment-status",
-      method: :get,
-      response: [
-        {200, {Polarex.CustomerOrderPaymentStatus, :t}},
         {404, {Polarex.ResourceNotFound, :t}},
         {422, {Polarex.HTTPValidationError, :t}}
       ],
@@ -2773,64 +2707,6 @@ defmodule Polarex.Public do
   end
 
   @doc """
-  Get Wallet
-
-  Get a wallet by ID for the authenticated customer.
-  """
-  @spec customer_portal_wallets_get(id :: String.t(), opts :: keyword) ::
-          {:ok, Polarex.CustomerWallet.t()}
-          | {:error, Polarex.HTTPValidationError.t() | Polarex.ResourceNotFound.t()}
-  def customer_portal_wallets_get(id, opts \\ []) do
-    client = opts[:client] || @default_client
-
-    client.request(%{
-      args: [id: id],
-      call: {Polarex.Public, :customer_portal_wallets_get},
-      url: "/v1/customer-portal/wallets/#{id}",
-      method: :get,
-      response: [
-        {200, {Polarex.CustomerWallet, :t}},
-        {404, {Polarex.ResourceNotFound, :t}},
-        {422, {Polarex.HTTPValidationError, :t}}
-      ],
-      opts: opts
-    })
-  end
-
-  @doc """
-  List Wallets
-
-  List wallets of the authenticated customer.
-
-  ## Options
-
-    * `page`: Page number, defaults to 1.
-    * `limit`: Size of a page, defaults to 10. Maximum is 100.
-    * `sorting`: Sorting criterion. Several criteria can be used simultaneously and will be applied in order. Add a minus sign `-` before the criteria name to sort by descending order.
-
-  """
-  @spec customer_portal_wallets_list(opts :: keyword) ::
-          {:ok, Polarex.ListResourceCustomerWallet.t()}
-          | {:error, Polarex.HTTPValidationError.t()}
-  def customer_portal_wallets_list(opts \\ []) do
-    client = opts[:client] || @default_client
-    query = Keyword.take(opts, [:limit, :page, :sorting])
-
-    client.request(%{
-      args: [],
-      call: {Polarex.Public, :customer_portal_wallets_list},
-      url: "/v1/customer-portal/wallets/",
-      method: :get,
-      query: query,
-      response: [
-        {200, {Polarex.ListResourceCustomerWallet, :t}},
-        {422, {Polarex.HTTPValidationError, :t}}
-      ],
-      opts: opts
-    })
-  end
-
-  @doc """
   Assign Seat
 
   Assign a seat for a subscription or order.
@@ -3183,35 +3059,6 @@ defmodule Polarex.Public do
         {404, {Polarex.ResourceNotFound, :t}},
         {422, {Polarex.HTTPValidationError, :t}}
       ],
-      opts: opts
-    })
-  end
-
-  @doc """
-  Export Customers
-
-  Export customers as a CSV file.
-
-  **Scopes**: `customers:read` `customers:write`
-
-  ## Options
-
-    * `organization_id`: Filter by organization ID.
-
-  """
-  @spec customers_export(opts :: keyword) ::
-          {:ok, String.t()} | {:error, Polarex.HTTPValidationError.t()}
-  def customers_export(opts \\ []) do
-    client = opts[:client] || @default_client
-    query = Keyword.take(opts, [:organization_id])
-
-    client.request(%{
-      args: [],
-      call: {Polarex.Public, :customers_export},
-      url: "/v1/customers/export",
-      method: :get,
-      query: query,
-      response: [{200, :string}, {422, {Polarex.HTTPValidationError, :t}}],
       opts: opts
     })
   end
@@ -5134,108 +4981,6 @@ defmodule Polarex.Public do
   end
 
   @doc """
-  Create Metric Dashboard
-
-  Create a user-defined metric dashboard.
-
-  **Scopes**: `metrics:write`
-
-  ## Request Body
-
-  **Content Types**: `application/json`
-  """
-  @spec metrics_create_dashboard(body :: Polarex.MetricDashboardCreate.t(), opts :: keyword) ::
-          {:ok, Polarex.MetricDashboardSchema.t()} | {:error, Polarex.HTTPValidationError.t()}
-  def metrics_create_dashboard(body, opts \\ []) do
-    client = opts[:client] || @default_client
-
-    client.request(%{
-      args: [body: body],
-      call: {Polarex.Public, :metrics_create_dashboard},
-      url: "/v1/metrics/dashboards",
-      body: body,
-      method: :post,
-      request: [{"application/json", {Polarex.MetricDashboardCreate, :t}}],
-      response: [
-        {201, {Polarex.MetricDashboardSchema, :t}},
-        {422, {Polarex.HTTPValidationError, :t}}
-      ],
-      opts: opts
-    })
-  end
-
-  @doc """
-  Delete Metric Dashboard
-
-  Delete a user-defined metric dashboard.
-
-  **Scopes**: `metrics:write`
-  """
-  @spec metrics_delete_dashboard(id :: String.t(), opts :: keyword) ::
-          :ok | {:error, Polarex.HTTPValidationError.t()}
-  def metrics_delete_dashboard(id, opts \\ []) do
-    client = opts[:client] || @default_client
-
-    client.request(%{
-      args: [id: id],
-      call: {Polarex.Public, :metrics_delete_dashboard},
-      url: "/v1/metrics/dashboards/#{id}",
-      method: :delete,
-      response: [{204, :null}, {422, {Polarex.HTTPValidationError, :t}}],
-      opts: opts
-    })
-  end
-
-  @doc """
-  Export Metrics
-
-  Export metrics as a CSV file.
-
-  **Scopes**: `metrics:read`
-
-  ## Options
-
-    * `start_date`: Start date.
-    * `end_date`: End date.
-    * `timezone`: Timezone to use for the timestamps. Default is UTC.
-    * `interval`: Interval between two timestamps.
-    * `organization_id`: Filter by organization ID.
-    * `product_id`: Filter by product ID.
-    * `billing_type`: Filter by billing type. `recurring` will filter data corresponding to subscriptions creations or renewals. `one_time` will filter data corresponding to one-time purchases.
-    * `customer_id`: Filter by customer ID.
-    * `metrics`: List of metric slugs to include in the export. If not provided, all metrics are exported.
-
-  """
-  @spec metrics_export(opts :: keyword) ::
-          {:ok, String.t()} | {:error, Polarex.HTTPValidationError.t()}
-  def metrics_export(opts \\ []) do
-    client = opts[:client] || @default_client
-
-    query =
-      Keyword.take(opts, [
-        :billing_type,
-        :customer_id,
-        :end_date,
-        :interval,
-        :metrics,
-        :organization_id,
-        :product_id,
-        :start_date,
-        :timezone
-      ])
-
-    client.request(%{
-      args: [],
-      call: {Polarex.Public, :metrics_export},
-      url: "/v1/metrics/export",
-      method: :get,
-      query: query,
-      response: [{200, :string}, {422, {Polarex.HTTPValidationError, :t}}],
-      opts: opts
-    })
-  end
-
-  @doc """
   Get Metrics
 
   Get metrics about your orders and subscriptions.
@@ -5287,31 +5032,6 @@ defmodule Polarex.Public do
   end
 
   @doc """
-  Get Metric Dashboard
-
-  Get a user-defined metric dashboard by ID.
-
-  **Scopes**: `metrics:read`
-  """
-  @spec metrics_get_dashboard(id :: String.t(), opts :: keyword) ::
-          {:ok, Polarex.MetricDashboardSchema.t()} | {:error, Polarex.HTTPValidationError.t()}
-  def metrics_get_dashboard(id, opts \\ []) do
-    client = opts[:client] || @default_client
-
-    client.request(%{
-      args: [id: id],
-      call: {Polarex.Public, :metrics_get_dashboard},
-      url: "/v1/metrics/dashboards/#{id}",
-      method: :get,
-      response: [
-        {200, {Polarex.MetricDashboardSchema, :t}},
-        {422, {Polarex.HTTPValidationError, :t}}
-      ],
-      opts: opts
-    })
-  end
-
-  @doc """
   Get Metrics Limits
 
   Get the interval limits for the metrics endpoint.
@@ -5328,72 +5048,6 @@ defmodule Polarex.Public do
       url: "/v1/metrics/limits",
       method: :get,
       response: [{200, {Polarex.MetricsLimits, :t}}],
-      opts: opts
-    })
-  end
-
-  @doc """
-  List Metric Dashboards
-
-  List user-defined metric dashboards.
-
-  **Scopes**: `metrics:read`
-
-  ## Options
-
-    * `organization_id`: Filter by organization ID.
-
-  """
-  @spec metrics_list_dashboards(opts :: keyword) ::
-          {:ok, [Polarex.MetricDashboardSchema.t()]} | {:error, Polarex.HTTPValidationError.t()}
-  def metrics_list_dashboards(opts \\ []) do
-    client = opts[:client] || @default_client
-    query = Keyword.take(opts, [:organization_id])
-
-    client.request(%{
-      args: [],
-      call: {Polarex.Public, :metrics_list_dashboards},
-      url: "/v1/metrics/dashboards",
-      method: :get,
-      query: query,
-      response: [
-        {200, [{Polarex.MetricDashboardSchema, :t}]},
-        {422, {Polarex.HTTPValidationError, :t}}
-      ],
-      opts: opts
-    })
-  end
-
-  @doc """
-  Update Metric Dashboard
-
-  Update a user-defined metric dashboard.
-
-  **Scopes**: `metrics:write`
-
-  ## Request Body
-
-  **Content Types**: `application/json`
-  """
-  @spec metrics_update_dashboard(
-          id :: String.t(),
-          body :: Polarex.MetricDashboardUpdate.t(),
-          opts :: keyword
-        ) :: {:ok, Polarex.MetricDashboardSchema.t()} | {:error, Polarex.HTTPValidationError.t()}
-  def metrics_update_dashboard(id, body, opts \\ []) do
-    client = opts[:client] || @default_client
-
-    client.request(%{
-      args: [id: id, body: body],
-      call: {Polarex.Public, :metrics_update_dashboard},
-      url: "/v1/metrics/dashboards/#{id}",
-      body: body,
-      method: :patch,
-      request: [{"application/json", {Polarex.MetricDashboardUpdate, :t}}],
-      response: [
-        {200, {Polarex.MetricDashboardSchema, :t}},
-        {422, {Polarex.HTTPValidationError, :t}}
-      ],
       opts: opts
     })
   end
@@ -6548,53 +6202,6 @@ defmodule Polarex.Public do
           ]}}
       ],
       response: [{201, {Polarex.Subscription, :t}}, {422, {Polarex.HTTPValidationError, :t}}],
-      opts: opts
-    })
-  end
-
-  @doc """
-  Export Subscriptions
-
-  Export subscriptions as a CSV file.
-
-  **Scopes**: `subscriptions:read` `subscriptions:write`
-
-  ## Options
-
-    * `organization_id`: Filter by organization ID.
-    * `product_id`: Filter by product ID.
-    * `status`: Filter by subscription status.
-    * `cancel_at_period_end`: Filter by subscriptions that are set to cancel at period end.
-    * `started_after`: Only include subscriptions started after this date. Must include a UTC offset.
-    * `started_before`: Only include subscriptions started before this date. Must include a UTC offset.
-    * `timezone`: Time zone used to render dates in the CSV.
-    * `columns`: Columns to include in the CSV, in order. Defaults to email, started_at, product, amount, currency, status and recurring_interval.
-
-  """
-  @spec subscriptions_export(opts :: keyword) ::
-          {:ok, String.t()} | {:error, Polarex.HTTPValidationError.t()}
-  def subscriptions_export(opts \\ []) do
-    client = opts[:client] || @default_client
-
-    query =
-      Keyword.take(opts, [
-        :cancel_at_period_end,
-        :columns,
-        :organization_id,
-        :product_id,
-        :started_after,
-        :started_before,
-        :status,
-        :timezone
-      ])
-
-    client.request(%{
-      args: [],
-      call: {Polarex.Public, :subscriptions_export},
-      url: "/v1/subscriptions/export",
-      method: :get,
-      query: query,
-      response: [{200, :string}, {422, {Polarex.HTTPValidationError, :t}}],
       opts: opts
     })
   end
