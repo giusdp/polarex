@@ -88,7 +88,7 @@ defmodule Polarex.WebhookEndpoint do
           "organization.updated"
         ]
       ],
-      format: {:enum, ["raw", "discord", "slack"]},
+      format: {:enum, ["raw", "discord", "slack", "mcp"]},
       id: {:string, "uuid4"},
       modified_at: {:union, [{:string, "date-time"}, :null]},
       name: {:union, [:string, :null]},

@@ -221,53 +221,6 @@ defmodule Polarex.Subscriptions do
   end
 
   @doc """
-  Export Subscriptions
-
-  Export subscriptions as a CSV file.
-
-  **Scopes**: `subscriptions:read` `subscriptions:write`
-
-  ## Options
-
-    * `organization_id`: Filter by organization ID.
-    * `product_id`: Filter by product ID.
-    * `status`: Filter by subscription status.
-    * `cancel_at_period_end`: Filter by subscriptions that are set to cancel at period end.
-    * `started_after`: Only include subscriptions started after this date. Must include a UTC offset.
-    * `started_before`: Only include subscriptions started before this date. Must include a UTC offset.
-    * `timezone`: Time zone used to render dates in the CSV.
-    * `columns`: Columns to include in the CSV, in order. Defaults to email, started_at, product, amount, currency, status and recurring_interval.
-
-  """
-  @spec subscriptions_export(opts :: keyword) ::
-          {:ok, String.t()} | {:error, Polarex.HTTPValidationError.t()}
-  def subscriptions_export(opts \\ []) do
-    client = opts[:client] || @default_client
-
-    query =
-      Keyword.take(opts, [
-        :cancel_at_period_end,
-        :columns,
-        :organization_id,
-        :product_id,
-        :started_after,
-        :started_before,
-        :status,
-        :timezone
-      ])
-
-    client.request(%{
-      args: [],
-      call: {Polarex.Subscriptions, :subscriptions_export},
-      url: "/v1/subscriptions/export",
-      method: :get,
-      query: query,
-      response: [{200, :string}, {422, {Polarex.HTTPValidationError, :t}}],
-      opts: opts
-    })
-  end
-
-  @doc """
   Get Subscription
 
   Get a subscription by ID.

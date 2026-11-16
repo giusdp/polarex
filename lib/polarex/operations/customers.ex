@@ -413,35 +413,6 @@ defmodule Polarex.Customers do
   end
 
   @doc """
-  Export Customers
-
-  Export customers as a CSV file.
-
-  **Scopes**: `customers:read` `customers:write`
-
-  ## Options
-
-    * `organization_id`: Filter by organization ID.
-
-  """
-  @spec customers_export(opts :: keyword) ::
-          {:ok, String.t()} | {:error, Polarex.HTTPValidationError.t()}
-  def customers_export(opts \\ []) do
-    client = opts[:client] || @default_client
-    query = Keyword.take(opts, [:organization_id])
-
-    client.request(%{
-      args: [],
-      call: {Polarex.Customers, :customers_export},
-      url: "/v1/customers/export",
-      method: :get,
-      query: query,
-      response: [{200, :string}, {422, {Polarex.HTTPValidationError, :t}}],
-      opts: opts
-    })
-  end
-
-  @doc """
   Get Customer
 
   Get a customer by ID.
