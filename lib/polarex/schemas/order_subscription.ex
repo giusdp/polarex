@@ -132,7 +132,8 @@ defmodule Polarex.OrderSubscription do
            "past_due",
            "canceled",
            "unpaid",
-           "paused"
+           "paused",
+           "trial_ended"
          ]},
       trial_end: {:union, [{:string, "date-time"}, :null]},
       trial_start: {:union, [{:string, "date-time"}, :null]},

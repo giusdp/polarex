@@ -6088,7 +6088,10 @@ defmodule Polarex.Public do
   """
   @spec refunds_create(body :: Polarex.RefundCreate.t(), opts :: keyword) ::
           {:ok, Polarex.Refund.t()}
-          | {:error, Polarex.HTTPValidationError.t() | Polarex.RefundedAlready.t()}
+          | {:error,
+             Polarex.HTTPValidationError.t()
+             | Polarex.RefundPaymentAlreadyRefundedByStripe.t()
+             | Polarex.RefundedAlready.t()}
   def refunds_create(body, opts \\ []) do
     client = opts[:client] || @default_client
 
@@ -6102,6 +6105,7 @@ defmodule Polarex.Public do
       response: [
         {201, {Polarex.Refund, :t}},
         {403, {Polarex.RefundedAlready, :t}},
+        {409, {Polarex.RefundPaymentAlreadyRefundedByStripe, :t}},
         {422, {Polarex.HTTPValidationError, :t}}
       ],
       opts: opts
