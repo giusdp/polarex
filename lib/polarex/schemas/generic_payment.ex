@@ -69,7 +69,8 @@ defmodule Polarex.GenericPayment do
               "retry_dunning",
               "retry_customer",
               "retry_payment_method_update",
-              "retry_admin"
+              "retry_admin",
+              "retry_payment_alert"
             ]},
            :null
          ]}
